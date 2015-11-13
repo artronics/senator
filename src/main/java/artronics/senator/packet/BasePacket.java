@@ -1,6 +1,5 @@
 package artronics.senator.packet;
 
-public interface Packet
+public class BasePacket
 {
-
 }
