@@ -24,7 +24,7 @@
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             </map>
         </property>
-        <property name="packagesToScan" value="artronics.satrapi.server.model"/>
+        <property name="packagesToScan" value="artronics.senator.model"/>
     </bean>
 
     <!--<bean id="sessionFactory"-->

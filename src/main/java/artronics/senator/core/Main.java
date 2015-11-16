@@ -1,21 +1,24 @@
 package artronics.senator.core;
 
 import artronics.chaparMini.exceptions.ChaparConnectionException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main
 {
     public static void main(String args[]){
-        PacketBroker initializer = new PacketBroker();
+        ClassPathXmlApplicationContext cnt = new ClassPathXmlApplicationContext("senator-beans.xml");
+        Senator senator = cnt.getBean(Senator.class);
 
         try {
-            initializer.start();
+
+            senator.connectToChapar();
+
         }catch (ChaparConnectionException e) {
             e.printStackTrace();
         }
 
-        Thread init = new Thread(initializer);
-        init.start();
-
-
+        senator.startThreads();
     }
 }

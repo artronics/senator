@@ -6,9 +6,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="artronics.senator"/>
+    <context:component-scan base-package="artronics.senator.repositories.jpa"/>
+    <context:component-scan base-package="artronics.senator.services.impl"/>
+    <context:component-scan base-package="artronics.senator.core"/>
     <tx:annotation-driven/>
+
     <!--<import resource="db/mysql-config.xml"/>-->
     <import resource="db/h2mem-config.xml"/>
     <!--<context:component-scan base-package="artronics.senator.controller"/>-->
+
+    <bean id="senator" class="artronics.senator.core.Senator">
+    </bean>
+
 </beans>

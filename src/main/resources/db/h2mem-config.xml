@@ -24,6 +24,6 @@
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             </map>
         </property>
-        <property name="packagesToScan" value="artronics.gsdwn."/>
+        <property name="packagesToScan" value="artronics.senator.model"/>
     </bean>
 </beans>
