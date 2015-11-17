@@ -22,7 +22,7 @@
     </appender>
 
 
-    <logger name="main">
+    <logger name="senator">
         <level value="debug"/>
         <appender-ref ref="console"></appender-ref>
     </logger>
