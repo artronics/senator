@@ -1,11 +1,9 @@
 package artronics.senator.core;
 
 import artronics.chaparMini.exceptions.ChaparConnectionException;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Main
+public class SenatorMain
 {
     public static void main(String args[]){
         ClassPathXmlApplicationContext cnt = new ClassPathXmlApplicationContext("senator-beans.xml");
