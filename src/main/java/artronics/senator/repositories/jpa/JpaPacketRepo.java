@@ -19,4 +19,10 @@ public class JpaPacketRepo implements PacketRepo
         em.persist(packet);
         return packet;
     }
+
+    @Override
+    public SenatorPacket find(Long id)
+    {
+        return em.find(SenatorPacket.class, id);
+    }
 }
