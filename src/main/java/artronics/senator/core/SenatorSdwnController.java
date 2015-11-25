@@ -41,7 +41,7 @@ public class SenatorSdwnController implements SenatorController
                     break;
 
                 SenatorPacket senPacket = senPckFactory.create((SdwnBasePacket) packet);
-                packetRepo.create(senPacket);
+//                packetRepo.create(senPacket);
 
             }catch (InterruptedException e) {
                 e.printStackTrace();

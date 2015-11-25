@@ -1,6 +1,6 @@
 package artronics.senator.repositories;
 
-import artronics.senator.model.SenatorPacket;
+import artronics.gsdwn.packet.PacketEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,14 +21,18 @@ public class PacketRepoTest
     @Autowired
     private PacketRepo packetRepo;
 
-    private SenatorPacket packet;
+//    private SenatorPacket packet;
 
+    private PacketEntity packet;
     @Before
     @Transactional
     @Rollback(false)
     public void setUp() throws Exception
     {
-        packet = new SenatorPacket();
+//        packet = new SenatorPacket();
+//        packet.setSrcShortAddress(30);
+//        packet.setDstShortAddress(0);
+        packet = new PacketEntity();
         packet.setSrcShortAddress(30);
         packet.setDstShortAddress(0);
 
@@ -37,9 +41,10 @@ public class PacketRepoTest
 
     @Test
     @Transactional
-    public void it_should_create_an_account()
+    public void it_should_create_an_packet()
     {
-        SenatorPacket actPacket = packetRepo.find(packet.getId());
+//        SenatorPacket actPacket = packetRepo.find(packet.getId());
+        PacketEntity actPacket = packetRepo.find(packet.getId());
 
         assertNotNull(actPacket);
         assertThat(actPacket.getSrcShortAddress(), equalTo(30));

@@ -1,6 +1,6 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.senator.model.SenatorPacket;
+import artronics.gsdwn.packet.PacketEntity;
 import artronics.senator.repositories.PacketRepo;
 import org.springframework.stereotype.Repository;
 
@@ -14,15 +14,15 @@ public class JpaPacketRepo implements PacketRepo
     EntityManager em;
 
     @Override
-    public SenatorPacket create(SenatorPacket packet)
+    public PacketEntity create(PacketEntity packet)
     {
         em.persist(packet);
         return packet;
     }
 
     @Override
-    public SenatorPacket find(Long id)
+    public PacketEntity find(Long id)
     {
-        return em.find(SenatorPacket.class, id);
+        return em.find(PacketEntity.class, id);
     }
 }

@@ -10,7 +10,7 @@
     <context:component-scan base-package="artronics.senator.repositories.jpa"/>
     <context:component-scan base-package="artronics.senator.services.impl"/>
 
-    <bean id="database.dataSource"
+    <bean id="dataSource"
           class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
         <constructor-arg>
             <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -23,26 +23,10 @@
 
     <!-- provides a H2 console to look into the db if necessary -->
     <bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
-          factory-method="createWebServer" depends-on="database.dataSource"
+          factory-method="createWebServer" depends-on="dataSource"
           init-method="start" lazy-init="false">
         <constructor-arg value="-web,-webPort,11111"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
 
-    <bean id="entityManagerFactory"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="database.dataSource"/>
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
-        </property>
-        <property name="jpaProperties">
-            <map>
-                <entry key="hibernate.hbm2ddl.auto" value="create-drop"/>
-                <entry key="hibernate.show_sql" value="true"/>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            </map>
-        </property>
-        <property name="packagesToScan" value="artronics.senator.model"/>
-    </bean>
 </beans>

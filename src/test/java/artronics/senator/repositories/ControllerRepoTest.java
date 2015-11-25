@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:test/db_h2.xml")
+@ContextConfiguration("classpath:senator-beans.xml")
 public class ControllerRepoTest
 {
     @Autowired
