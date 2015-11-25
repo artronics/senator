@@ -21,6 +21,13 @@
         </layout>
     </appender>
 
+    <logger name="org.springframework">
+        <level value="warn"/>
+    </logger>
+
+    <logger name="org.hibernate">
+        <level value="warn"/>
+    </logger>
 
     <logger name="senator">
         <level value="debug"/>
