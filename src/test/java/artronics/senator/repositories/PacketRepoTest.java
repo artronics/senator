@@ -10,7 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
@@ -37,7 +39,10 @@ public class PacketRepoTest
     @Transactional
     public void it_should_create_an_account()
     {
-//        SenatorPacket actPacket = packetRepo.
-        assertTrue(true);
+        SenatorPacket actPacket = packetRepo.find(packet.getId());
+
+        assertNotNull(actPacket);
+        assertThat(actPacket.getSrcShortAddress(), equalTo(30));
+        assertThat(actPacket.getDstShortAddress(), equalTo(0));
     }
 }

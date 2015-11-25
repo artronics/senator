@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="artronics.gsdwn.controller.SdwnController" id="controller">
+        <constructor-arg name="deviceConnection" ref="DeviceConnection"/>
+        <constructor-arg name="mapUpdater" ref="NetworkMapUpdater"/>
+        <constructor-arg name="networkMap" ref="NetworkMap"/>
+        <constructor-arg name="sinkAddress" value="0"/>
+    </bean>
+    <bean id="DeviceConnection" class="artronics.chaparMini.Chapar">
+        <constructor-arg name="connection" ref="Connection"/>
+    </bean>
+    <bean id="Connection"
+          class="artronics.chaparMini.connection.serialPort.SerialPortConnection"/>
+
+    <bean id="NetworkMap" class="artronics.gsdwn.networkMap.SdwnNetworkMap"/>
+
+    <bean id="NetworkMapUpdater" class="artronics.gsdwn.networkMap.NetworkMapUpdater">
+        <constructor-arg name="networkMap" ref="NetworkMap"/>
+        <constructor-arg name="weightCalculator" ref="WeightCalculator"/>
+    </bean>
+    <bean id="WeightCalculator" class="artronics.gsdwn.networkMap.RssiSimpleWeightCalculator"/>
+</beans>
