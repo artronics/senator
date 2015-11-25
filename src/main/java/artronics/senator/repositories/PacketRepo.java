@@ -1,6 +1,6 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.packet.PacketEntity;
+import artronics.gsdwn.model.PacketEntity;
 
 public interface PacketRepo
 {

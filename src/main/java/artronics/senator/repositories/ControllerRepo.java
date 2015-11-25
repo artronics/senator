@@ -1,10 +1,10 @@
 package artronics.senator.repositories;
 
-import artronics.senator.model.SdwnControllerModel;
+import artronics.gsdwn.model.ControllerEntity;
 
 public interface ControllerRepo
 {
-    SdwnControllerModel create(SdwnControllerModel controller);
+    ControllerEntity create(ControllerEntity controller);
 
-    SdwnControllerModel find(Long id);
+    ControllerEntity find(Long id);
 }

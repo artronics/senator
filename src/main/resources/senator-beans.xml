@@ -35,7 +35,7 @@
         <property name="packagesToScan">
             <array>
                 <value>artronics.senator.model</value>
-                <value>artronics.gsdwn.packet</value>
+                <value>artronics.gsdwn.model</value>
             </array>
         </property>
     </bean>

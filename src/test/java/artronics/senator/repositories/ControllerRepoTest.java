@@ -1,6 +1,6 @@
 package artronics.senator.repositories;
 
-import artronics.senator.model.SdwnControllerModel;
+import artronics.gsdwn.model.ControllerEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,14 +21,14 @@ public class ControllerRepoTest
     @Autowired
     private ControllerRepo repo;
 
-    private SdwnControllerModel controller;
+    private ControllerEntity controller;
 
     @Before
     @Transactional
     @Rollback(value = false)
     public void setUp() throws Exception
     {
-        controller = new SdwnControllerModel("192.168.1.1");
+        controller = new ControllerEntity("192.168.1.1");
 
         repo.create(controller);
     }
@@ -37,7 +37,7 @@ public class ControllerRepoTest
     @Transactional
     public void it_should_create_cont()
     {
-        SdwnControllerModel cnt = repo.find(controller.getId());
+        ControllerEntity cnt = repo.find(controller.getId());
 
         assertNotNull(cnt);
         assertThat(cnt.getIp(), equalTo("192.168.1.1"));

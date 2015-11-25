@@ -1,6 +1,6 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.gsdwn.packet.PacketEntity;
+import artronics.gsdwn.model.PacketEntity;
 import artronics.senator.repositories.PacketRepo;
 import org.springframework.stereotype.Repository;
 

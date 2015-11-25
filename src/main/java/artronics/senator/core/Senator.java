@@ -1,6 +1,5 @@
 package artronics.senator.core;
 
-import artronics.chaparMini.exceptions.ChaparConnectionException;
 import artronics.gsdwn.packet.Packet;
 
 import java.util.concurrent.BlockingQueue;
@@ -24,9 +23,6 @@ public class Senator
 
     private final SenatorController senController = new SenatorSdwnController(senRxPackets,senTxPackets);
 
-    public void connectToChapar() throws ChaparConnectionException
-    {
-    }
 
     public void startThreads(){
         Thread pckBrokerThr =new Thread(packetBroker,"PckBroker");

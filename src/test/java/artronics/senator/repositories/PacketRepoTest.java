@@ -1,6 +1,6 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.packet.PacketEntity;
+import artronics.gsdwn.model.PacketEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
