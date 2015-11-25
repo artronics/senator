@@ -11,14 +11,11 @@
     <context:component-scan base-package="artronics.senator.core"/>
     <tx:annotation-driven/>
 
-    <import resource="db/mysql-config.xml"/>
+    <!--<import resource="db/mysql-config.xml"/>-->
+    <import resource="test/db_h2.xml"/>
     <!--<import resource="db/h2mem-config.xml"/>-->
     <!--<context:component-scan base-package="artronics.senator.controller"/>-->
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
-
-
-    <bean id="senator" class="artronics.senator.core.Senator">
-    </bean>
 
 </beans>

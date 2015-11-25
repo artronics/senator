@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <tx:annotation-driven/>
+
+    <context:component-scan base-package="artronics.senator.repositories.jpa"/>
+    <context:component-scan base-package="artronics.senator.services.impl"/>
+
+    <bean id="database.dataSource"
+          class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <constructor-arg>
+            <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+                <property name="driverClass" value="org.h2.Driver"/>
+                <property name="url"
+                          value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=2"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- provides a H2 console to look into the db if necessary -->
+    <bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
+          factory-method="createWebServer" depends-on="database.dataSource"
+          init-method="start" lazy-init="false">
+        <constructor-arg value="-web,-webPort,11111"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
+
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="database.dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
+            <map>
+                <entry key="hibernate.hbm2ddl.auto" value="create-drop"/>
+                <entry key="hibernate.show_sql" value="true"/>
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            </map>
+        </property>
+        <property name="packagesToScan" value="artronics.senator.model"/>
+    </bean>
+</beans>
