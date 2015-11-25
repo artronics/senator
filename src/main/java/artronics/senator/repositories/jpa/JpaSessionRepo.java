@@ -1,6 +1,6 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.senator.model.Session;
+import artronics.gsdwn.model.Session;
 import artronics.senator.repositories.SessionRepo;
 import org.springframework.stereotype.Repository;
 

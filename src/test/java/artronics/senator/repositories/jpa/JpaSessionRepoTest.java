@@ -1,6 +1,6 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.senator.model.Session;
+import artronics.gsdwn.model.Session;
 import artronics.senator.repositories.SessionRepo;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")

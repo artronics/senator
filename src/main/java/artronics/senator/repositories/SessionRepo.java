@@ -1,6 +1,6 @@
 package artronics.senator.repositories;
 
-import artronics.senator.model.Session;
+import artronics.gsdwn.model.Session;
 
 public interface SessionRepo
 {
