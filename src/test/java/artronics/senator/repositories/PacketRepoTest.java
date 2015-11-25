@@ -21,9 +21,8 @@ public class PacketRepoTest
     @Autowired
     private PacketRepo packetRepo;
 
-//    private SenatorPacket packet;
-
     private PacketEntity packet;
+
     @Before
     @Transactional
     @Rollback(false)
@@ -35,14 +34,14 @@ public class PacketRepoTest
         packet = new PacketEntity();
         packet.setSrcShortAddress(30);
         packet.setDstShortAddress(0);
-
-        packetRepo.create(packet);
     }
 
     @Test
     @Transactional
     public void it_should_create_an_packet()
     {
+        packetRepo.create(packet);
+
 //        SenatorPacket actPacket = packetRepo.find(packet.getId());
         PacketEntity actPacket = packetRepo.find(packet.getId());
 
