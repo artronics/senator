@@ -16,29 +16,29 @@
     <!--<import resource="db/h2mem-config.xml"/>-->
     <!--<context:component-scan base-package="artronics.senator.controller"/>-->
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
+    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>-->
 
-    <bean id="entityManagerFactory"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
-        </property>
-        <property name="jpaProperties">
-            <map>
-                <!--<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>-->
-                <entry key="hibernate.hbm2ddl.auto" value="update"/>
-                <entry key="hibernate.show_sql" value="true"/>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            </map>
-        </property>
+    <!--<bean id="entityManagerFactory"-->
+    <!--class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
+    <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--<property name="jpaVendorAdapter">-->
+    <!--<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>-->
+    <!--</property>-->
+    <!--<property name="jpaProperties">-->
+    <!--<map>-->
+    <!--&lt;!&ndash;<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>&ndash;&gt;-->
+    <!--<entry key="hibernate.hbm2ddl.auto" value="update"/>-->
+    <!--<entry key="hibernate.show_sql" value="true"/>-->
+    <!--<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>-->
+    <!--</map>-->
+    <!--</property>-->
 
-        <property name="packagesToScan">
-            <array>
-                <value>artronics.senator.model</value>
-                <value>artronics.gsdwn.model</value>
-            </array>
-        </property>
-    </bean>
+    <!--<property name="packagesToScan">-->
+    <!--<array>-->
+    <!--<value>artronics.senator.model</value>-->
+    <!--<value>artronics.gsdwn.model</value>-->
+    <!--</array>-->
+    <!--</property>-->
+    <!--</bean>-->
 
 </beans>

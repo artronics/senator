@@ -1,14 +1,44 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd">
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <!--This line is fucking important. Don't delete it-->
+    <!--This is related to
+     No EntityManager with actual transaction available for current thread - cannot reliably process 'persist' cal-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="username" value="root"/>
         <property name="password" value="4117084"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/senator"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/Senator"/>
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    </bean>
+
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
+            <map>
+                <!--<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>-->
+                <entry key="hibernate.hbm2ddl.auto" value="update"/>
+                <entry key="hibernate.show_sql" value="true"/>
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            </map>
+        </property>
+
+        <property name="packagesToScan">
+            <array>
+                <value>artronics.senator.model</value>
+                <value>artronics.gsdwn.model</value>
+            </array>
+        </property>
     </bean>
 
 
@@ -30,7 +60,6 @@
     <!--</property>-->
     <!--</bean>-->
 
-    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
 
     <!--<bean id="transactionManager"-->
     <!--class="org.springframework.orm.hibernate4.HibernateTransactionManager">-->
