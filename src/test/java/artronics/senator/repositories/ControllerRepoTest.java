@@ -28,7 +28,8 @@ public class ControllerRepoTest
     @Rollback(value = false)
     public void setUp() throws Exception
     {
-        controller = new ControllerEntity("192.168.1.1");
+        controller = new ControllerEntity();
+        controller.setIp("878");
 
         repo.create(controller);
     }

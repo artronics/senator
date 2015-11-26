@@ -25,8 +25,33 @@
     <bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
           factory-method="createWebServer" depends-on="dataSource"
           init-method="start" lazy-init="false">
-        <constructor-arg value="-web,-webPort,11111"/>
+        <constructor-arg value="-web,-webPort,11112"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
+            <map>
+                <!--<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>-->
+                <entry key="hibernate.hbm2ddl.auto" value="update"/>
+                <entry key="hibernate.show_sql" value="true"/>
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            </map>
+        </property>
+
+        <property name="packagesToScan">
+            <array>
+                <value>artronics.senator.model</value>
+                <value>artronics.gsdwn.model</value>
+            </array>
+        </property>
+    </bean>
 
 </beans>
