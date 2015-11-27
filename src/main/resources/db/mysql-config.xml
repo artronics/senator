@@ -37,7 +37,7 @@
             <array>
                 <value>artronics.senator.model</value>
                 <value>artronics.gsdwn.model</value>
-                <value>artronics.gsdwn.controller</value>
+                <value>artronics.gsdwn.packet</value>
             </array>
         </property>
     </bean>

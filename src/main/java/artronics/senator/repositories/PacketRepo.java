@@ -1,10 +1,10 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.model.PacketEntity;
+import artronics.gsdwn.packet.SdwnBasePacket;
 
 public interface PacketRepo
 {
-    PacketEntity create(PacketEntity packet);
+    SdwnBasePacket create(SdwnBasePacket packet);
 
-    PacketEntity find(Long id);
+    SdwnBasePacket find(Long id);
 }
