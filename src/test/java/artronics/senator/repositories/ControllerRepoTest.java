@@ -36,12 +36,12 @@ public class ControllerRepoTest
 
     @Test
     @Transactional
-//    @Rollback(value = false)
+    @Rollback(value = false)
     public void it_should_create_cont()
     {
         repo.create(controllerConfig);
 
-        ControllerConfig cnt = repo.find(controllerConfig.getId());
+        ControllerConfig cnt = repo.find(controllerConfig.getIp());
 
         assertNotNull(cnt);
         assertThat(cnt.getIp(), equalTo("192.168.1.1"));
@@ -53,7 +53,7 @@ public class ControllerRepoTest
     {
         repo.create(controllerConfig);
 
-        ControllerConfig cnt = repo.find(controllerConfig.getId());
+        ControllerConfig cnt = repo.find(controllerConfig.getIp());
 
         assertNotNull(cnt.getCreated());
     }
@@ -64,7 +64,7 @@ public class ControllerRepoTest
     {
         repo.create(controllerConfig);
 
-        ControllerConfig cnt = repo.find(controllerConfig.getId());
+        ControllerConfig cnt = repo.find(controllerConfig.getIp());
         cnt.setIp("192.168.2.2");
         repo.update(cnt);
 

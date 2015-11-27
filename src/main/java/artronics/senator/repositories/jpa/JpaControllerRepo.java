@@ -30,9 +30,9 @@ public class JpaControllerRepo implements ControllerRepo
     }
 
     @Override
-    public ControllerConfig find(Long id)
+    public ControllerConfig find(String ip)
     {
-        return em.find(ControllerConfig.class, id);
+        return em.find(ControllerConfig.class, ip);
     }
 
     @Override

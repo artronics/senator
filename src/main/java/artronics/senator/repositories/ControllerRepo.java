@@ -6,7 +6,7 @@ public interface ControllerRepo
 {
     ControllerConfig create(ControllerConfig controller);
 
-    ControllerConfig find(Long id);
+    ControllerConfig find(String ip);
 
     ControllerConfig update(ControllerConfig newConfig);
 
