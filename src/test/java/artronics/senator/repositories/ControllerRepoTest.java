@@ -36,6 +36,7 @@ public class ControllerRepoTest
 
     @Test
     @Transactional
+//    @Rollback(value = false)
     public void it_should_create_cont()
     {
         repo.create(controllerConfig);

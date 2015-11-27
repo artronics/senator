@@ -38,6 +38,5 @@ public class SenatorInitializer
         }
 
         controller.setConfig(controllerConfig);
-
     }
 }

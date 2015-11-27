@@ -1,7 +1,7 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.gsdwn.model.Session;
-import artronics.senator.repositories.SessionRepo;
+import artronics.gsdwn.model.ControllerSession;
+import artronics.senator.repositories.ControllerSessionRepo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,28 +17,28 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
-public class JpaSessionRepoTest
+public class JpaControllerControllerSessionRepoTest
 {
     @Autowired
-    SessionRepo sessionRepo;
+    ControllerSessionRepo controllerSessionRepo;
 
-    Session session;
+    ControllerSession controllerSession;
 
     @Before
     @Transactional
     @Rollback(false)
     public void setUp() throws Exception
     {
-        session = new Session();
-        session.setDescription("foo");
+        controllerSession = new ControllerSession();
+        controllerSession.setDescription("foo");
     }
 
     @Test
     @Transactional
     public void it_should_create_session(){
-        sessionRepo.create(session);
+        controllerSessionRepo.create(controllerSession);
 
-        Session act = sessionRepo.find(session.getId());
+        ControllerSession act = controllerSessionRepo.find(controllerSession.getId());
 
         assertNotNull(act);
         assertThat(act.getDescription(),equalTo("foo"));
