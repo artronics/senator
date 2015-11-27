@@ -14,10 +14,6 @@ public class SenatorInitializer
     @Autowired
     private ControllerConfigService controllerService;
 
-    public SenatorInitializer()
-    {
-    }
-
     @Autowired
     public SenatorInitializer(Controller controller)
     {

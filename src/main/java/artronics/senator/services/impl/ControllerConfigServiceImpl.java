@@ -20,4 +20,16 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     {
         return controllerRepo.create(controllerConfig);
     }
+
+    @Override
+    public ControllerConfig updateControllerConfig(ControllerConfig controllerConfig)
+    {
+        return controllerRepo.update(controllerConfig);
+    }
+
+    @Override
+    public ControllerConfig getLatest(ControllerConfig controllerConfig)
+    {
+        return null;
+    }
 }

@@ -1,6 +1,5 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.senator.repositories.ControllerRepo;
 import org.springframework.stereotype.Repository;
@@ -23,11 +22,9 @@ public class JpaControllerRepo implements ControllerRepo
     }
 
     @Override
-    public Controller create(Controller controller)
+    public ControllerConfig update(ControllerConfig newConfig)
     {
-        em.persist(controller);
-
-        return controller;
+        return em.merge(newConfig);
     }
 
     @Override

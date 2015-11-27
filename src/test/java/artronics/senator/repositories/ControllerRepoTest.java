@@ -20,13 +20,10 @@ import static org.junit.Assert.assertThat;
 public class ControllerRepoTest
 {
     @Autowired
-    private ControllerRepo repo;
-
-    private ControllerConfig controllerConfig;
-
-    private ControllerConfig controllerConfig;
-    @Autowired
     Controller controller;
+    @Autowired
+    private ControllerRepo repo;
+    private ControllerConfig controllerConfig;
 
     @Before
     @Transactional
@@ -36,13 +33,14 @@ public class ControllerRepoTest
         controllerConfig = new ControllerConfig();
         controllerConfig.setIp("192.168.1.1");
 
-        repo.create(controllerConfig);
     }
 
     @Test
     @Transactional
     public void it_should_create_cont()
     {
+        repo.create(controllerConfig);
+
         ControllerConfig cnt = repo.find(controllerConfig.getId());
 
         assertNotNull(cnt);
@@ -50,21 +48,28 @@ public class ControllerRepoTest
     }
 
     @Test
-    public void it()
+    @Transactional
+    public void it_should_create_created_timestamp()
     {
-        repo.create(controller);
+        repo.create(controllerConfig);
 
+        ControllerConfig cnt = repo.find(controllerConfig.getId());
+
+        assertNotNull(cnt.getCreated());
     }
 
     @Test
     @Transactional
-    public void it_should_create_controller_by_upcasting()
+    public void it_should_update_entity()
     {
-        ControllerConfig cnt = (ControllerConfig) controller;
-        cnt.setIp("192.168.2.2");
-        repo.create(cnt);
-        ControllerConfig actCnt = repo.find(cnt.getId());
+        repo.create(controllerConfig);
 
-        assertNotNull(actCnt);
+        ControllerConfig cnt = repo.find(controllerConfig.getId());
+        cnt.setIp("192.168.2.2");
+        repo.update(cnt);
+
+        assertThat(controllerConfig.getIp(), equalTo("192.168.2.2"));
     }
+
+
 }
