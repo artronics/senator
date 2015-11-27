@@ -47,5 +47,4 @@ public class SenatorInitializerTest
         assertNotNull(cnf);
         assertThat(cnf.getIp(), equalTo("192.168.1.1"));
     }
-
 }
