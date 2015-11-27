@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
@@ -84,5 +83,13 @@ public class ControllerRepoTest
         ControllerConfig actCnt = repo.getLatest();
 
         assertThat(actCnt.getIp(), equalTo("192.168.2.2"));
+    }
+
+    @Test
+    public void getLatest_should_return_null_if_there_is_no_record()
+    {
+        ControllerConfig cnt = repo.getLatest();
+
+        assertNull(cnt);
     }
 }

@@ -5,6 +5,7 @@ import artronics.senator.repositories.ControllerRepo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -41,6 +42,14 @@ public class JpaControllerRepo implements ControllerRepo
                 "FROM artronics.gsdwn.model.ControllerConfig order by created DESC");
         query.setMaxResults(1);
 
-        return (ControllerConfig) query.getSingleResult();
+        //if there is no result return null instead of exp
+        ControllerConfig singleResult = null;
+        try {
+            singleResult = (ControllerConfig) query.getSingleResult();
+
+        }catch (NoResultException e) {
+        }
+
+        return singleResult;
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @Transactional
 public class ControllerConfigServiceImpl implements ControllerConfigService
@@ -28,8 +30,14 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     }
 
     @Override
-    public ControllerConfig getLatest(ControllerConfig controllerConfig)
+    public ControllerConfig getLatest()
     {
-        return null;
+        ControllerConfig cfg = controllerRepo.getLatest();
+
+        if (cfg != null) {
+            return cfg;
+        }
+
+        throw new EntityNotFoundException();
     }
 }

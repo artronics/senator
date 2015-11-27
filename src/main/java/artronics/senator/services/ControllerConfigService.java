@@ -8,5 +8,5 @@ public interface ControllerConfigService
 
     ControllerConfig updateControllerConfig(ControllerConfig controllerConfig);
 
-    ControllerConfig getLatest(ControllerConfig controllerConfig);
+    ControllerConfig getLatest();
 }
