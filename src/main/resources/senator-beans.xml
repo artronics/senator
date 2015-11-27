@@ -11,6 +11,8 @@
     <context:component-scan base-package="artronics.senator.core"/>
     <tx:annotation-driven/>
 
+    <import resource="di/sdwn_controller_DI.xml"/>
+
     <import resource="db/mysql-config.xml"/>
     <!--<import resource="test/db_h2.xml"/>-->
     <!--<import resource="db/h2mem-config.xml"/>-->

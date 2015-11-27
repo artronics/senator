@@ -1,6 +1,7 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.gsdwn.model.ControllerEntity;
+import artronics.gsdwn.controller.Controller;
+import artronics.gsdwn.model.ControllerConfig;
 import artronics.senator.repositories.ControllerRepo;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public class JpaControllerRepo implements ControllerRepo
     EntityManager em;
 
     @Override
-    public ControllerEntity create(ControllerEntity controller)
+    public ControllerConfig create(ControllerConfig controller)
     {
         em.persist(controller);
 
@@ -22,8 +23,16 @@ public class JpaControllerRepo implements ControllerRepo
     }
 
     @Override
-    public ControllerEntity find(Long id)
+    public Controller create(Controller controller)
     {
-        return em.find(ControllerEntity.class, id);
+        em.persist(controller);
+
+        return controller;
+    }
+
+    @Override
+    public ControllerConfig find(Long id)
+    {
+        return em.find(ControllerConfig.class, id);
     }
 }

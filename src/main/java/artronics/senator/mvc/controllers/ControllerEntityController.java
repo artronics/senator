@@ -1,7 +1,7 @@
 package artronics.senator.mvc.controllers;
 
-import artronics.gsdwn.model.ControllerEntity;
-import artronics.senator.services.ControllerEntityService;
+import artronics.gsdwn.model.ControllerConfig;
+import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/cnt")
 public class ControllerEntityController
 {
-    private ControllerEntityService controllerEntityService;
+    private ControllerConfigService controllerConfigService;
 
     @Autowired
     public ControllerEntityController(
-            ControllerEntityService controllerEntityService)
+            ControllerConfigService controllerConfigService)
     {
-        this.controllerEntityService = controllerEntityService;
+        this.controllerConfigService = controllerConfigService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String get()
     {
-        ControllerEntity en = new ControllerEntity();
+        ControllerConfig en = new ControllerConfig();
         en.setIp("uyi67");
-        controllerEntityService.create(en);
+        controllerConfigService.create(en);
         return "kir";
     }
 }

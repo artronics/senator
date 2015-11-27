@@ -1,6 +1,7 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.model.ControllerEntity;
+import artronics.gsdwn.controller.Controller;
+import artronics.gsdwn.model.ControllerConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,26 +22,49 @@ public class ControllerRepoTest
     @Autowired
     private ControllerRepo repo;
 
-    private ControllerEntity controller;
+    private ControllerConfig controllerConfig;
+
+    private ControllerConfig controllerConfig;
+    @Autowired
+    Controller controller;
 
     @Before
     @Transactional
     @Rollback(value = false)
     public void setUp() throws Exception
     {
-        controller = new ControllerEntity();
-        controller.setIp("878");
+        controllerConfig = new ControllerConfig();
+        controllerConfig.setIp("192.168.1.1");
 
-        repo.create(controller);
+        repo.create(controllerConfig);
     }
 
     @Test
     @Transactional
     public void it_should_create_cont()
     {
-        ControllerEntity cnt = repo.find(controller.getId());
+        ControllerConfig cnt = repo.find(controllerConfig.getId());
 
         assertNotNull(cnt);
         assertThat(cnt.getIp(), equalTo("192.168.1.1"));
+    }
+
+    @Test
+    public void it()
+    {
+        repo.create(controller);
+
+    }
+
+    @Test
+    @Transactional
+    public void it_should_create_controller_by_upcasting()
+    {
+        ControllerConfig cnt = (ControllerConfig) controller;
+        cnt.setIp("192.168.2.2");
+        repo.create(cnt);
+        ControllerConfig actCnt = repo.find(cnt.getId());
+
+        assertNotNull(actCnt);
     }
 }

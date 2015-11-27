@@ -1,9 +1,8 @@
 package artronics.senator.core;
 
 import artronics.gsdwn.controller.Controller;
-import artronics.gsdwn.model.ControllerEntity;
-import artronics.senator.repositories.PacketRepo;
-import artronics.senator.services.ControllerEntityService;
+import artronics.gsdwn.model.ControllerConfig;
+import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,16 +10,15 @@ import org.springframework.stereotype.Component;
 public class SenatorInitializer
 {
     private Controller controller;
+
     @Autowired
-    private ControllerEntityService controllerService;
-    @Autowired
-    private PacketRepo packetRepo;
+    private ControllerConfigService controllerService;
 
     public SenatorInitializer()
     {
     }
 
-    //    @Autowired
+    @Autowired
     public SenatorInitializer(Controller controller)
     {
         this.controller = controller;
@@ -28,13 +26,8 @@ public class SenatorInitializer
 
     public void init()
     {
-//        ControllerEntity controllerEntity = (ControllerEntity) controller ;
-//        controllerEntity.setIp("192.168.1.1");
-//        PacketEntity packet = new PacketEntity();
-//        packet.setDstShortAddress(767);
-//        packetRepo.create(packet);
-        ControllerEntity en = new ControllerEntity();
-        en.setIp("k87");
-        controllerService.create(en);
+        ControllerConfig controllerConfig = (ControllerConfig) controller;
+        controllerConfig.setIp("192.168.1.1");
+        controllerService.create(controllerConfig);
     }
 }
