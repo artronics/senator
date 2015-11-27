@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Repository
 public class JpaControllerRepo implements ControllerRepo
@@ -31,5 +32,15 @@ public class JpaControllerRepo implements ControllerRepo
     public ControllerConfig find(Long id)
     {
         return em.find(ControllerConfig.class, id);
+    }
+
+    @Override
+    public ControllerConfig getLatest()
+    {
+        Query query = em.createQuery(
+                "FROM artronics.gsdwn.model.ControllerConfig order by created DESC");
+        query.setMaxResults(1);
+
+        return (ControllerConfig) query.getSingleResult();
     }
 }

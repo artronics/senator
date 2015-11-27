@@ -9,4 +9,6 @@ public interface ControllerRepo
     ControllerConfig find(Long id);
 
     ControllerConfig update(ControllerConfig newConfig);
+
+    ControllerConfig getLatest();
 }

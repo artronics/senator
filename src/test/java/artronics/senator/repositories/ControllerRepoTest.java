@@ -71,5 +71,18 @@ public class ControllerRepoTest
         assertThat(controllerConfig.getIp(), equalTo("192.168.2.2"));
     }
 
+    @Test
+    @Transactional
+    public void test_getLatest() throws InterruptedException
+    {
+        repo.create(controllerConfig);
+        Thread.sleep(1000);
+        ControllerConfig cnt = new ControllerConfig();
+        cnt.setIp("192.168.2.2");
+        repo.create(cnt);
 
+        ControllerConfig actCnt = repo.getLatest();
+
+        assertThat(actCnt.getIp(), equalTo("192.168.2.2"));
+    }
 }
