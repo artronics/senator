@@ -26,7 +26,7 @@
     </logger>
 
     <logger name="org.hibernate">
-        <level value="warn"/>
+        <level value="debug"/>
     </logger>
 
     <logger name="senator">

@@ -1,5 +1,6 @@
 package artronics.senator.repositories.jpa;
 
+import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.repositories.PacketRepo;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ public class JpaPacketRepo implements PacketRepo
     @PersistenceContext
     EntityManager em;
 
+    private ControllerSession controllerSession;
 
     @Override
     public SdwnBasePacket create(SdwnBasePacket packet)
@@ -50,5 +52,10 @@ public class JpaPacketRepo implements PacketRepo
         List<SdwnBasePacket> packets = (List<SdwnBasePacket>) query.getResultList();
 
         return packets;
+    }
+
+    public void setControllerSession(ControllerSession controllerSession)
+    {
+        this.controllerSession = controllerSession;
     }
 }
