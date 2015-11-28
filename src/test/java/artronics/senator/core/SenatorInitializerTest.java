@@ -6,6 +6,7 @@ import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.Packet;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.helper.FakePacketFactory;
+import artronics.senator.repositories.ControllerSessionRepo;
 import artronics.senator.services.ControllerConfigService;
 import artronics.senator.services.PacketService;
 import org.junit.Before;
@@ -18,7 +19,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -39,6 +39,9 @@ public class SenatorInitializerTest
 
     @Autowired
     PacketService packetService;
+
+    @Autowired
+    ControllerSessionRepo sessionRepo;
 
     ControllerConfig cnf;
 
@@ -74,11 +77,36 @@ public class SenatorInitializerTest
     public void it_should_create_a_session_associated_with_controller_config()
     {
         initializer.init();
-        cnf = configService.getLatest();
+        cnf = configService.find("192.168.1.1");
 
-        Set<ControllerSession> sessions = cnf.getControllerSessions();
+        //TODO work around getControllerSessions by calling sessionRepo. find the problem
+//        List<ControllerSession> sessions = cnf.getControllerSessions();
+        List<ControllerSession> sessions = sessionRepo.findByControllerIp("192.168.1.1", 1, 10);
 
-        assertFalse(sessions.isEmpty());
+        assertThat(sessions.size(), equalTo(1));
+    }
+
+    @Test
+    @Transactional
+    public void if_there_is_already_a_controller_in_db_it_should_create_a_new_session_for_that()
+    {
+        //given there is already a cont in db
+        cnf = new ControllerConfig("192.168.2.2");
+        configService.create(cnf);
+        //and there is a session associated with that
+        ControllerSession cs = new ControllerSession();
+        cs.setDescription("for 1st");
+        cs.setControllerConfig(cnf);
+        sessionRepo.create(cs);
+
+        //when
+        initializer.init();
+        List<ControllerSession> sessions = sessionRepo.findByControllerIp("192.168.2.2", 1, 10);
+
+        //size should be 2 because for each run it should create a new session
+        assertThat(sessions.size(), equalTo(2));
+
+
     }
 
     @Test

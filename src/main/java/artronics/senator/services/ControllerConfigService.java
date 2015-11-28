@@ -6,6 +6,8 @@ public interface ControllerConfigService
 {
     ControllerConfig create(ControllerConfig controllerConfig);
 
+    ControllerConfig find(String ip);
+
     ControllerConfig updateControllerConfig(ControllerConfig controllerConfig);
 
     ControllerConfig getLatest();

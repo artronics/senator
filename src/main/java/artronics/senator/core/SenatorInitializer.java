@@ -74,21 +74,14 @@ public class SenatorInitializer
             controllerConfig = controllerService.getLatest();
 
         }catch (EntityNotFoundException e) {
-            controllerConfig = new ControllerConfig();
-            controllerConfig.setIp("192.168.1.1");
-
+            controllerConfig = new ControllerConfig("192.168.1.1");
             controllerService.create(controllerConfig);
-
-            controllerSession.setControllerConfig(controllerConfig);
-            sessionService.create(controllerSession);
-
-//            Set<ControllerSession> sessions= new HashSet<>();
-//            sessions.add(controllerSession);
-//            controllerConfig.setControllerSessions(sessions);
-
         }
 
         controller.setConfig(controllerConfig);
+
+        controllerSession.setControllerConfig(controllerConfig);
+        sessionService.create(controllerSession);
     }
 
     public void start()
