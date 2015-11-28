@@ -35,6 +35,7 @@ public class JpaControllerControllerSessionRepoTest
 
     @Test
     @Transactional
+    @Rollback(value = false)
     public void it_should_create_session(){
         controllerSessionRepo.create(controllerSession);
 
