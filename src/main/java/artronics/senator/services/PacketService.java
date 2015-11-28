@@ -1,8 +1,8 @@
 package artronics.senator.services;
 
-import artronics.gsdwn.packet.SdwnPacket;
+import artronics.gsdwn.packet.SdwnBasePacket;
 
 public interface PacketService
 {
-    SdwnPacket create(SdwnPacket packet);
+    SdwnBasePacket create(SdwnBasePacket packet);
 }

@@ -1,6 +1,6 @@
 package artronics.senator.services.impl;
 
-import artronics.gsdwn.packet.SdwnPacket;
+import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.repositories.PacketRepo;
 import artronics.senator.services.PacketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,10 @@ public class PacketServiceImpl implements PacketService
     PacketRepo packetRepo;
 
     @Override
-    public SdwnPacket create(SdwnPacket packet)
+    public SdwnBasePacket create(SdwnBasePacket packet)
     {
-        return null;
+        return packetRepo.create(packet);
     }
+
+
 }

@@ -2,9 +2,13 @@ package artronics.senator.repositories;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 
+import java.util.List;
+
 public interface PacketRepo
 {
     SdwnBasePacket create(SdwnBasePacket packet);
 
     SdwnBasePacket find(Long id);
+
+    List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
 }

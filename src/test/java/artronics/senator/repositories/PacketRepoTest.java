@@ -1,9 +1,8 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.packet.PacketFactory;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnDataPacket;
-import artronics.gsdwn.packet.SdwnPacketFactory;
+import artronics.senator.helper.FakePacketFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -27,8 +26,9 @@ public class PacketRepoTest
     @Autowired
     private PacketRepo packetRepo;
 
-    private PacketFactory packetFactory = new SdwnPacketFactory();
+//    private PacketFactory packetFactory = new SdwnPacketFactory();
 
+    private FakePacketFactory packetFactory = new FakePacketFactory();
     private SdwnBasePacket dataPck;
     private SdwnBasePacket reportPck;
     @Before
@@ -37,20 +37,7 @@ public class PacketRepoTest
     public void setUp() throws Exception
     {
         //For all packets src is 30 des is 0
-
-        //data payload is 123
-        dataPck = (SdwnBasePacket) packetFactory.create(Arrays.asList(11,
-                                                                      1,
-                                                                      0,
-                                                                      30,
-                                                                      0,
-                                                                      0,
-                                                                      0,
-                                                                      20,
-                                                                      0,
-                                                                      0,
-                                                                      123));
-
+        dataPck = (SdwnBasePacket) packetFactory.createDataPacket();
 
     }
 
@@ -70,7 +57,6 @@ public class PacketRepoTest
 
     @Test
     @Transactional
-    @Rollback(value = false)
     public void it_should_create_a_data_packet()
     {
         packetRepo.create(dataPck);
@@ -82,12 +68,42 @@ public class PacketRepoTest
 
     @Test
     @Transactional
-    public void it()
+    public void test_pagination()
     {
-//        Packet inPacket =packetFactory.create(Arrays.asList(11,1,0,0,0,30,0,20,0,0,123));
-//        dataPck = (PacketEntity)inPacket;
-//
-//        packetRepo.create(dataPck);
+        for (int i = 0; i < 2; i++) {
+            packetRepo.create((SdwnBasePacket) packetFactory.createDataPacket(30, i));
+        }
 
+        List<SdwnBasePacket> packets = packetRepo.pagination(1, 10);
+
+        assertThat(packets.size(), equalTo(2));
+    }
+
+    @Test
+    @Transactional
+    public void test_pagination_it_should_return_max_result()
+    {
+        final int MAX_R = 10;
+        for (int i = 0; i < 20; i++) {
+            packetRepo.create((SdwnBasePacket) packetFactory.createDataPacket(30, i));
+        }
+
+        List<SdwnBasePacket> packets = packetRepo.pagination(1, MAX_R);
+
+        assertThat(packets.size(), equalTo(MAX_R));
+    }
+
+    @Test
+    @Transactional
+    public void test_pagination_it_should_return_latest()
+    {
+        final int MAX_R = 10;
+        for (int i = 0; i < 50; i++) {
+            packetRepo.create((SdwnBasePacket) packetFactory.createDataPacket(30, i));
+        }
+
+        List<SdwnBasePacket> packets = packetRepo.pagination(1, MAX_R);
+
+        assertThat(packets.get(0).getDstShortAddress(), equalTo(49));
     }
 }
