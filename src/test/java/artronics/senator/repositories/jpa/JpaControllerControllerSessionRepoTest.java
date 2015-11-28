@@ -1,6 +1,8 @@
 package artronics.senator.repositories.jpa;
 
+import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
+import artronics.senator.repositories.ControllerRepo;
 import artronics.senator.repositories.ControllerSessionRepo;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,26 +24,55 @@ public class JpaControllerControllerSessionRepoTest
     @Autowired
     ControllerSessionRepo controllerSessionRepo;
 
+    @Autowired
+    ControllerRepo controllerRepo;
+
+    ControllerConfig controllerConfig = new ControllerConfig();
     ControllerSession controllerSession;
+
 
     @Before
     @Transactional
     @Rollback(false)
     public void setUp() throws Exception
     {
+        controllerConfig.setIp("192.168.1.1");
+        controllerRepo.create(controllerConfig);
+
         controllerSession = new ControllerSession();
+        controllerSession.setControllerConfig(controllerConfig);
         controllerSession.setDescription("foo");
     }
 
     @Test
     @Transactional
-    @Rollback(value = false)
     public void it_should_create_session(){
         controllerSessionRepo.create(controllerSession);
 
         ControllerSession act = controllerSessionRepo.find(controllerSession.getId());
 
         assertNotNull(act);
-        assertThat(act.getDescription(),equalTo("foo"));
+    }
+
+    @Test
+    @Transactional
+    public void it_should_create_created_timestamp()
+    {
+        controllerSessionRepo.create(controllerSession);
+
+        ControllerSession cnt = controllerSessionRepo.find(controllerSession.getId());
+
+        assertNotNull(cnt.getCreated());
+    }
+
+    @Test
+    @Transactional
+    public void test_all_fields()
+    {
+        controllerSessionRepo.create(controllerSession);
+
+        ControllerSession act = controllerSessionRepo.find(controllerSession.getId());
+
+        assertThat(act.getDescription(), equalTo("foo"));
     }
 }
