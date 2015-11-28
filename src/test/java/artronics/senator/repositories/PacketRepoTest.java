@@ -31,6 +31,7 @@ public class PacketRepoTest
     private FakePacketFactory packetFactory = new FakePacketFactory();
     private SdwnBasePacket dataPck;
     private SdwnBasePacket reportPck;
+
     @Before
     @Transactional
     @Rollback(false)
@@ -53,6 +54,9 @@ public class PacketRepoTest
 
         assertThat(actPacket.getSrcShortAddress(), equalTo(30));
         assertThat(actPacket.getDstShortAddress(), equalTo(0));
+
+        assertThat(SdwnBasePacket.getSequence(), equalTo(1L));
+        assertNotNull(actPacket.getReceivedAt());
     }
 
     @Test

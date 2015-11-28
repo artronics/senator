@@ -68,7 +68,6 @@ public class SenatorInitializerTest
     }
 
     @Test
-    @Transactional
     public void persistence_thread_should_persist_received_packets() throws InterruptedException
     {
         cntRxQueue.add(packetFactory.createReportPacket());
@@ -78,6 +77,22 @@ public class SenatorInitializerTest
         actPackets = packetService.pagination(1, 1);
 
         assertFalse(actPackets.isEmpty());
-//        assertNotNull(actPackets.get(0));
+        assertThat(actPackets.get(0).getDstShortAddress(), equalTo(0));
+        assertThat(actPackets.get(0).getSrcShortAddress(), equalTo(30));
+    }
+
+    @Test
+    public void test_persistence_for_multiple_persistence_in_queue() throws InterruptedException
+    {
+        initializer.start();
+        final int num = 30;
+        for (int i = 0; i < num; i++) {
+            cntRxQueue.add(packetFactory.createDataPacket(0, i));
+        }
+
+        Thread.sleep(100);
+        actPackets = packetService.pagination(1, 100);
+
+        assertThat(actPackets.size(), equalTo(num));
     }
 }
