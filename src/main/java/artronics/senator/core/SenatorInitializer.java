@@ -2,10 +2,12 @@ package artronics.senator.core;
 
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.Packet;
 import artronics.gsdwn.packet.PoisonPacket;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.services.ControllerConfigService;
+import artronics.senator.services.ControllerSessionService;
 import artronics.senator.services.PacketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,11 +23,22 @@ public class SenatorInitializer
     private final Controller controller;
     private final BlockingQueue<Packet> cntRxQueue;
     private ControllerConfig controllerConfig;
+
+    //At runtime we need a session. default constructor makes a default session.
+    //set your desire session and set it before calling start method.
+    private ControllerSession controllerSession = new ControllerSession();
+
     @Autowired
     private ControllerConfigService controllerService;
+
+    @Autowired
+    private ControllerSessionService sessionService;
+
     @Autowired
     private PacketService packetService;
-    private final Runnable peristence = new Runnable()
+
+
+    private final Runnable persistence = new Runnable()
     {
         @Override
         public void run()
@@ -72,7 +85,7 @@ public class SenatorInitializer
 
     public void start()
     {
-        Thread persistenceThr = new Thread(peristence, "Persist");
+        Thread persistenceThr = new Thread(persistence, "Persist");
         persistenceThr.start();
     }
 
