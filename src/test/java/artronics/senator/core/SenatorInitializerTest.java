@@ -3,8 +3,10 @@ package artronics.senator.core;
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.packet.Packet;
+import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.helper.FakePacketFactory;
 import artronics.senator.services.ControllerConfigService;
+import artronics.senator.services.PacketService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +16,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
@@ -33,10 +35,15 @@ public class SenatorInitializerTest
     @Autowired
     Controller controller;
 
+    @Autowired
+    PacketService packetService;
+
     ControllerConfig cnf;
 
     BlockingQueue<Packet> cntRxQueue;
     BlockingQueue<Packet> cntTxQueue;
+
+    List<SdwnBasePacket> actPackets;
 
     FakePacketFactory packetFactory = new FakePacketFactory();
     @Before
@@ -65,8 +72,12 @@ public class SenatorInitializerTest
     public void persistence_thread_should_persist_received_packets() throws InterruptedException
     {
         cntRxQueue.add(packetFactory.createReportPacket());
+        initializer.start();
         Thread.sleep(200);
 
+        actPackets = packetService.pagination(1, 1);
 
+        assertFalse(actPackets.isEmpty());
+//        assertNotNull(actPackets.get(0));
     }
 }
