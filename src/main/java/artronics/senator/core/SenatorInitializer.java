@@ -78,6 +78,14 @@ public class SenatorInitializer
             controllerConfig.setIp("192.168.1.1");
 
             controllerService.create(controllerConfig);
+
+            controllerSession.setControllerConfig(controllerConfig);
+            sessionService.create(controllerSession);
+
+//            Set<ControllerSession> sessions= new HashSet<>();
+//            sessions.add(controllerSession);
+//            controllerConfig.setControllerSessions(sessions);
+
         }
 
         controller.setConfig(controllerConfig);

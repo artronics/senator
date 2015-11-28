@@ -2,6 +2,7 @@ package artronics.senator.core;
 
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.Packet;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.helper.FakePacketFactory;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -65,6 +67,18 @@ public class SenatorInitializerTest
 
         assertNotNull(cnf);
         assertThat(cnf.getIp(), equalTo("192.168.1.1"));
+    }
+
+    @Test
+    @Transactional
+    public void it_should_create_a_session_associated_with_controller_config()
+    {
+        initializer.init();
+        cnf = configService.getLatest();
+
+        Set<ControllerSession> sessions = cnf.getControllerSessions();
+
+        assertFalse(sessions.isEmpty());
     }
 
     @Test
