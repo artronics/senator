@@ -24,6 +24,9 @@ public class SenatorInitializer
     private final BlockingQueue<Packet> cntRxQueue;
     private ControllerConfig controllerConfig;
 
+    private String controllerIp;
+    private Long sessionId;
+
     //At runtime we need a session. default constructor makes a default session.
     //set your desire session and set it before calling start method.
     private ControllerSession controllerSession;
@@ -49,8 +52,9 @@ public class SenatorInitializer
                     if (packet == POISON_PILL)
                         break;
 
-                    //add current session to packet
-//                    packet.setControllerSession(controllerSession);
+                    //add current session to packet and controllerIp
+                    packet.setControllerIp(controllerIp);
+                    packet.setSessionId(sessionId);
                     packetService.create(packet);
                 }
 
@@ -83,8 +87,10 @@ public class SenatorInitializer
 
         controller.setConfig(controllerConfig);
 
-//        controllerSession.setControllerConfig(controllerConfig);
         sessionService.create(controllerSession);
+
+        sessionId = controllerSession.getId();
+        controllerIp = controllerConfig.getIp();
     }
 
     public void start()

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -29,15 +32,22 @@ public class JpaControllerSessionRepo implements ControllerSessionRepo
     }
 
     @Override
-    public List<ControllerSession> findByControllerIp(String controllerIp, int pageNumber,
-                                                      int pageSize)
+    public List<ControllerSession> pagination(int pageNumber, int pageSize)
     {
-        Query q = em.createQuery(
-                "from artronics.gsdwn.model.ControllerSession c where c.controllerConfig.ip=?1");
-        q.setParameter(1, controllerIp);
-        q.setFirstResult((pageNumber - 1) * pageSize);
-        q.setMaxResults(pageSize);
+        final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        final CriteriaQuery cq = criteriaBuilder.createQuery(ControllerSession.class);
 
-        return q.getResultList();
+        final Root sessionsTbl = cq.from(ControllerSession.class);
+
+        cq.orderBy(criteriaBuilder.desc(sessionsTbl.get("created")));
+
+        Query query = em.createQuery(cq);
+
+        query.setFirstResult((pageNumber - 1) * pageSize);
+        query.setMaxResults(pageSize);
+
+        List<ControllerSession> sessions = (List<ControllerSession>) query.getResultList();
+
+        return sessions;
     }
 }
