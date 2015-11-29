@@ -49,7 +49,11 @@ public class SenatorInitializer
                     if (packet == POISON_PILL)
                         break;
 
-                    packetService.create((SdwnBasePacket) packet);
+                    //add current session to packet
+
+                    SdwnBasePacket sdwnPacket = (SdwnBasePacket) packet;
+                    sdwnPacket.setControllerSession(controllerSession);
+                    packetService.create(sdwnPacket);
                 }
 
             }catch (InterruptedException e) {

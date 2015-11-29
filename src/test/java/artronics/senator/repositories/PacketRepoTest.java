@@ -1,5 +1,6 @@
 package artronics.senator.repositories;
 
+import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnDataPacket;
@@ -31,16 +32,25 @@ public class PacketRepoTest
     @Autowired
     private ControllerSessionRepo sessionRepo;
 
+    @Autowired
+    private ControllerRepo controllerRepo;
+
+    private ControllerConfig controllerConfig = new ControllerConfig("192.168.10.1");
+    private ControllerSession controllerSession = new ControllerSession();
+
     private FakePacketFactory packetFactory = new FakePacketFactory();
     private SdwnBasePacket dataPck;
     private SdwnBasePacket reportPck;
-    private ControllerSession controllerSession = new ControllerSession();
 
     @Before
     @Transactional
     @Rollback(false)
     public void setUp() throws Exception
     {
+        //first save the controller
+        controllerRepo.create(controllerConfig);
+        // session needs a controller
+        controllerSession.setControllerConfig(controllerConfig);
         //For packets controllerSession nullable is false.
         //Here we should first create a dummy session and add it to all packets
         //which we want to persist.
