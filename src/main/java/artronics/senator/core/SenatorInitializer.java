@@ -18,7 +18,7 @@ import java.util.concurrent.BlockingQueue;
 @Component
 public class SenatorInitializer
 {
-    private final static PoisonPacket POISON_PILL = new PoisonPacket();
+    private final static SdwnBasePacket POISON_PILL = (SdwnBasePacket) new PoisonPacket();
 
     private final Controller controller;
     private final BlockingQueue<Packet> cntRxQueue;
@@ -26,7 +26,7 @@ public class SenatorInitializer
 
     //At runtime we need a session. default constructor makes a default session.
     //set your desire session and set it before calling start method.
-    private ControllerSession controllerSession = new ControllerSession();
+    private ControllerSession controllerSession;
 
     @Autowired
     private ControllerConfigService controllerService;
@@ -45,15 +45,13 @@ public class SenatorInitializer
         {
             try {
                 while (true) {
-                    Packet packet = cntRxQueue.take();
+                    final SdwnBasePacket packet = (SdwnBasePacket) cntRxQueue.take();
                     if (packet == POISON_PILL)
                         break;
 
                     //add current session to packet
-
-                    SdwnBasePacket sdwnPacket = (SdwnBasePacket) packet;
-                    sdwnPacket.setControllerSession(controllerSession);
-                    packetService.create(sdwnPacket);
+//                    packet.setControllerSession(controllerSession);
+                    packetService.create(packet);
                 }
 
             }catch (InterruptedException e) {
@@ -73,6 +71,7 @@ public class SenatorInitializer
 
     public void init()
     {
+        controllerSession = new ControllerSession();
         //get latest config. if there is no config yet create one
         try {
             controllerConfig = controllerService.getLatest();
@@ -84,7 +83,7 @@ public class SenatorInitializer
 
         controller.setConfig(controllerConfig);
 
-        controllerSession.setControllerConfig(controllerConfig);
+//        controllerSession.setControllerConfig(controllerConfig);
         sessionService.create(controllerSession);
     }
 

@@ -19,4 +19,10 @@ public class ControllerSessionServiceImpl implements ControllerSessionService
     {
         return controllerSessionRepo.create(controllerSession);
     }
+
+    @Override
+    public ControllerSession find(Long id)
+    {
+        return controllerSessionRepo.find(id);
+    }
 }

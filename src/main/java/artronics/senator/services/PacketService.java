@@ -9,4 +9,6 @@ public interface PacketService
     SdwnBasePacket create(SdwnBasePacket packet);
 
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
+
+    SdwnBasePacket find(Long id);
 }

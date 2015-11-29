@@ -74,6 +74,24 @@ public class PacketRepoTest
 
     @Test
     @Transactional
+    @Rollback(value = false)
+    public void it_should_create_packet_with_same_session()
+    {
+        packetRepo.create(dataPck);
+        SdwnBasePacket packet2 = (SdwnBasePacket) packetFactory.createDataPacket(33, 9);
+        packet2.setControllerSession(controllerSession);
+        packetRepo.create(packet2);
+
+        SdwnBasePacket actPacket = packetRepo.find(dataPck.getId());
+        SdwnBasePacket actPacket2 = packetRepo.find(packet2.getId());
+
+        assertNotNull(actPacket);
+        assertNotNull(actPacket2);
+    }
+
+
+    @Test
+    @Transactional
     public void test_all_header_fields()
     {
         packetRepo.create(dataPck);

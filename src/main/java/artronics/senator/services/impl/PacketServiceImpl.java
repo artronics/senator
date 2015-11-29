@@ -23,6 +23,12 @@ public class PacketServiceImpl implements PacketService
     }
 
     @Override
+    public SdwnBasePacket find(Long id)
+    {
+        return packetRepo.find(id);
+    }
+
+    @Override
     public List<SdwnBasePacket> pagination(int pageNumber, int pageSize)
     {
         return packetRepo.pagination(pageNumber, pageSize);
