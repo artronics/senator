@@ -36,7 +36,6 @@ public class ControllerRepoTest
 
     @Test
     @Transactional
-    @Rollback(value = false)
     public void it_should_create_cont()
     {
         repo.create(controllerConfig);
@@ -87,6 +86,7 @@ public class ControllerRepoTest
     }
 
     @Test
+    @Transactional
     public void getLatest_should_return_null_if_there_is_no_record()
     {
         ControllerConfig cnt = repo.getLatest();

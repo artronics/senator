@@ -1,9 +1,7 @@
-package artronics.senator.repositories.jpa;
+package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
-import artronics.senator.repositories.ControllerRepo;
-import artronics.senator.repositories.ControllerSessionRepo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +19,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
-public class JpaControllerControllerSessionRepoTest
+public class ControllerSessionRepoTest
 {
     @Autowired
     ControllerSessionRepo controllerSessionRepo;
