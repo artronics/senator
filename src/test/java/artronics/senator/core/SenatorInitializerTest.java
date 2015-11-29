@@ -162,7 +162,6 @@ public class SenatorInitializerTest
                     final SdwnBasePacket packet = (SdwnBasePacket) queue.take();
 //                    SdwnBasePacket packet = new SdwnBasePacket(packetFactory
 // .createRawDataPacket());
-                    packet.setControllerSession(cs);
                     packetService.create(packet);
                 }catch (InterruptedException e) {
                 }

@@ -2,7 +2,7 @@ package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerConfig;
 
-public interface ControllerRepo
+public interface ControllerConfigRepo
 {
     ControllerConfig create(ControllerConfig controller);
 

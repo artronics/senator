@@ -1,7 +1,7 @@
 package artronics.senator.services.impl;
 
 import artronics.gsdwn.model.ControllerConfig;
-import artronics.senator.repositories.ControllerRepo;
+import artronics.senator.repositories.ControllerConfigRepo;
 import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,31 +14,31 @@ import javax.persistence.EntityNotFoundException;
 public class ControllerConfigServiceImpl implements ControllerConfigService
 {
     @Autowired
-    private ControllerRepo controllerRepo;
+    private ControllerConfigRepo controllerConfigRepo;
 
 
     @Override
     public ControllerConfig create(ControllerConfig controllerConfig)
     {
-        return controllerRepo.create(controllerConfig);
+        return controllerConfigRepo.create(controllerConfig);
     }
 
     @Override
     public ControllerConfig find(String ip)
     {
-        return controllerRepo.find(ip);
+        return controllerConfigRepo.find(ip);
     }
 
     @Override
     public ControllerConfig updateControllerConfig(ControllerConfig controllerConfig)
     {
-        return controllerRepo.update(controllerConfig);
+        return controllerConfigRepo.update(controllerConfig);
     }
 
     @Override
     public ControllerConfig getLatest()
     {
-        ControllerConfig cfg = controllerRepo.getLatest();
+        ControllerConfig cfg = controllerConfigRepo.getLatest();
 
         if (cfg != null) {
             return cfg;
