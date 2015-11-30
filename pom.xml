@@ -77,6 +77,12 @@
             <version>0.19.0.RELEASE</version>
         </dependency>
 
+        <!--Consider this version instead of 2.5 if you get any error with mockMvc-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
         <!-- DB-->
         <dependency>
             <groupId>mysql</groupId>
