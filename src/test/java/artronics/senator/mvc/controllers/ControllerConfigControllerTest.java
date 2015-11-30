@@ -33,17 +33,18 @@ public class ControllerConfigControllerTest
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.standaloneSetup(configController).build();
+//        MockMvcBuilders.webAppContextSetup()
     }
 
     @Test
     public void get_controllerConfig() throws Exception
     {
-        ControllerConfig config = new ControllerConfig("192.168.3.2");
+        ControllerConfig config = new ControllerConfig("123");
         config.setDescription("foo");
 
-        when(configService.find("192.168.3.2")).thenReturn(config);
+        when(configService.find("123")).thenReturn(config);
 
-        mockMvc.perform(get("/rest/controllers/192.168.3.2"))
+        mockMvc.perform(get("/rest/controllers/123"))
 //               .andExpect(jsonPath("$.desc",is("foo")))
                .andExpect(status().isOk());
     }

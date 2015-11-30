@@ -25,7 +25,7 @@ public class ControllerConfigController
         this.controllerConfigService = controllerConfigService;
     }
 
-    @RequestMapping(value = "{controllerIp}",method = RequestMethod.GET)
+    @RequestMapping(value = "/{controllerIp}", method = RequestMethod.GET)
     public ResponseEntity<ControllerConfigRes> getController(@PathVariable String controllerIp)
     {
         ControllerConfig cnf = controllerConfigService.find(controllerIp);
