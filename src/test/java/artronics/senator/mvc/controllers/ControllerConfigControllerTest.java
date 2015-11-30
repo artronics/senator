@@ -39,7 +39,7 @@ public class ControllerConfigControllerTest
 
         when(configService.find("192.168.3.2")).thenReturn(config);
 
-        mockMvc.perform(get("rest/controller/192.168.3.2"))
+        mockMvc.perform(get("/rest/controllers/192.168.3.2"))
                .andExpect(status().isOk());
     }
 }
