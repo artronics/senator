@@ -180,11 +180,11 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Tests.java</include>
-                    </includes>
-                </configuration>
+                <!--<configuration>-->
+                <!--<includes>-->
+                <!--<include>**/*Tests.java</include>-->
+                <!--</includes>-->
+                <!--</configuration>-->
                 <version>2.18.1</version>
             </plugin>
         </plugins>

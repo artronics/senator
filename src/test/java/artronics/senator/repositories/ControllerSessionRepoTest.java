@@ -99,7 +99,7 @@ public class ControllerSessionRepoTest
         final int MAX_R = 10;
         //since sessions are sorted by created date. we should
         //create each session with given some delay.
-        createSessionsWithDelay("baz", 20, 500);
+        createSessionsWithDelay("baz", 20, 600);
 
         List<ControllerSession> sessions = controllerSessionRepo.pagination(1, MAX_R);
 
