@@ -13,13 +13,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
@@ -78,8 +78,17 @@ public class PacketRepoTest
 
         SdwnBasePacket actPacket = packetRepo.find(packet.getId());
 
+        //first lets assert packet content. hibernate return CollectionBag
+        //we have to convert it array list to compare.
+        assertEquals(
+                new ArrayList<>(actPacket.getContent()),
+                packetFactory.createRawDataPacket());
+
         assertThat(actPacket.getSrcShortAddress(), equalTo(30));
         assertThat(actPacket.getDstShortAddress(), equalTo(0));
+        assertThat(actPacket.getNetId(), equalTo(1));
+        assertThat(actPacket.getNextHop(), equalTo(0));
+        assertThat(actPacket.getTtl(), equalTo(20));
 
         assertThat(SdwnBasePacket.getSequence(), not(0L));
         assertNotNull(actPacket.getReceivedAt());
