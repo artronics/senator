@@ -14,7 +14,7 @@ public class ControllerConfigRes extends ResourceSupport
         ControllerConfig cnf = new ControllerConfig();
 
         cnf.setIp(ip);
-        cnf.setDesc(desc);
+        cnf.setDescription(desc);
 
         return cnf;
     }

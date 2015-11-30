@@ -20,7 +20,7 @@ public class ControllerConfigResAsm extends
         ControllerConfigRes res = new ControllerConfigRes();
 
         res.setIp(controllerConfig.getIp());
-        res.setDesc(controllerConfig.getDesc());
+        res.setDesc(controllerConfig.getDescription());
 
         res.add(linkTo(ControllerConfig.class).slash(controllerConfig.getIp()).withSelfRel());
 

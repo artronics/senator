@@ -14,6 +14,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@WebAppConfiguration
+//@ContextConfiguration(locations="classpath:senator-beans.xml")
 public class ControllerConfigControllerTest
 {
     @InjectMocks
@@ -36,10 +39,12 @@ public class ControllerConfigControllerTest
     public void get_controllerConfig() throws Exception
     {
         ControllerConfig config = new ControllerConfig("192.168.3.2");
+        config.setDescription("foo");
 
         when(configService.find("192.168.3.2")).thenReturn(config);
 
         mockMvc.perform(get("/rest/controllers/192.168.3.2"))
+//               .andExpect(jsonPath("$.desc",is("foo")))
                .andExpect(status().isOk());
     }
 }
