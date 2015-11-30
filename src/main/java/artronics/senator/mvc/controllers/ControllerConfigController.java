@@ -25,10 +25,10 @@ public class ControllerConfigController
         this.controllerConfigService = controllerConfigService;
     }
 
-    @RequestMapping(value = "/{controllerIp}", method = RequestMethod.GET)
-    public ResponseEntity<ControllerConfigRes> getController(@PathVariable String controllerIp)
+    @RequestMapping(value = "/{cntId}", method = RequestMethod.GET)
+    public ResponseEntity<ControllerConfigRes> getController(@PathVariable long cntId)
     {
-        ControllerConfig cnf = controllerConfigService.findByIp(controllerIp);
+        ControllerConfig cnf = controllerConfigService.find(cntId);
 
         ControllerConfigRes configRes = new ControllerConfigResAsm().toResource(cnf);
 

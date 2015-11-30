@@ -1,6 +1,7 @@
 package artronics.senator.mvc.resources.asm;
 
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.senator.mvc.controllers.ControllerConfigController;
 import artronics.senator.mvc.resources.ControllerConfigRes;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
@@ -23,7 +24,8 @@ public class ControllerConfigResAsm extends
         res.setIp(controllerConfig.getIp());
         res.setDesc(controllerConfig.getDescription());
 
-        res.add(linkTo(ControllerConfig.class).slash(controllerConfig.getIp()).withSelfRel());
+        res.add(linkTo(ControllerConfigController.class).slash(controllerConfig.getId())
+                                                        .withSelfRel());
 
         return res;
     }
