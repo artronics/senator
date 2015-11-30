@@ -1,5 +1,6 @@
 package artronics.senator.core;
 
+import artronics.chaparMini.exceptions.ChaparConnectionException;
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
@@ -141,7 +142,8 @@ public class SenatorInitializerTest
     @Test
     @Transactional
 //    @Rollback(value = false)
-    public void persistence_thread_should_persist_received_packets() throws InterruptedException
+    public void persistence_thread_should_persist_received_packets() throws InterruptedException,
+            ChaparConnectionException
     {
         initializer.init();
         initializer.start();
@@ -163,7 +165,9 @@ public class SenatorInitializerTest
     @Test
     @Transactional
     @Rollback(value = false)
-    public void test_persistence_for_multiple_persistence_in_queue() throws InterruptedException
+    public void test_persistence_for_multiple_persistence_in_queue() throws InterruptedException,
+            ChaparConnectionException
+
     {
         initializer.init();
         initializer.start();

@@ -1,5 +1,6 @@
 package artronics.senator.core;
 
+import artronics.chaparMini.exceptions.ChaparConnectionException;
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
@@ -93,8 +94,9 @@ public class SenatorInitializer
         controllerIp = controllerConfig.getIp();
     }
 
-    public void start()
+    public void start() throws ChaparConnectionException
     {
+        controller.start();
         Thread persistenceThr = new Thread(persistence, "Persist");
         persistenceThr.start();
     }
