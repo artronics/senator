@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/cnt")
-public class ControllerEntityController
+public class ControllerConfigController
 {
     private ControllerConfigService controllerConfigService;
 
     @Autowired
-    public ControllerEntityController(
+    public ControllerConfigController(
             ControllerConfigService controllerConfigService)
     {
         this.controllerConfigService = controllerConfigService;
