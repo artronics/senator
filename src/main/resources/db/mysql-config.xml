@@ -26,7 +26,7 @@
         </property>
         <property name="jpaProperties">
             <map>
-                <entry key="hibernate.hbm2ddl.auto" value="create-drop"/>
+                <!--<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>-->
                 <!--<entry key="hibernate.hbm2ddl.auto" value="update"/>-->
                 <entry key="hibernate.show_sql" value="true"/>
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
@@ -35,7 +35,6 @@
 
         <property name="packagesToScan">
             <array>
-                <value>artronics.senator.model</value>
                 <value>artronics.gsdwn.model</value>
                 <value>artronics.gsdwn.packet</value>
             </array>

@@ -1,14 +1,14 @@
 package artronics.senator.mvc.controllers;
 
-import artronics.gsdwn.model.ControllerConfig;
 import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/cnt")
+@RequestMapping("/rest/controllers")
 public class ControllerConfigController
 {
     private ControllerConfigService controllerConfigService;
@@ -20,12 +20,9 @@ public class ControllerConfigController
         this.controllerConfigService = controllerConfigService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String get()
+    @RequestMapping(value = "{controllerIp}",method = RequestMethod.GET)
+    public String getController(@PathVariable String controllerIp)
     {
-        ControllerConfig en = new ControllerConfig();
-        en.setIp("uyi67");
-        controllerConfigService.create(en);
         return "kir";
     }
 }
