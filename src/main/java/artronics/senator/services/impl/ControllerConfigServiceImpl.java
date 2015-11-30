@@ -24,9 +24,15 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     }
 
     @Override
-    public ControllerConfig find(String ip)
+    public ControllerConfig find(Long id)
     {
-        return controllerConfigRepo.find(ip);
+        return controllerConfigRepo.find(id);
+    }
+
+    @Override
+    public ControllerConfig findByIp(String ip)
+    {
+        return controllerConfigRepo.findByIp(ip);
     }
 
     @Override

@@ -27,15 +27,26 @@ public class JpaControllerConfigRepo implements ControllerConfigRepo
     }
 
     @Override
+    public ControllerConfig find(Long id)
+    {
+        return em.find(ControllerConfig.class, id);
+    }
+
+    @Override
     public ControllerConfig update(ControllerConfig newConfig)
     {
         return em.merge(newConfig);
     }
 
     @Override
-    public ControllerConfig find(String ip)
+    public ControllerConfig findByIp(String ip)
     {
-        return em.find(ControllerConfig.class, ip);
+        Query q = em.createQuery("from artronics.gsdwn.model.ControllerConfig c where c.ip=?1");
+        q.setParameter(1, ip);
+        q.setMaxResults(1);
+        ControllerConfig cnf = (ControllerConfig) q.getSingleResult();
+
+        return cnf;
     }
 
     @Override

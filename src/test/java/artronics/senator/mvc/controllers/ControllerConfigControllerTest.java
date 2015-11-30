@@ -42,7 +42,7 @@ public class ControllerConfigControllerTest
         ControllerConfig config = new ControllerConfig("123");
         config.setDescription("foo");
 
-        when(configService.find("123")).thenReturn(config);
+        when(configService.findByIp("123")).thenReturn(config);
 
         mockMvc.perform(get("/rest/controllers/123"))
 //               .andExpect(jsonPath("$.desc",is("foo")))
