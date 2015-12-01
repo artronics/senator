@@ -30,8 +30,12 @@ public class ControllerConfigController
     {
         ControllerConfig cnf = controllerConfigService.find(cntId);
 
-        ControllerConfigRes configRes = new ControllerConfigResAsm().toResource(cnf);
+        if (cnf != null) {
+            ControllerConfigRes configRes = new ControllerConfigResAsm().toResource(cnf);
 
-        return new ResponseEntity<ControllerConfigRes>(configRes, HttpStatus.OK);
+            return new ResponseEntity<ControllerConfigRes>(configRes, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<ControllerConfigRes>(HttpStatus.NOT_FOUND);
     }
 }

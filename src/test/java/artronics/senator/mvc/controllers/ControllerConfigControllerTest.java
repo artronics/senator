@@ -63,4 +63,14 @@ public class ControllerConfigControllerTest
         ;
 
     }
+
+    @Test
+    public void if_cont_doesnt_exist_return_stat_not_found() throws Exception
+    {
+        when(configService.find(1L)).thenReturn(null);
+
+        mockMvc.perform(get("/rest/controllers/1"))
+               .andExpect(status().isNotFound());
+
+    }
 }
