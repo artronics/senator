@@ -4,6 +4,7 @@ import artronics.gsdwn.model.ControllerSession;
 import artronics.senator.mvc.resources.ControllerSessionRes;
 import artronics.senator.mvc.resources.asm.ControllerSessionResAsm;
 import artronics.senator.services.ControllerSessionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ public class ControllerSessionController
 {
     private ControllerSessionService sessionService;
 
+    @Autowired
     public ControllerSessionController(
             ControllerSessionService sessionService)
     {
