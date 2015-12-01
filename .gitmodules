@@ -1,0 +1,3 @@
+[submodule "src/main/webapp/aseman"]
+	path = src/main/webapp/aseman
+	url = https://www.github.com/artronics/aseman.git
