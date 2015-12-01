@@ -1,8 +1,12 @@
 package artronics.senator.mvc.resources.asm;
 
 import artronics.gsdwn.model.ControllerSession;
+import artronics.senator.mvc.controllers.ControllerSessionController;
 import artronics.senator.mvc.resources.ControllerSessionRes;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 
 public class ControllerSessionResAsm extends
                                      ResourceAssemblerSupport<ControllerSession,
@@ -20,6 +24,9 @@ public class ControllerSessionResAsm extends
 
         res.setRid(controllerSession.getId());
         res.setDescription(controllerSession.getDescription());
+
+        res.add(linkTo(ControllerSessionController.class)
+                        .slash(controllerSession.getId()).withSelfRel());
 
         return res;
     }
