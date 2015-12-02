@@ -21,7 +21,7 @@ public class PacketListResAsm extends ResourceAssemblerSupport<PacketList, Packe
         List<PacketRes> resources = new PacketResAsm().toResources(packetList.getPackets());
 
         PacketListRes res = new PacketListRes();
-        res.setPacketResList(resources);
+        res.setPackets(resources);
 
         return res;
     }

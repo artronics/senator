@@ -9,6 +9,7 @@ public class PacketList
     private String controllerIp;
     private List<SdwnBasePacket> packets;
 
+
     public PacketList(String controllerIp,
                       List<SdwnBasePacket> packets)
     {
@@ -19,6 +20,14 @@ public class PacketList
     public PacketList(List<SdwnBasePacket> packets)
     {
         this.packets = packets;
+    }
+
+    public Long getLastPacketId()
+    {
+        if (!packets.isEmpty())
+            return packets.get(packets.size() - 1).getId();
+
+        return null;
     }
 
     public String getControllerIp()

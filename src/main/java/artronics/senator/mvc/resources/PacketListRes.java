@@ -7,16 +7,16 @@ import java.util.List;
 
 public class PacketListRes extends ResourceSupport
 {
-    List<PacketRes> packetResList = new ArrayList<>();
+    List<PacketRes> packets = new ArrayList<>();
 
-    public List<PacketRes> getPacketResList()
+    public List<PacketRes> getPackets()
     {
-        return packetResList;
+        return packets;
     }
 
-    public void setPacketResList(
-            List<PacketRes> packetResList)
+    public void setPackets(
+            List<PacketRes> packets)
     {
-        this.packetResList = packetResList;
+        this.packets = packets;
     }
 }
