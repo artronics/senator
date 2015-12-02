@@ -52,16 +52,16 @@ public class JpaPacketRepo implements PacketRepo
     }
 
     @Override
-    public List<SdwnBasePacket> getNew(Long lastPacketId, Long sessionId, String ip)
+    public List<SdwnBasePacket> getNew(Long lastPacketId, String controllerIp, Long sessionId)
     {
         Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
                                          "p.id > ?1 " +
-                                         "and p.sessionId = ?2 " +
-                                         "and p.controllerIp = ?3 " +
+                                         "and p.controllerIp = ?2 " +
+                                         "and p.sessionId = ?3 " +
                                          "order by p.id DESC");
         q.setParameter(1, lastPacketId);
-        q.setParameter(2, sessionId);
-        q.setParameter(3, ip);
+        q.setParameter(2, controllerIp);
+        q.setParameter(3, sessionId);
 
         List<SdwnBasePacket> packets = (List<SdwnBasePacket>) q.getResultList();
 

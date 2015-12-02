@@ -12,5 +12,5 @@ public interface PacketRepo
 
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
 
-    List<SdwnBasePacket> getNew(Long packetId, Long sessionId, String ip);
+    List<SdwnBasePacket> getNew(Long packetId, String ip, Long sessionId);
 }

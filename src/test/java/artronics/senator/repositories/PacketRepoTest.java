@@ -163,10 +163,9 @@ public class PacketRepoTest
     {
         //first create 10 packets
         List<SdwnBasePacket> allPackets = createDataPackets(10);
-        List<SdwnBasePacket> actPackets = packetRepo.getNew(5L, 10L, "3.3.3.3");
+        List<SdwnBasePacket> actPackets = packetRepo.getNew(5L, "3.3.3.3", 10L);
 
-        assertThat(actPackets.size(), equalTo(5));
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < actPackets.size(); i++) {
             FakePacketFactory.assertPacketEqual(allPackets.get(9 - i), actPackets.get(i));
         }
     }
@@ -177,11 +176,13 @@ public class PacketRepoTest
     {
         List<SdwnBasePacket> allPck = createDataPackets(10);
 
-        List<SdwnBasePacket> actPck = packetRepo.getNew(5L, 10L, "3.3.3.3");
+        List<SdwnBasePacket> actPck = packetRepo.getNew(5L, "3.3.3.3", 10L);
         long newestId = allPck.get(9).getId();
+        //plus one prove retrieved id starts form next(previous) id
+        long firstId = newestId - actPck.size() + 1;
 
         assertThat(actPck.get(0).getId(), equalTo(newestId));
-        assertThat(actPck.get(4).getId(), equalTo(6L));
+        assertThat(actPck.get(actPck.size() - 1).getId(), equalTo(firstId));
     }
 
     @Test
@@ -199,7 +200,7 @@ public class PacketRepoTest
         List<SdwnBasePacket> expPackets = new ArrayList<>(expPckt1);
         expPackets.addAll(expPckt2);
 
-        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L, 10L, "3.3.3.3");
+        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L, "3.3.3.3", 10L);
 
         assertThat(actPackets.size(), equalTo(7));
         for (int i = 0; i < 5; i++) {
