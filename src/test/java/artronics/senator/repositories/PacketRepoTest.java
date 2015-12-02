@@ -172,6 +172,15 @@ public class PacketRepoTest
 
     @Test
     @Transactional
+    public void getNew_should_empty_list_if_there_is_no_match()
+    {
+        List<SdwnBasePacket> packets = packetRepo.getNew(100L, "3.3.3.3", 10L);
+
+        assertThat(packets.size(), equalTo(0));
+    }
+
+    @Test
+    @Transactional
     public void getNew_should_return_FROM_specified_id_PLUS_ONE_till_last_one()
     {
         List<SdwnBasePacket> allPck = createDataPackets(10);
@@ -205,6 +214,27 @@ public class PacketRepoTest
         assertThat(actPackets.size(), equalTo(7));
         for (int i = 0; i < 5; i++) {
             FakePacketFactory.assertPacketEqual(expPackets.get(6 - i), actPackets.get(i));
+        }
+    }
+
+    @Test
+    @Transactional
+    public void test_getNew_without_ip_and_sessionId()
+    {
+        List<SdwnBasePacket> expPck1 = createDataPackets(3);
+        List<SdwnBasePacket> expPck2 = createDataPackets(2, "5.5.5.5", 3L);
+        List<SdwnBasePacket> expPck3 = createDataPackets(4, "1.1.1.1", 10L);
+        List<SdwnBasePacket> expPck4 = createDataPackets(1, "3.3.3.3", 2L);
+        List<SdwnBasePacket> expPackets = new ArrayList<>(expPck1);
+        expPackets.addAll(expPck2);
+        expPackets.addAll(expPck3);
+        expPackets.addAll(expPck4);
+
+        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L);
+
+        assertThat(actPackets.size(), equalTo(10));
+        for (int i = 0; i < 9; i++) {
+            FakePacketFactory.assertPacketEqual(expPackets.get(9 - i), actPackets.get(i));
         }
     }
 

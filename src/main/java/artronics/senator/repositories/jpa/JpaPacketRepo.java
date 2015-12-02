@@ -67,4 +67,18 @@ public class JpaPacketRepo implements PacketRepo
 
         return packets;
     }
+
+    //TODO find a way to reuse general getNew method
+    @Override
+    public List<SdwnBasePacket> getNew(Long lastPacketId)
+    {
+        Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
+                                         "p.id > ?1 " +
+                                         "order by p.id DESC");
+        q.setParameter(1, lastPacketId);
+
+        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) q.getResultList();
+
+        return packets;
+    }
 }

@@ -12,5 +12,7 @@ public interface PacketService
 
     List<SdwnBasePacket> getNew(long lastPacketId, String controllerIp, long sessionId);
 
+    List<SdwnBasePacket> getNew(long lastPacketId);
+
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
 }

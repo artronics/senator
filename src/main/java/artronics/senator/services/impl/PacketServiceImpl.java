@@ -35,6 +35,12 @@ public class PacketServiceImpl implements PacketService
     }
 
     @Override
+    public List<SdwnBasePacket> getNew(long lastPacketId)
+    {
+        return packetRepo.getNew(lastPacketId);
+    }
+
+    @Override
     public List<SdwnBasePacket> pagination(int pageNumber, int pageSize)
     {
         return packetRepo.pagination(pageNumber, pageSize);
