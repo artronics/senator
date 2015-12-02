@@ -157,13 +157,71 @@ public class PacketRepoTest
         assertThat(packets.get(0).getDstShortAddress(), equalTo(49));
     }
 
-    private void createDataPackets(int num)
+    @Test
+    @Transactional
+    public void test_getNew()
     {
+        //first create 10 packets
+        List<SdwnBasePacket> allPackets = createDataPackets(10);
+        List<SdwnBasePacket> actPackets = packetRepo.getNew(5L, 10L, "3.3.3.3");
+
+        assertThat(actPackets.size(), equalTo(5));
+        for (int i = 0; i < 5; i++) {
+            FakePacketFactory.assertPacketEqual(allPackets.get(9 - i), actPackets.get(i));
+        }
+    }
+
+    @Test
+    @Transactional
+    public void getNew_should_return_FROM_specified_id_PLUS_ONE_till_last_one()
+    {
+        List<SdwnBasePacket> allPck = createDataPackets(10);
+
+        List<SdwnBasePacket> actPck = packetRepo.getNew(5L, 10L, "3.3.3.3");
+        long newestId = allPck.get(9).getId();
+
+        assertThat(actPck.get(0).getId(), equalTo(newestId));
+        assertThat(actPck.get(4).getId(), equalTo(6L));
+    }
+
+    @Test
+    @Transactional
+    public void getNow_should_compare_ip_and_sessionId()
+    {
+        //we create exp packets among other packets with diff ip and sessionId
+        List<SdwnBasePacket> otherPck0 = createDataPackets(3, "3.3.3.3", 3L);
+        List<SdwnBasePacket> expPckt1 = createDataPackets(3);
+        List<SdwnBasePacket> otherPck1 = createDataPackets(3, "3.3.3.3", 3L);
+        List<SdwnBasePacket> otherPck2 = createDataPackets(3, "2.2.2.2", 10L);
+        List<SdwnBasePacket> otherPck3 = createDataPackets(3, "2.2.2.2", 3L);
+        List<SdwnBasePacket> expPckt2 = createDataPackets(4);
+
+        List<SdwnBasePacket> expPackets = new ArrayList<>(expPckt1);
+        expPackets.addAll(expPckt2);
+
+        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L, 10L, "3.3.3.3");
+
+        assertThat(actPackets.size(), equalTo(7));
+        for (int i = 0; i < 5; i++) {
+            FakePacketFactory.assertPacketEqual(expPackets.get(6 - i), actPackets.get(i));
+        }
+    }
+
+    private List<SdwnBasePacket> createDataPackets(int num, String ctrlIp, Long sessionId)
+    {
+        List<SdwnBasePacket> packets = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(30, i);
-            dataPacket.setControllerIp("3.3.3.3");
-            dataPacket.setSessionId(10L);
-            packetRepo.create(dataPacket);
+            dataPacket.setControllerIp(ctrlIp);
+            dataPacket.setSessionId(sessionId);
+            packets.add(packetRepo.create(dataPacket));
         }
+
+        return packets;
+    }
+
+    private List<SdwnBasePacket> createDataPackets(int num)
+    {
+        return createDataPackets(num, "3.3.3.3", 10L);
     }
 }

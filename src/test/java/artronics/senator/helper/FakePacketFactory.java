@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * It creates a fake SdwnPacket of all types The default convention for non-parameter methods is as
  * follow: src is always 30, dst is always 0, payload for data is from 0 to payload length and for
@@ -17,6 +19,13 @@ public class FakePacketFactory
     PacketFactory packetFactory = new SdwnPacketFactory();
     List<Integer> packet = new ArrayList<>();
     List<Integer> header = new ArrayList<>();
+
+    public static void assertPacketEqual(SdwnBasePacket exp, SdwnBasePacket act)
+    {
+        assertEquals(exp.getContent(), act.getContent());
+        assertEquals(exp.getControllerIp(), act.getControllerIp());
+        assertEquals(exp.getSessionId(), act.getSessionId());
+    }
 
     private List<Integer> createHeader()
     {

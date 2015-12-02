@@ -17,8 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.concurrent.BlockingQueue;
 
-import static org.junit.Assert.assertEquals;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
 public class PacketBrokerTest
@@ -57,12 +55,7 @@ public class PacketBrokerTest
 
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
-        assertPacketEqual(packet, actPacket);
+        FakePacketFactory.assertPacketEqual(packet, actPacket);
     }
 
-    private void assertPacketEqual(SdwnBasePacket exp, SdwnBasePacket act)
-    {
-        assertEquals(exp.getContent(), act.getContent());
-        assertEquals(exp.getControllerIp(), act.getControllerIp());
-    }
 }
