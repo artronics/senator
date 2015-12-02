@@ -10,9 +10,9 @@ public interface PacketService
 
     SdwnBasePacket find(Long id);
 
-    List<SdwnBasePacket> getNew(long lastPacketId, String controllerIp, long sessionId);
+    PacketList getNew(long lastPacketId, String controllerIp, long sessionId);
 
-    List<SdwnBasePacket> getNew(long lastPacketId);
+    PacketList getNew(long lastPacketId);
 
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
 }

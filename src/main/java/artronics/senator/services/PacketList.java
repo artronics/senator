@@ -16,6 +16,11 @@ public class PacketList
         this.packets = packets;
     }
 
+    public PacketList(List<SdwnBasePacket> packets)
+    {
+        this.packets = packets;
+    }
+
     public String getControllerIp()
     {
         return controllerIp;

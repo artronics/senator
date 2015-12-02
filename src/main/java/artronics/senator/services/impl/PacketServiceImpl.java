@@ -2,6 +2,7 @@ package artronics.senator.services.impl;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.repositories.PacketRepo;
+import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,13 +30,13 @@ public class PacketServiceImpl implements PacketService
     }
 
     @Override
-    public List<SdwnBasePacket> getNew(long lastPacketId, String controllerIp, long sessionId)
+    public PacketList getNew(long lastPacketId, String controllerIp, long sessionId)
     {
         return packetRepo.getNew(lastPacketId, controllerIp, sessionId);
     }
 
     @Override
-    public List<SdwnBasePacket> getNew(long lastPacketId)
+    public PacketList getNew(long lastPacketId)
     {
         return packetRepo.getNew(lastPacketId);
     }

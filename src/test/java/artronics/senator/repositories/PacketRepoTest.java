@@ -4,6 +4,7 @@ import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.gsdwn.packet.SdwnReportPacket;
 import artronics.senator.helper.FakePacketFactory;
+import artronics.senator.services.PacketList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -163,10 +164,11 @@ public class PacketRepoTest
     {
         //first create 10 packets
         List<SdwnBasePacket> allPackets = createDataPackets(10);
-        List<SdwnBasePacket> actPackets = packetRepo.getNew(5L, "3.3.3.3", 10L);
+        PacketList actPackets = packetRepo.getNew(5L, "3.3.3.3", 10L);
 
-        for (int i = 0; i < actPackets.size(); i++) {
-            FakePacketFactory.assertPacketEqual(allPackets.get(9 - i), actPackets.get(i));
+        for (int i = 0; i < actPackets.getPackets().size(); i++) {
+            FakePacketFactory.assertPacketEqual(allPackets.get(9 - i),
+                                                actPackets.getPackets().get(i));
         }
     }
 
@@ -174,9 +176,9 @@ public class PacketRepoTest
     @Transactional
     public void getNew_should_empty_list_if_there_is_no_match()
     {
-        List<SdwnBasePacket> packets = packetRepo.getNew(100L, "3.3.3.3", 10L);
+        PacketList packets = packetRepo.getNew(100L, "3.3.3.3", 10L);
 
-        assertThat(packets.size(), equalTo(0));
+        assertThat(packets.getPackets().size(), equalTo(0));
     }
 
     @Test
@@ -185,13 +187,14 @@ public class PacketRepoTest
     {
         List<SdwnBasePacket> allPck = createDataPackets(10);
 
-        List<SdwnBasePacket> actPck = packetRepo.getNew(5L, "3.3.3.3", 10L);
+        PacketList actPck = packetRepo.getNew(5L, "3.3.3.3", 10L);
         long newestId = allPck.get(9).getId();
         //plus one prove retrieved id starts form next(previous) id
-        long firstId = newestId - actPck.size() + 1;
+        long firstId = newestId - actPck.getPackets().size() + 1;
 
-        assertThat(actPck.get(0).getId(), equalTo(newestId));
-        assertThat(actPck.get(actPck.size() - 1).getId(), equalTo(firstId));
+        List<SdwnBasePacket> actPackets = actPck.getPackets();
+        assertThat(actPck.getPackets().get(0).getId(), equalTo(newestId));
+        assertThat(actPackets.get(actPackets.size() - 1).getId(), equalTo(firstId));
     }
 
     @Test
@@ -209,11 +212,12 @@ public class PacketRepoTest
         List<SdwnBasePacket> expPackets = new ArrayList<>(expPckt1);
         expPackets.addAll(expPckt2);
 
-        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L, "3.3.3.3", 10L);
+        PacketList actPackets = packetRepo.getNew(1L, "3.3.3.3", 10L);
 
-        assertThat(actPackets.size(), equalTo(7));
+        assertThat(actPackets.getPackets().size(), equalTo(7));
         for (int i = 0; i < 5; i++) {
-            FakePacketFactory.assertPacketEqual(expPackets.get(6 - i), actPackets.get(i));
+            FakePacketFactory.assertPacketEqual(expPackets.get(6 - i),
+                                                actPackets.getPackets().get(i));
         }
     }
 
@@ -230,11 +234,12 @@ public class PacketRepoTest
         expPackets.addAll(expPck3);
         expPackets.addAll(expPck4);
 
-        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L);
+        PacketList actPackets = packetRepo.getNew(1L);
 
-        assertThat(actPackets.size(), equalTo(10));
+        assertThat(actPackets.getPackets().size(), equalTo(10));
         for (int i = 0; i < 9; i++) {
-            FakePacketFactory.assertPacketEqual(expPackets.get(9 - i), actPackets.get(i));
+            FakePacketFactory.assertPacketEqual(expPackets.get(9 - i),
+                                                actPackets.getPackets().get(i));
         }
     }
 

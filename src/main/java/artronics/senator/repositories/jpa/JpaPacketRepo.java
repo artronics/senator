@@ -2,6 +2,7 @@ package artronics.senator.repositories.jpa;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.repositories.PacketRepo;
+import artronics.senator.services.PacketList;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -52,7 +53,7 @@ public class JpaPacketRepo implements PacketRepo
     }
 
     @Override
-    public List<SdwnBasePacket> getNew(Long lastPacketId, String controllerIp, Long sessionId)
+    public PacketList getNew(Long lastPacketId, String controllerIp, Long sessionId)
     {
         Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
                                          "p.id > ?1 " +
@@ -64,13 +65,14 @@ public class JpaPacketRepo implements PacketRepo
         q.setParameter(3, sessionId);
 
         List<SdwnBasePacket> packets = (List<SdwnBasePacket>) q.getResultList();
+        PacketList packetList = new PacketList(packets);
 
-        return packets;
+        return packetList;
     }
 
     //TODO find a way to reuse general getNew method
     @Override
-    public List<SdwnBasePacket> getNew(Long lastPacketId)
+    public PacketList getNew(Long lastPacketId)
     {
         Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
                                          "p.id > ?1 " +
@@ -78,7 +80,8 @@ public class JpaPacketRepo implements PacketRepo
         q.setParameter(1, lastPacketId);
 
         List<SdwnBasePacket> packets = (List<SdwnBasePacket>) q.getResultList();
+        PacketList packetList = new PacketList(packets);
 
-        return packets;
+        return packetList;
     }
 }
