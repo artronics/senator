@@ -6,38 +6,25 @@ import java.util.List;
 
 public class PacketList
 {
-    private String controllerIp;
+    private long lastPacketId;
     private List<SdwnBasePacket> packets;
 
 
-    public PacketList(String controllerIp,
+    public PacketList(long lastPacketId,
                       List<SdwnBasePacket> packets)
     {
-        this.controllerIp = controllerIp;
-        this.packets = packets;
-    }
-
-    public PacketList(List<SdwnBasePacket> packets)
-    {
+        this.lastPacketId = lastPacketId;
         this.packets = packets;
     }
 
     public Long getLastPacketId()
     {
-        if (!packets.isEmpty())
-            return packets.get(packets.size() - 1).getId();
-
-        return null;
+        return lastPacketId;
     }
 
-    public String getControllerIp()
+    public void setLastPacketId(long lastPacketId)
     {
-        return controllerIp;
-    }
-
-    public void setControllerIp(String controllerIp)
-    {
-        this.controllerIp = controllerIp;
+        this.lastPacketId = lastPacketId;
     }
 
     public List<SdwnBasePacket> getPackets()

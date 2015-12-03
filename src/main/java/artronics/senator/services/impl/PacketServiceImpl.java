@@ -32,13 +32,29 @@ public class PacketServiceImpl implements PacketService
     @Override
     public PacketList getNew(long lastPacketId, String controllerIp, long sessionId)
     {
-        return packetRepo.getNew(lastPacketId, controllerIp, sessionId);
+        List<SdwnBasePacket> packets = packetRepo.getNew(lastPacketId, controllerIp, sessionId);
+
+        return setLastPacketId(lastPacketId, packets);
     }
 
     @Override
     public PacketList getNew(long lastPacketId)
     {
-        return packetRepo.getNew(lastPacketId);
+        List<SdwnBasePacket> packets = packetRepo.getNew(lastPacketId);
+
+        return setLastPacketId(lastPacketId, packets);
+    }
+
+    private PacketList setLastPacketId(long oldPacketId, List<SdwnBasePacket> packets)
+    {
+        long newLastPacketId = oldPacketId;
+
+        if (!packets.isEmpty())
+            newLastPacketId = packets.get(0).getId();
+
+        PacketList packetList = new PacketList(newLastPacketId, packets);
+
+        return packetList;
     }
 
     @Override
