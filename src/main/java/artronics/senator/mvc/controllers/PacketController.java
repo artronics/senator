@@ -35,6 +35,12 @@ public class PacketController
         return new ResponseEntity<PacketListRes>(packetListRes, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<PacketListRes> getAllPackets()
+    {
+        return new ResponseEntity<PacketListRes>(HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<PacketRes> sendPacket()
     {

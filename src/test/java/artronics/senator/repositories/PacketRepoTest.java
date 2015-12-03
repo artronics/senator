@@ -124,6 +124,17 @@ public class PacketRepoTest
 
     @Test
     @Transactional
+    public void getAllPackets()
+    {
+        createDataPackets(20);
+
+        List<SdwnBasePacket> packets = packetRepo.getAllPackets();
+
+        assertThat(packets.size(), equalTo(20));
+    }
+
+    @Test
+    @Transactional
     public void test_pagination()
     {
         createDataPackets(2);

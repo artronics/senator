@@ -46,6 +46,19 @@ public class PacketControllerTest
     }
 
     @Test
+    public void getAllPackets() throws Exception
+    {
+        PacketList packetList = createPacketList(10);
+
+        when(packetService.getAllPackets()).thenReturn(packetList);
+
+        mockMvc.perform(get("/rest/packets/recent?lastPacketId=1"))
+
+        ;
+
+    }
+
+    @Test
     public void get_recent_added_packets() throws Exception
     {
         PacketList packetList = createPacketList(10);

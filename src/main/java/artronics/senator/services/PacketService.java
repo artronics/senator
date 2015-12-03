@@ -15,4 +15,6 @@ public interface PacketService
     PacketList getNew(long lastPacketId);
 
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
+
+    PacketList getAllPackets();
 }

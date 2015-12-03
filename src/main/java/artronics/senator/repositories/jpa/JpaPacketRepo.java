@@ -32,6 +32,15 @@ public class JpaPacketRepo implements PacketRepo
     }
 
     @Override
+    public List<SdwnBasePacket> getAllPackets()
+    {
+        Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p ");
+        List<SdwnBasePacket> packets = q.getResultList();
+
+        return packets;
+    }
+
+    @Override
     public List<SdwnBasePacket> pagination(int pageNumber, int pageSize)
     {
         final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

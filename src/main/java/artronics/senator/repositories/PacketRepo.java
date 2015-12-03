@@ -15,4 +15,6 @@ public interface PacketRepo
     List<SdwnBasePacket> getNew(Long packetId, String ip, Long sessionId);
 
     List<SdwnBasePacket> getNew(Long packetId);
+
+    List<SdwnBasePacket> getAllPackets();
 }
