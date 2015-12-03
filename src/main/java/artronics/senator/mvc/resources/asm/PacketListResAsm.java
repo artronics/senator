@@ -27,8 +27,10 @@ public class PacketListResAsm extends ResourceAssemblerSupport<PacketList, Packe
         res.setPackets(resources);
         res.setLastPacketId(packetList.getLastPacketId());
 
+//when we use RequestParam link to controller stay the same.
+        //TODO find a way so links also reflect RequestParam
         res.add(linkTo(
-                methodOn(PacketController.class).getRecentPackets(res.getLastPacketId()))
+                methodOn(PacketController.class).getAllPackets())
                         .withSelfRel());
 
         return res;

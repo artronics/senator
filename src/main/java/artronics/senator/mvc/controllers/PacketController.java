@@ -25,8 +25,8 @@ public class PacketController
         this.packetService = packetService;
     }
 
-    @RequestMapping(value = "/recent", method = RequestMethod.GET)
-    public ResponseEntity<PacketListRes> getRecentPackets(@RequestParam long lastPacketId)
+    @RequestMapping(method = RequestMethod.GET, params = {"lastPacketId"})
+    public ResponseEntity<PacketListRes> getAllPackets(@RequestParam long lastPacketId)
     {
         PacketList packetList = packetService.getNew(lastPacketId);
 
@@ -38,7 +38,11 @@ public class PacketController
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<PacketListRes> getAllPackets()
     {
-        return new ResponseEntity<PacketListRes>(HttpStatus.OK);
+        PacketList packetList = packetService.getAllPackets();
+
+        PacketListRes packetListRes = new PacketListResAsm().toResource(packetList);
+
+        return new ResponseEntity<PacketListRes>(packetListRes, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)

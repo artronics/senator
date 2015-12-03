@@ -52,8 +52,16 @@ public class PacketControllerTest
 
         when(packetService.getAllPackets()).thenReturn(packetList);
 
-        mockMvc.perform(get("/rest/packets/recent?lastPacketId=1"))
+        mockMvc.perform(get("/rest/packets"))
+               .andExpect(jsonPath("$.packets[*]", hasSize(10)))
+               .andExpect(jsonPath("$.links[*].href",
+                                   hasItems(
+                                           endsWith("/packets")
+                                   )))
 
+               .andExpect(status().isOk())
+
+               .andDo(print())
         ;
 
     }
@@ -65,11 +73,12 @@ public class PacketControllerTest
 
         when(packetService.getNew(1L)).thenReturn(packetList);
 
-        mockMvc.perform(get("/rest/packets/recent?lastPacketId=1"))
+        mockMvc.perform(get("/rest/packets?lastPacketId=1"))
                .andExpect(jsonPath("$.packets[*]", hasSize(10)))
+
                .andExpect(jsonPath("$.links[*].href",
                                    hasItems(
-                                           endsWith("/packets/recent?lastPacketId=10")
+                                           endsWith("/packets")
                                    )))
 
                .andExpect(status().isOk())
@@ -84,8 +93,10 @@ public class PacketControllerTest
 
         when(packetService.getNew(1L)).thenReturn(packetList);
 
-        mockMvc.perform(get("/rest/packets/recent?lastPacketId=1"))
+        mockMvc.perform(get("/rest/packets?lastPacketId=1"))
                .andExpect(jsonPath("$.lastPacketId", is(10)))
+
+               .andDo(print())
         ;
 
         //Now if we get an empty result list. The value of lastPacketId
@@ -94,13 +105,13 @@ public class PacketControllerTest
         //ask for recent packets
         when(packetService.getNew(10L)).thenReturn(emptyList);
 
-        mockMvc.perform(get("/rest/packets/recent?lastPacketId=10"))
+        mockMvc.perform(get("/rest/packets?lastPacketId=10"))
                .andExpect(jsonPath("$.lastPacketId", is(10)))
                .andExpect(jsonPath("$.packets[*]", hasSize(0)))
 
                .andExpect(jsonPath("$.links[*].href",
                                    hasItems(
-                                           endsWith("/packets/recent?lastPacketId=10")
+                                           endsWith("/packets")
                                    )))
 
                .andDo(print())
