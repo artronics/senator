@@ -9,6 +9,8 @@ public class PacketListRes extends ResourceSupport
 {
     List<PacketRes> packets = new ArrayList<>();
 
+    long lastPacketId;
+
     public List<PacketRes> getPackets()
     {
         return packets;
@@ -18,5 +20,15 @@ public class PacketListRes extends ResourceSupport
             List<PacketRes> packets)
     {
         this.packets = packets;
+    }
+
+    public long getLastPacketId()
+    {
+        return lastPacketId;
+    }
+
+    public void setLastPacketId(long lastPacketId)
+    {
+        this.lastPacketId = lastPacketId;
     }
 }

@@ -30,12 +30,6 @@ public class PacketController
     {
         PacketList packetList = packetService.getNew(lastPacketId);
 
-        long newLastPacketId = lastPacketId;
-
-        if (packetList.getLastPacketId() != null) {
-            newLastPacketId = packetList.getLastPacketId();
-        }
-
         PacketListRes packetListRes = new PacketListResAsm().toResource(packetList);
 
         return new ResponseEntity<PacketListRes>(packetListRes, HttpStatus.OK);

@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,10 +54,46 @@ public class PacketControllerTest
 
         mockMvc.perform(get("/rest/packets/recent?lastPacketId=1"))
                .andExpect(jsonPath("$.packets[*]", hasSize(10)))
+               .andExpect(jsonPath("$.links[*].href",
+                                   hasItems(
+                                           endsWith("/packets/recent?lastPacketId=10")
+                                   )))
 
                .andExpect(status().isOk())
                .andDo(print())
         ;
+    }
+
+    @Test
+    public void test_lastPacketId_when_calling_recentPackets() throws Exception
+    {
+        PacketList packetList = createPacketList(10);
+
+        when(packetService.getNew(1L)).thenReturn(packetList);
+
+        mockMvc.perform(get("/rest/packets/recent?lastPacketId=1"))
+               .andExpect(jsonPath("$.lastPacketId", is(10)))
+        ;
+
+        //Now if we get an empty result list. The value of lastPacketId
+        //must be what it was before
+        PacketList emptyList = new PacketList(10L, new ArrayList<SdwnBasePacket>());
+        //ask for recent packets
+        when(packetService.getNew(10L)).thenReturn(emptyList);
+
+        mockMvc.perform(get("/rest/packets/recent?lastPacketId=10"))
+               .andExpect(jsonPath("$.lastPacketId", is(10)))
+               .andExpect(jsonPath("$.packets[*]", hasSize(0)))
+
+               .andExpect(jsonPath("$.links[*].href",
+                                   hasItems(
+                                           endsWith("/packets/recent?lastPacketId=10")
+                                   )))
+
+               .andDo(print())
+        ;
+
+
     }
 
     @Test
@@ -70,12 +109,12 @@ public class PacketControllerTest
     private PacketList createPacketList(int num)
     {
         List<SdwnBasePacket> dataPck = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
+        for (int i = num; i > 0; i--) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(i, 0);
             dataPacket.setId(Integer.toUnsignedLong(i));
             dataPck.add(dataPacket);
         }
-        PacketList packetList = new PacketList(dataPck);
+        PacketList packetList = new PacketList(Integer.toUnsignedLong(num), dataPck);
 
         return packetList;
     }

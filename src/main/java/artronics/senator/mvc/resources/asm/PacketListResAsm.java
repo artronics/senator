@@ -8,6 +8,9 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 public class PacketListResAsm extends ResourceAssemblerSupport<PacketList, PacketListRes>
 {
     public PacketListResAsm()
@@ -22,6 +25,11 @@ public class PacketListResAsm extends ResourceAssemblerSupport<PacketList, Packe
 
         PacketListRes res = new PacketListRes();
         res.setPackets(resources);
+        res.setLastPacketId(packetList.getLastPacketId());
+
+        res.add(linkTo(
+                methodOn(PacketController.class).getRecentPackets(res.getLastPacketId()))
+                        .withSelfRel());
 
         return res;
     }
