@@ -1,6 +1,5 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,10 +23,7 @@ public class ControllerSessionRepoTest
     @Autowired
     ControllerSessionRepo controllerSessionRepo;
 
-    @Autowired
-    ControllerRepo controllerRepo;
 
-    ControllerConfig controllerConfig = new ControllerConfig();
     ControllerSession controllerSession;
 
 
@@ -36,17 +32,14 @@ public class ControllerSessionRepoTest
     @Rollback(false)
     public void setUp() throws Exception
     {
-        controllerConfig.setIp("192.168.1.1");
-        controllerRepo.create(controllerConfig);
-
         controllerSession = new ControllerSession();
-        controllerSession.setControllerConfig(controllerConfig);
         controllerSession.setDescription("foo");
     }
 
     @Test
     @Transactional
-    public void it_should_create_session(){
+    public void it_should_create_session()
+    {
         controllerSessionRepo.create(controllerSession);
 
         ControllerSession act = controllerSessionRepo.find(controllerSession.getId());
@@ -78,52 +71,62 @@ public class ControllerSessionRepoTest
 
     @Test
     @Transactional
-    public void test_findByControllerIp()
+    public void test_pagination()
     {
-        controllerSessionRepo.create(controllerSession);
+        createSessions("foo", 3);
 
-        List<ControllerSession> act = controllerSessionRepo.findByControllerIp(controllerConfig
-                                                                                       .getIp(),
-                                                                               1,
-                                                                               10);
+        List<ControllerSession> sessions = controllerSessionRepo.pagination(1, 10);
 
-        assertThat(act.size(), equalTo(1));
+        assertThat(sessions.size(), equalTo(3));
     }
 
     @Test
     @Transactional
-    public void make_sure_findByControllerIp_returns_all_controllers()
+    public void test_pagination_it_should_return_max_result()
     {
+        final int MAX_R = 10;
+        createSessions("bar", 20);
 
-        createSessions("192.168.1.2", "foo", 10);
-        createSessions("1.1.1.1", "bar", 4);
+        List<ControllerSession> sessions = controllerSessionRepo.pagination(1, MAX_R);
 
-        List<ControllerSession> act = controllerSessionRepo.findByControllerIp("192.168.1.2",
-                                                                               1,
-                                                                               10);
-
-        assertThat(act.size(), equalTo(10));
-        assertThat(act.get(0).getDescription(), equalTo("foo"));
+        assertThat(sessions.size(), equalTo(MAX_R));
     }
 
-    private void createSessions(String cntIp, String dsc, int num)
+    @Test
+    @Transactional
+    public void test_pagination_it_should_return_latest()
     {
-        ControllerConfig cnt = new ControllerConfig(cntIp);
-        controllerRepo.create(cnt);
+        final int MAX_R = 10;
+        //since sessions are sorted by created date. we should
+        //create each session with given some delay.
+        createSessionsWithDelay("baz", 20, 600);
 
+        List<ControllerSession> sessions = controllerSessionRepo.pagination(1, MAX_R);
+
+        assertThat(sessions.get(0).getDescription(), equalTo("baz19"));
+    }
+
+    private void createSessions(String dsc, int num)
+    {
         for (int i = 0; i < num; i++) {
             ControllerSession cs = new ControllerSession();
-            cs.setControllerConfig(cnt);
-            cs.setDescription(dsc);
+            cs.setDescription(dsc + i);
             controllerSessionRepo.create(cs);
         }
     }
 
-    private void createControllers(String ip, int num)
+    private void createSessionsWithDelay(String dsc, int num, long delay)
     {
         for (int i = 0; i < num; i++) {
-            ControllerConfig cnt = new ControllerConfig(ip);
-            controllerRepo.create(cnt);
+            ControllerSession cs = new ControllerSession();
+            cs.setDescription(dsc + i);
+            controllerSessionRepo.create(cs);
+
+            try {
+                Thread.sleep(delay);
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -11,4 +11,10 @@ public interface PacketRepo
     SdwnBasePacket find(Long id);
 
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
+
+    List<SdwnBasePacket> getNew(Long packetId, String ip, Long sessionId);
+
+    List<SdwnBasePacket> getNew(Long packetId);
+
+    List<SdwnBasePacket> getAllPackets();
 }

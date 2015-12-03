@@ -1,45 +1,80 @@
 package artronics.senator.core;
 
+import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.packet.Packet;
-import artronics.gsdwn.packet.PacketFactory;
-import artronics.gsdwn.packet.SdwnPacketFactory;
-import artronics.senator.model.SenatorPacketFactory;
-import artronics.senator.model.SenatorSdwnPacketFactory;
+import artronics.gsdwn.packet.PoisonPacket;
+import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.senator.services.PacketService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
+@Component
 public class SenatorPacketBroker implements PacketBroker
 {
-    private final static List<Integer> POISON_PILL = new ArrayList<>();
+    private final static PoisonPacket POISON_PACKET = new PoisonPacket();
+    private final PacketService packetService;
 
-    private final BlockingQueue<Packet> cntRxPackets;
-
-    private final BlockingQueue<Packet> senRxPackets;
-    private final PacketFactory packetFactory = new SdwnPacketFactory();
-    private final SenatorPacketFactory senatorPacketFactory = new SenatorSdwnPacketFactory();
-    public SenatorPacketBroker(
-            BlockingQueue<Packet> cntRxPackets,
-            BlockingQueue<Packet> senRxPackets)
+    private final Controller sdwnController;
+    private final BlockingQueue<Packet> cntTxPackets;
+    private String ip;
+    private BlockingQueue<SdwnBasePacket> receivedPackets =
+            new LinkedBlockingQueue<>();
+    private final Runnable broker = new Runnable()
     {
-        this.cntRxPackets = cntRxPackets;
-        this.senRxPackets = senRxPackets;
+        @Override
+        public void run()
+        {
+            try {
+                while (true) {
+                    SdwnBasePacket packet = receivedPackets.take();
+                    if (packet == POISON_PACKET)
+                        break;
+
+                    cntTxPackets.add(packet);
+                }
+
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    @Autowired
+    public SenatorPacketBroker(PacketService packetService,
+                               Controller sdwnController)
+    {
+        this.packetService = packetService;
+        this.sdwnController = sdwnController;
+
+        this.cntTxPackets = sdwnController.getCntTxPacketsQueue();
     }
 
     @Override
-    public void run()
+    public void start()
     {
-            while (true) {
+        Thread brokerThr = new Thread(broker, "Pck Broker");
+        brokerThr.start();
 
-            }
-
-        //TODO deal with exp and stop services
     }
 
     @Override
     public void stop()
     {
 
+    }
+
+    @Override
+    public BlockingQueue<SdwnBasePacket> getReceivedPacketsQueue()
+    {
+        return receivedPackets;
+    }
+
+    public void setIp(String ip)
+    {
+        this.ip = ip;
     }
 }

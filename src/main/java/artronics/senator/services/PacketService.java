@@ -8,7 +8,13 @@ public interface PacketService
 {
     SdwnBasePacket create(SdwnBasePacket packet);
 
+    SdwnBasePacket find(Long id);
+
+    PacketList getNew(long lastPacketId, String controllerIp, long sessionId);
+
+    PacketList getNew(long lastPacketId);
+
     List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
 
-    SdwnBasePacket find(Long id);
+    PacketList getAllPackets();
 }

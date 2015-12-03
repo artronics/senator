@@ -9,6 +9,7 @@
     <context:component-scan base-package="artronics.senator.repositories.jpa"/>
     <context:component-scan base-package="artronics.senator.services.impl"/>
     <context:component-scan base-package="artronics.senator.core"/>
+    <context:component-scan base-package="artronics.senator.core.db.seeder"/>
     <tx:annotation-driven/>
 
     <import resource="di/sdwn_controller_DI.xml"/>

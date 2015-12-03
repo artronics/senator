@@ -1,6 +1,5 @@
 package artronics.senator.repositories.jpa;
 
-import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.repositories.PacketRepo;
 import org.springframework.stereotype.Repository;
@@ -19,8 +18,6 @@ public class JpaPacketRepo implements PacketRepo
     @PersistenceContext
     EntityManager em;
 
-    private ControllerSession controllerSession;
-
     @Override
     public SdwnBasePacket create(SdwnBasePacket packet)
     {
@@ -32,6 +29,15 @@ public class JpaPacketRepo implements PacketRepo
     public SdwnBasePacket find(Long id)
     {
         return em.find(SdwnBasePacket.class, id);
+    }
+
+    @Override
+    public List<SdwnBasePacket> getAllPackets()
+    {
+        Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p ");
+        List<SdwnBasePacket> packets = q.getResultList();
+
+        return packets;
     }
 
     @Override
@@ -54,8 +60,34 @@ public class JpaPacketRepo implements PacketRepo
         return packets;
     }
 
-    public void setControllerSession(ControllerSession controllerSession)
+    @Override
+    public List<SdwnBasePacket> getNew(Long lastPacketId, String controllerIp, Long sessionId)
     {
-        this.controllerSession = controllerSession;
+        Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
+                                         "p.id > ?1 " +
+                                         "and p.controllerIp = ?2 " +
+                                         "and p.sessionId = ?3 " +
+                                         "order by p.id DESC");
+        q.setParameter(1, lastPacketId);
+        q.setParameter(2, controllerIp);
+        q.setParameter(3, sessionId);
+
+        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) q.getResultList();
+
+        return packets;
+    }
+
+    //TODO find a way to reuse general getNew method
+    @Override
+    public List<SdwnBasePacket> getNew(Long lastPacketId)
+    {
+        Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
+                                         "p.id > ?1 " +
+                                         "order by p.id DESC");
+        q.setParameter(1, lastPacketId);
+
+        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) q.getResultList();
+
+        return packets;
     }
 }

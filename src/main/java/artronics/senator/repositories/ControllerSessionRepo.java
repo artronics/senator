@@ -10,5 +10,5 @@ public interface ControllerSessionRepo
 
     ControllerSession find(Long id);
 
-    List<ControllerSession> findByControllerIp(String controllerIp, int pageNumber, int pageSize);
+    List<ControllerSession> pagination(int pageNumber, int pageSize);
 }
