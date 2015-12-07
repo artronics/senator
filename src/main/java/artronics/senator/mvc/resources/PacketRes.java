@@ -9,6 +9,11 @@ public class PacketRes extends ResourceSupport
 {
     private long rid;
 
+    //Network Level
+    private String srcIp;
+
+    private String dstIp;
+
     private int netId;
 
     private int srcShortAdd;
@@ -26,6 +31,10 @@ public class PacketRes extends ResourceSupport
         SdwnBasePacket packet = new SdwnBasePacket();
 
         packet.setId(rid);
+
+        packet.setSrcIp(srcIp);
+        packet.setDstIp(dstIp);
+
         packet.setSrcShortAddress(srcShortAdd);
         packet.setDstShortAddress(dstShortAdd);
         packet.setTtl(ttl);
@@ -43,6 +52,26 @@ public class PacketRes extends ResourceSupport
     public void setRid(long rid)
     {
         this.rid = rid;
+    }
+
+    public String getSrcIp()
+    {
+        return srcIp;
+    }
+
+    public void setSrcIp(String srcIp)
+    {
+        this.srcIp = srcIp;
+    }
+
+    public String getDstIp()
+    {
+        return dstIp;
+    }
+
+    public void setDstIp(String dstIp)
+    {
+        this.dstIp = dstIp;
     }
 
     public int getNetId()
