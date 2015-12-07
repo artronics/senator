@@ -65,7 +65,7 @@ public class JpaPacketRepo implements PacketRepo
     {
         Query q = em.createQuery("from artronics.gsdwn.packet.SdwnBasePacket p where " +
                                          "p.id > ?1 " +
-                                         "and p.controllerIp = ?2 " +
+                                         "and p.srcIp = ?2 " +
                                          "and p.sessionId = ?3 " +
                                          "order by p.id DESC");
         q.setParameter(1, lastPacketId);

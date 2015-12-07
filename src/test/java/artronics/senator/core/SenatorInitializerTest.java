@@ -124,7 +124,7 @@ public class SenatorInitializerTest
             {
                 try {
                     final SdwnBasePacket packet = (SdwnBasePacket) queue.take();
-                    packet.setControllerIp(ip);
+                    packet.setSrcIp(ip);
                     packet.setSessionId(sessionId);
                     packetService.create(packet);
                 }catch (InterruptedException e) {

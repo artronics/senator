@@ -39,7 +39,7 @@ public class PacketRepoTest
     {
         packet = (SdwnBasePacket) packetFactory.createDataPacket();
         packet.setSessionId(1L);
-        packet.setControllerIp("192.168.1.2");
+        packet.setSrcIp("192.168.1.2");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class PacketRepoTest
         packetRepo.create(packet);
         SdwnBasePacket packet2 = (SdwnBasePacket) packetFactory.createDataPacket(33, 9);
         packet2.setSessionId(1L);
-        packet2.setControllerIp("10.1.1.1");
+        packet2.setSrcIp("10.1.1.1");
         packetRepo.create(packet2);
 
         SdwnBasePacket actPacket = packetRepo.find(packet.getId());
@@ -99,7 +99,7 @@ public class PacketRepoTest
     public void it_should_create_a_data_packet()
     {
         SdwnBasePacket dataPck = (SdwnBasePacket) packetFactory.createDataPacket();
-        dataPck.setControllerIp("1.1.1.1");
+        dataPck.setSrcIp("1.1.1.1");
         dataPck.setSessionId(2L);
         packetRepo.create(dataPck);
 
@@ -113,7 +113,7 @@ public class PacketRepoTest
     public void it_should_create_a_report_Packet()
     {
         SdwnBasePacket reportPck = (SdwnBasePacket) packetFactory.createReportPacket();
-        reportPck.setControllerIp("2.2.2.2");
+        reportPck.setSrcIp("2.2.2.2");
         reportPck.setSessionId(3L);
         packetRepo.create(reportPck);
 
@@ -258,7 +258,7 @@ public class PacketRepoTest
         List<SdwnBasePacket> packets = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(30, i);
-            dataPacket.setControllerIp(ctrlIp);
+            dataPacket.setSrcIp(ctrlIp);
             dataPacket.setSessionId(sessionId);
             packets.add(packetRepo.create(dataPacket));
         }

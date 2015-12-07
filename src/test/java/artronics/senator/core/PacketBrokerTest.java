@@ -51,11 +51,10 @@ public class PacketBrokerTest
     public void it_should_send_a_packet_to_sdwnController() throws InterruptedException
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
-        packet.setControllerIp(THIS_IP);
+        packet.setSrcIp(THIS_IP);
 
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
         FakePacketFactory.assertPacketEqual(packet, actPacket);
     }
-
 }

@@ -54,7 +54,7 @@ public class SenatorInitializer
                         break;
 
                     //add current session to packet and controllerIp
-                    packet.setControllerIp(controllerIp);
+                    packet.setSrcIp(controllerIp);
                     packet.setSessionId(sessionId);
                     packetService.create(packet);
                 }
