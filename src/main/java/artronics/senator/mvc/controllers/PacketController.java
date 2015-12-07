@@ -1,18 +1,17 @@
 package artronics.senator.mvc.controllers;
 
+import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.mvc.resources.PacketListRes;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketListResAsm;
+import artronics.senator.mvc.resources.asm.PacketResAsm;
 import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(value = "/rest/packets")
@@ -24,6 +23,23 @@ public class PacketController
     public PacketController(PacketService packetService)
     {
         this.packetService = packetService;
+    }
+
+    @RequestMapping(value = "/{packetId}", method = RequestMethod.GET)
+    public ResponseEntity<PacketRes> getPacket(@PathVariable long packetId)
+    {
+        SdwnBasePacket packet = packetService.find(packetId);
+        PacketRes packetRes = new PacketResAsm().toResource(packet);
+
+        return new ResponseEntity<PacketRes>(packetRes, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<PacketRes> sendPacket(@RequestBody PacketRes sentPacket)
+    {
+
+        return new ResponseEntity<PacketRes>(HttpStatus.OK);
+
     }
 
     @CrossOrigin(origins = "http://localhost:9000")
@@ -47,12 +63,4 @@ public class PacketController
 
         return new ResponseEntity<PacketListRes>(packetListRes, HttpStatus.OK);
     }
-
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<PacketRes> sendPacket()
-    {
-
-        return new ResponseEntity<PacketRes>(HttpStatus.OK);
-    }
-
 }

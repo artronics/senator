@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,6 +46,27 @@ public class PacketControllerTest
     }
 
     @Test
+    public void getPacket() throws Exception
+    {
+        SdwnBasePacket packet = (SdwnBasePacket) packetFactory.createDataPacket();
+        packet.setId(1L);
+
+        when(packetService.find(1L)).thenReturn(packet);
+
+        mockMvc.perform(get("/rest/packets/1"))
+//               .andDo(print())
+               .andExpect(jsonPath("$.links[*].rel",
+                                   hasItems(is("self"))
+               ))
+
+               .andExpect(jsonPath("$.links[*].href",
+                                   hasItems(endsWith("/packets/1"))))
+
+               .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
     public void getAllPackets() throws Exception
     {
         PacketList packetList = createPacketList(10);
@@ -53,17 +74,25 @@ public class PacketControllerTest
         when(packetService.getAllPackets()).thenReturn(packetList);
 
         mockMvc.perform(get("/rest/packets"))
+               .andDo(print())
+
                .andExpect(jsonPath("$.packets[*]", hasSize(10)))
+
+               .andExpect(jsonPath("$.packets[*].links[*].href",
+                                   hasItems(endsWith("/packets/1"))))
+
                .andExpect(jsonPath("$.links[*].href",
                                    hasItems(
-                                           endsWith("/packets")
-                                   )))
+                                           endsWith("/packets"))
+               ))
+
+               .andExpect(jsonPath("$.links[*].rel",
+                                   hasItems(
+                                           is("self"))
+               ))
 
                .andExpect(status().isOk())
-
-               .andDo(print())
         ;
-
     }
 
     @Test
