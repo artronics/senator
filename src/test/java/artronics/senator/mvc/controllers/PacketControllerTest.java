@@ -2,7 +2,6 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.helper.FakePacketFactory;
-import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
 import org.junit.Before;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -21,10 +19,8 @@ import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,23 +96,6 @@ public class PacketControllerTest
     }
 
     @Test
-    public void send_packet() throws Exception
-    {
-        SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
-        packet.setId(1L);
-        PacketRes packetRes = new PacketRes();
-
-        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
-
-        mockMvc.perform(post("/rest/packets")
-                                .content("{\"title\":\"Generic Title\"}")
-                                .contentType(MediaType.APPLICATION_JSON))
-
-               .andDo(print())
-               .andExpect(status().isCreated());
-    }
-
-    @Test
     public void get_recent_added_packets() throws Exception
     {
         PacketList packetList = createPacketList(10);
@@ -169,7 +148,6 @@ public class PacketControllerTest
 
 
     }
-
 
     private PacketList createPacketList(int num)
     {
