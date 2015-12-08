@@ -1,4 +1,4 @@
-package artronics.senator.core.dbseeder;
+package artronics.senator.core.db;
 
 import artronics.gsdwn.packet.*;
 
