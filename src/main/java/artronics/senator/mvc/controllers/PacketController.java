@@ -50,11 +50,6 @@ public class PacketController
 
         return new ResponseEntity<PacketRes>(packetRes, headers, HttpStatus.CREATED);
     }
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<ValidationErrorListRes> err(){
-//        return new ResponseEntity<>(new ValidationErrorListRes(), HttpStatus.BAD_REQUEST);
-//
-//    }
 
     @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping(method = RequestMethod.GET, params = {"lastPacketId"})

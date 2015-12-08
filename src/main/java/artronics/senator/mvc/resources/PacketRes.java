@@ -1,6 +1,7 @@
 package artronics.senator.mvc.resources;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.gsdwn.packet.SdwnPacketType;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class PacketRes extends ResourceSupport
 {
-    private long rid;
+    private Long rid;
 
     //Network Level
     @NotNull
@@ -23,15 +24,17 @@ public class PacketRes extends ResourceSupport
     private Timestamp receivedAt;
 
     //Sdwn data
-    private int netId;
+    private Integer netId;
 
-    private int srcShortAdd;
+    private Integer srcShortAdd;
 
-    private int dstShortAdd;
+    private Integer dstShortAdd;
 
-    private int ttl;
+    private String type;
 
-    private int nextHop;
+    private Integer ttl;
+
+    private Integer nextHop;
 
     private List<Integer> content;
 
@@ -46,6 +49,7 @@ public class PacketRes extends ResourceSupport
         packet.setReceivedAt(receivedAt);
 
         packet.setNetId(netId);
+        packet.setType(SdwnPacketType.valueOf(type));
         packet.setSrcShortAddress(srcShortAdd);
         packet.setDstShortAddress(dstShortAdd);
         packet.setTtl(ttl);
@@ -55,12 +59,12 @@ public class PacketRes extends ResourceSupport
         return packet;
     }
 
-    public long getRid()
+    public Long getRid()
     {
         return rid;
     }
 
-    public void setRid(long rid)
+    public void setRid(Long rid)
     {
         this.rid = rid;
     }
@@ -95,12 +99,22 @@ public class PacketRes extends ResourceSupport
         this.sessionId = sessionId;
     }
 
-    public int getNetId()
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public Integer getNetId()
     {
         return netId;
     }
 
-    public void setNetId(int netId)
+    public void setNetId(Integer netId)
     {
         this.netId = netId;
     }
@@ -115,42 +129,42 @@ public class PacketRes extends ResourceSupport
         this.receivedAt = receivedAt;
     }
 
-    public int getSrcShortAdd()
+    public Integer getSrcShortAdd()
     {
         return srcShortAdd;
     }
 
-    public void setSrcShortAdd(int srcShortAdd)
+    public void setSrcShortAdd(Integer srcShortAdd)
     {
         this.srcShortAdd = srcShortAdd;
     }
 
-    public int getDstShortAdd()
+    public Integer getDstShortAdd()
     {
         return dstShortAdd;
     }
 
-    public void setDstShortAdd(int dstShortAdd)
+    public void setDstShortAdd(Integer dstShortAdd)
     {
         this.dstShortAdd = dstShortAdd;
     }
 
-    public int getTtl()
+    public Integer getTtl()
     {
         return ttl;
     }
 
-    public void setTtl(int ttl)
+    public void setTtl(Integer ttl)
     {
         this.ttl = ttl;
     }
 
-    public int getNextHop()
+    public Integer getNextHop()
     {
         return nextHop;
     }
 
-    public void setNextHop(int nextHop)
+    public void setNextHop(Integer nextHop)
     {
         this.nextHop = nextHop;
     }

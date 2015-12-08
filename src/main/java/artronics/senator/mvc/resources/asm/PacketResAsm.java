@@ -24,7 +24,13 @@ public class PacketResAsm extends ResourceAssemblerSupport<SdwnBasePacket, Packe
         res.setSrcIp(packet.getSrcIp());
         res.setDstIp(packet.getDstIp());
 
+        res.setReceivedAt(packet.getReceivedAt());
+
+        res.setSrcIp(packet.getSrcIp());
+        res.setDstIp(packet.getDstIp());
+
         res.setNetId(packet.getNetId());
+        res.setType(packet.getType().toString());
         res.setSrcShortAdd(packet.getSrcShortAddress());
         res.setDstShortAdd(packet.getDstShortAddress());
         res.setTtl(packet.getTtl());

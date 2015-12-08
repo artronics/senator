@@ -1,7 +1,10 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.gsdwn.packet.SdwnPacketType;
 import artronics.senator.helper.FakePacketFactory;
+import artronics.senator.mvc.resources.PacketRes;
+import artronics.senator.mvc.resources.asm.PacketResAsm;
 import artronics.senator.services.PacketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,8 +47,11 @@ public class PacketControllerPOSTTest
     PacketController packetController;
     @Mock
     PacketService packetService;
+
     MockMvc mockMvc;
+
     FakePacketFactory packetFactory = new FakePacketFactory();
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -56,9 +62,6 @@ public class PacketControllerPOSTTest
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                                  .dispatchOptions(true)
-
-//        mockMvc = MockMvcBuilders.standaloneSetup(packetController)
-//                                 .setHandlerExceptionResolvers(createExceptionResolver())
                                  .build();
     }
 
@@ -66,11 +69,6 @@ public class PacketControllerPOSTTest
     @Test
     public void send_packet() throws Exception
     {
-        SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
-//        packet.setId(1L);
-
-//        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
-
         mockMvc.perform(post("/rest/packets")
                                 .content(createJsonPacket())
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -101,21 +99,25 @@ public class PacketControllerPOSTTest
     private String createJsonPacket()
     {
         SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
-//        dataPacket.setId(1L);
         dataPacket.setSrcIp("192.168.13.12");
         dataPacket.setSessionId(10L);
+        dataPacket.setType(SdwnPacketType.DATA);
         dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));
+
 
         return createJsonPacket(dataPacket);
     }
 
     private String createJsonPacket(SdwnBasePacket packet)
     {
+        PacketRes packetRes = new PacketResAsm().toResource(packet);
+//        packetRes.setType(SdwnPacketType.DATA.toString());
+
         ObjectMapper mapper = new ObjectMapper();
         String output = null;
 
         try {
-            output = mapper.writeValueAsString(packet);
+            output = mapper.writeValueAsString(packetRes);
             System.out.println(output);
 
         }catch (JsonProcessingException e) {
