@@ -2,10 +2,9 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.helper.FakePacketFactory;
-import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.services.PacketService;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -46,8 +45,6 @@ public class PacketControllerPOSTTest
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
         packet.setId(1L);
-        packet.setSrcIp("kjk");
-        PacketRes packetRes = new PacketRes();
 
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
@@ -59,13 +56,46 @@ public class PacketControllerPOSTTest
                .andExpect(status().isCreated());
     }
 
-    private String createJsonPacket() throws JSONException
+    @Test
+    public void send_packet_validation_test_SrcIp_must_be_notNull() throws Exception
     {
-        JSONObject packet = new JSONObject();
-        packet.put("srcIp", "128.123.2.2");
+        SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
+        String jsonPacket = createJsonPacket(packet);
 
-        System.out.println(packet.toString());
-        return packet.toString();
+        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
+
+        mockMvc.perform(post("/rest/packets")
+                                .content(jsonPacket)
+                                .contentType(MediaType.APPLICATION_JSON))
+
+               .andDo(print())
+               .andExpect(status().isCreated());
+
+    }
+
+    private String createJsonPacket()
+    {
+        SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
+        dataPacket.setId(1L);
+        dataPacket.setSrcIp("192.168.13.12");
+
+        return createJsonPacket(dataPacket);
+    }
+
+    private String createJsonPacket(SdwnBasePacket packet)
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        String output = null;
+
+        try {
+            output = mapper.writeValueAsString(packet);
+            System.out.println(output);
+
+        }catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return output;
     }
 }
 
