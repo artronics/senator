@@ -1,6 +1,7 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.senator.core.PacketBroker;
 import artronics.senator.mvc.resources.PacketListRes;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketListResAsm;
@@ -23,10 +24,18 @@ public class PacketController
 {
     private PacketService packetService;
 
+    private PacketBroker packetBroker;
+
     @Autowired
     public PacketController(PacketService packetService)
     {
         this.packetService = packetService;
+    }
+
+    @Autowired
+    public void setPacketBroker(PacketBroker packetBroker)
+    {
+        this.packetBroker = packetBroker;
     }
 
     @RequestMapping(value = "/{packetId}", method = RequestMethod.GET)

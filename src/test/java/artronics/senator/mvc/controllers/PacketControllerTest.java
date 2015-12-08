@@ -1,6 +1,7 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.senator.core.PacketBroker;
 import artronics.senator.helper.FakePacketFactory;
 import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
@@ -32,6 +33,9 @@ public class PacketControllerTest
 
     @Mock
     PacketService packetService;
+
+    @Mock
+    PacketBroker packetBroker;
 
     MockMvc mockMvc;
 
