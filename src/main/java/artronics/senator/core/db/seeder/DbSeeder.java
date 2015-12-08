@@ -3,7 +3,7 @@ package artronics.senator.core.db.seeder;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.packet.SdwnBasePacket;
-import artronics.senator.core.dbseeder.FakePacketFactory;
+import artronics.senator.core.db.FakePacketFactory;
 import artronics.senator.services.ControllerConfigService;
 import artronics.senator.services.ControllerSessionService;
 import artronics.senator.services.PacketService;
