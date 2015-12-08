@@ -10,9 +10,17 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
+
+import java.lang.reflect.Method;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -28,6 +36,9 @@ public class PacketControllerPOSTTest
     @Mock
     PacketService packetService;
 
+    @Autowired
+    MessageSource messageSource;
+
     MockMvc mockMvc;
 
     FakePacketFactory packetFactory = new FakePacketFactory();
@@ -37,8 +48,11 @@ public class PacketControllerPOSTTest
     {
         MockitoAnnotations.initMocks(this);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(packetController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(packetController)
+                                 .setHandlerExceptionResolvers(createExceptionResolver())
+                                 .build();
     }
+
 
     @Test
     public void send_packet() throws Exception
@@ -52,7 +66,7 @@ public class PacketControllerPOSTTest
                                 .content(createJsonPacket())
                                 .contentType(MediaType.APPLICATION_JSON))
 
-               .andDo(print())
+//               .andDo(print())
                .andExpect(status().isCreated());
     }
 
@@ -60,6 +74,8 @@ public class PacketControllerPOSTTest
     public void send_packet_validation_test_SrcIp_must_be_notNull() throws Exception
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
+        packet.setId(1L);
+        //we don't add srcIp
         String jsonPacket = createJsonPacket(packet);
 
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
@@ -96,6 +112,26 @@ public class PacketControllerPOSTTest
         }
 
         return output;
+    }
+
+    private ExceptionHandlerExceptionResolver createExceptionResolver()
+    {
+        ExceptionHandlerExceptionResolver exceptionResolver = new
+                ExceptionHandlerExceptionResolver()
+                {
+                    protected ServletInvocableHandlerMethod getExceptionHandlerMethod(
+                            HandlerMethod handlerMethod, Exception exception)
+                    {
+                        Method method = new ExceptionHandlerMethodResolver(RestErrorHandler.class)
+                                .resolveMethod(
+                                        exception);
+                        return new ServletInvocableHandlerMethod(new RestErrorHandler
+                                                                         (messageSource),
+                                                                 method);
+                    }
+                };
+        exceptionResolver.afterPropertiesSet();
+        return exceptionResolver;
     }
 }
 
