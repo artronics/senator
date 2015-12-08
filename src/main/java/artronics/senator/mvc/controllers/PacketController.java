@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @Controller
@@ -38,7 +39,8 @@ public class PacketController
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<PacketRes> sendPacket(@RequestBody PacketRes sentPacket)
+    @ResponseBody
+    public ResponseEntity<PacketRes> sendPacket(@Valid @RequestBody PacketRes sentPacket)
     {
         SdwnBasePacket packet = packetService.create(sentPacket.toSdwnBasePacket());
         PacketRes packetRes = new PacketResAsm().toResource(packet);
@@ -48,6 +50,11 @@ public class PacketController
 
         return new ResponseEntity<PacketRes>(packetRes, headers, HttpStatus.CREATED);
     }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<ValidationErrorListRes> err(){
+//        return new ResponseEntity<>(new ValidationErrorListRes(), HttpStatus.BAD_REQUEST);
+//
+//    }
 
     @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping(method = RequestMethod.GET, params = {"lastPacketId"})

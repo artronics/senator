@@ -3,6 +3,8 @@ package artronics.senator.mvc.resources;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import org.springframework.hateoas.ResourceSupport;
 
+import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class PacketRes extends ResourceSupport
@@ -10,10 +12,17 @@ public class PacketRes extends ResourceSupport
     private long rid;
 
     //Network Level
+    @NotNull
     private String srcIp;
 
     private String dstIp;
 
+    private long sessionId;
+
+    //Controller level
+    private Timestamp receivedAt;
+
+    //Sdwn data
     private int netId;
 
     private int srcShortAdd;
@@ -30,11 +39,13 @@ public class PacketRes extends ResourceSupport
     {
         SdwnBasePacket packet = new SdwnBasePacket();
 
-        packet.setId(rid);
-
         packet.setSrcIp(srcIp);
         packet.setDstIp(dstIp);
+        packet.setSessionId(sessionId);
 
+        packet.setReceivedAt(receivedAt);
+
+        packet.setNetId(netId);
         packet.setSrcShortAddress(srcShortAdd);
         packet.setDstShortAddress(dstShortAdd);
         packet.setTtl(ttl);
@@ -74,6 +85,16 @@ public class PacketRes extends ResourceSupport
         this.dstIp = dstIp;
     }
 
+    public long getSessionId()
+    {
+        return sessionId;
+    }
+
+    public void setSessionId(long sessionId)
+    {
+        this.sessionId = sessionId;
+    }
+
     public int getNetId()
     {
         return netId;
@@ -82,6 +103,16 @@ public class PacketRes extends ResourceSupport
     public void setNetId(int netId)
     {
         this.netId = netId;
+    }
+
+    public Timestamp getReceivedAt()
+    {
+        return receivedAt;
+    }
+
+    public void setReceivedAt(Timestamp receivedAt)
+    {
+        this.receivedAt = receivedAt;
     }
 
     public int getSrcShortAdd()

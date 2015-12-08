@@ -10,9 +10,12 @@
     <context:component-scan base-package="artronics.senator.services.impl"/>
     <context:component-scan base-package="artronics.senator.core"/>
     <context:component-scan base-package="artronics.senator.core.db.seeder"/>
+    <!--<context:component-scan base-package="artronics.senator.mvc.controllers"/>-->
+
     <tx:annotation-driven/>
 
     <import resource="di/sdwn_controller_DI.xml"/>
+
 
     <import resource="db/mysql-config.xml"/>
     <!--<import resource="test/db_h2.xml"/>-->

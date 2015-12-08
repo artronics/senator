@@ -54,7 +54,7 @@ public class PacketControllerTest
         when(packetService.find(1L)).thenReturn(packet);
 
         mockMvc.perform(get("/rest/packets/1"))
-//               .andDo(print())
+               .andDo(print())
                .andExpect(jsonPath("$.links[*].rel",
                                    hasItems(is("self"))
                ))
