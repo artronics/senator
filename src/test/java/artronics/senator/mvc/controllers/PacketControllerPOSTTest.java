@@ -64,6 +64,8 @@ public class PacketControllerPOSTTest
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                                  .dispatchOptions(true)
+                                 .defaultRequest(post("/rest")
+                                                         .contentType(MediaType.APPLICATION_JSON))
                                  .build();
     }
 
@@ -72,14 +74,31 @@ public class PacketControllerPOSTTest
     public void send_packet() throws Exception
     {
         mockMvc.perform(post("/rest/packets")
-                                .content(createJsonPacket())
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .content(createJsonPacket()))
 
                .andDo(print())
                .andExpect(status().isCreated());
     }
 
-    @Test//(expected = MethodArgumentNotValidException.class)
+    @Test
+    public void if_validation_fails_response_should_containd_original_sent_data() throws Exception
+    {
+        SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
+        //Validation will fail because there there are null values(like srcIp)
+        String jsonPacket = createJsonPacket(packet);
+
+        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
+
+        mockMvc.perform(post("/rest/packets")
+                                .content(jsonPacket))
+
+               .andDo(print())
+
+               .andExpect(jsonPath("$.data.srcIp").value(IsNull.nullValue()))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void send_packet_validation_test_SrcIp_must_be_notNull() throws Exception
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
@@ -90,8 +109,7 @@ public class PacketControllerPOSTTest
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
         mockMvc.perform(post("/rest/packets")
-                                .content(jsonPacket)
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .content(jsonPacket))
 
                .andDo(print())
 
