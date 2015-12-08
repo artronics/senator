@@ -16,9 +16,9 @@ public class SenatorPacketBroker implements PacketBroker
 {
     private final static PoisonPacket POISON_PACKET = new PoisonPacket();
     private final PacketService packetService;
-
     private final Controller sdwnController;
     private final BlockingQueue<Packet> cntTxPackets;
+    private SenatorConfig config;
     private String ip;
     private BlockingQueue<SdwnBasePacket> receivedPackets =
             new LinkedBlockingQueue<>();
@@ -44,13 +44,17 @@ public class SenatorPacketBroker implements PacketBroker
     };
 
     @Autowired
-    public SenatorPacketBroker(PacketService packetService,
+    public SenatorPacketBroker(SenatorConfig config,
+                               PacketService packetService,
                                Controller sdwnController)
     {
+        this.config = config;
         this.packetService = packetService;
         this.sdwnController = sdwnController;
 
         this.cntTxPackets = sdwnController.getCntTxPacketsQueue();
+
+        this.ip = config.getControllerIp();
     }
 
     @Override
@@ -71,10 +75,5 @@ public class SenatorPacketBroker implements PacketBroker
     public BlockingQueue<SdwnBasePacket> getReceivedPacketsQueue()
     {
         return receivedPackets;
-    }
-
-    public void setIp(String ip)
-    {
-        this.ip = ip;
     }
 }

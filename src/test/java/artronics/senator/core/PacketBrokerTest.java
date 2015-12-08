@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 @ContextConfiguration("classpath:senator-beans.xml")
 public class PacketBrokerTest
 {
-    static final String THIS_IP = "192.1.1.1";
+    String THIS_IP = "192.1.1.1";
 
     @InjectMocks
     SenatorPacketBroker packetBroker;
@@ -31,6 +31,9 @@ public class PacketBrokerTest
 
     @Mock
     Controller mockSdwnController;
+
+    @Mock
+    SenatorConfig config;
 
     @Autowired
     Controller sdwnController;
@@ -56,5 +59,11 @@ public class PacketBrokerTest
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
         FakePacketFactory.assertPacketEqual(packet, actPacket);
+    }
+
+    @Test
+    public void i()
+    {
+
     }
 }
