@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PacketBrokerTest
 {
-    String thisIp = "192.168.30.1";
+    String ourIp = "192.168.30.1";
     String otherIp = "192.168.120.46";
 
     @InjectMocks
@@ -65,7 +65,7 @@ public class PacketBrokerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        thisIp = config.getControllerIp();
+        ourIp = config.getControllerIp();
 
         cntTxPackets = sdwnController.getCntTxPacketsQueue();
 
@@ -73,18 +73,20 @@ public class PacketBrokerTest
     }
 
     @Test
-    public void it_should_send_a_packet_to_sdwnController_if_srcIp_equals_thisIp() throws
+    public void it_should_send_a_packet_to_sdwnController_if_dstIp_equals_ourIp() throws
             InterruptedException
     {
-        SdwnBasePacket packet = addPacketToBroker(thisIp);
+        SdwnBasePacket packet = addPacketToBroker(ourIp);
 
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
         FakePacketFactory.assertPacketEqual(packet, actPacket);
     }
 
+    //This test should be run with fresh context load
+    //I'm not sure if result is true
     @Test
-    public void it_should_not_send_a_packet_to_sdwnController_if_srcIp_is_not_thisIp() throws
+    public void it_should_not_send_a_packet_to_sdwnController_if_dstIp_is_not_ourIp() throws
             InterruptedException
     {
         SdwnBasePacket packet = addPacketToBroker(otherIp);
@@ -95,9 +97,9 @@ public class PacketBrokerTest
     }
 
     @Test
-    public void if_srcIp_equals_this_ip_packet_should_be_persisted()
+    public void if_dstIp_equals_ourIp_packet_should_be_persisted()
     {
-        SdwnBasePacket packet = addPacketToBroker(thisIp);
+        SdwnBasePacket packet = addPacketToBroker(ourIp);
 
         List<SdwnBasePacket> persistedPackets = packetRepo.getAllPackets();
 
@@ -108,7 +110,7 @@ public class PacketBrokerTest
     }
 
     @Test
-    public void if_srcIp_is_not_thisIp_packet_should_not_be_persisted()
+    public void if_dstIp_is_not_ourIp_packet_should_not_be_persisted()
     {
         SdwnBasePacket packet = addPacketToBroker(otherIp);
 
@@ -129,8 +131,8 @@ public class PacketBrokerTest
         return packet;
     }
 
-    private SdwnBasePacket addPacketToBroker(String srcIp)
+    private SdwnBasePacket addPacketToBroker(String dstIp)
     {
-        return addPacketToBroker(srcIp, srcIp);
+        return addPacketToBroker(dstIp, dstIp);
     }
 }

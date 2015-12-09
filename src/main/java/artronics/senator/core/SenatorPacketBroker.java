@@ -59,9 +59,11 @@ public class SenatorPacketBroker implements PacketBroker
 
     private void processPacket(SdwnBasePacket packet)
     {
-        if (packet.getSrcIp().equals(ip)) {
+        if (packet.getDstIp().equals(ip)) {
             cntTxPackets.add(packet);
             packetService.create(packet);
+        }else {
+//            sendPacketTo()
         }
     }
 
