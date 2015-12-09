@@ -16,6 +16,7 @@ public class PacketRes extends ResourceSupport
     @NotNull
     private String srcIp;
 
+    @NotNull
     private String dstIp;
 
     private long sessionId;

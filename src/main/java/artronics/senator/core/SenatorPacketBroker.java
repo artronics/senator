@@ -33,7 +33,7 @@ public class SenatorPacketBroker implements PacketBroker
                     if (packet == POISON_PACKET)
                         break;
 
-                    cntTxPackets.add(packet);
+                    processPacket(packet);
                 }
 
             }catch (InterruptedException e) {
@@ -55,6 +55,11 @@ public class SenatorPacketBroker implements PacketBroker
         this.cntTxPackets = sdwnController.getCntTxPacketsQueue();
 
         this.ip = config.getControllerIp();
+    }
+
+    private void processPacket(SdwnBasePacket packet)
+    {
+        cntTxPackets.add(packet);
     }
 
     @Override

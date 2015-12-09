@@ -259,6 +259,7 @@ public class PacketRepoTest
         for (int i = 0; i < num; i++) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(30, i);
             dataPacket.setSrcIp(ctrlIp);
+            dataPacket.setDstIp(ctrlIp);
             dataPacket.setSessionId(sessionId);
             packets.add(packetRepo.create(dataPacket));
         }

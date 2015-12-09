@@ -86,7 +86,7 @@ public class PacketControllerPOSTTest
     }
 
     @Test
-    public void if_validation_fails_response_should_containd_original_sent_data() throws Exception
+    public void if_validation_fails_response_should_contained_original_sent_data() throws Exception
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
         //Validation will fail because there there are null values(like srcIp)
@@ -126,6 +126,7 @@ public class PacketControllerPOSTTest
     {
         SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
         dataPacket.setSrcIp("192.168.13.12");
+        dataPacket.setDstIp("192.168.13.12");
         dataPacket.setSessionId(10L);
         dataPacket.setType(SdwnPacketType.DATA);
         dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));
