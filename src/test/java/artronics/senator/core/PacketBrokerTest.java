@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,9 +22,11 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PacketBrokerTest
 {
     String thisIp = "192.168.30.1";
@@ -78,6 +81,17 @@ public class PacketBrokerTest
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
         FakePacketFactory.assertPacketEqual(packet, actPacket);
+    }
+
+    @Test
+    public void it_should_not_send_a_packet_to_sdwnController_if_srcIp_is_not_thisIp() throws
+            InterruptedException
+    {
+        SdwnBasePacket packet = addPacketToBroker(otherIp);
+
+        Thread.sleep(200);
+
+        assertTrue(cntTxPackets.isEmpty());
     }
 
     @Test
