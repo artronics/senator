@@ -22,7 +22,9 @@ public class FakePacketFactory
 
     public static void assertPacketEqual(SdwnBasePacket exp, SdwnBasePacket act)
     {
-        assertEquals(exp.getContent(), act.getContent());
+        List<Integer> expContent = new ArrayList<>(exp.getContent());
+        List<Integer> actContent = new ArrayList<>(exp.getContent());
+        assertEquals(expContent, actContent);
         assertEquals(exp.getSrcIp(), act.getSrcIp());
         assertEquals(exp.getDstIp(), act.getDstIp());
         assertEquals(exp.getSessionId(), act.getSessionId());
