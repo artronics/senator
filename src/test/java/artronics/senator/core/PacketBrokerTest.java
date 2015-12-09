@@ -4,6 +4,7 @@ import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.packet.Packet;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.helper.FakePacketFactory;
+import artronics.senator.repositories.PacketRepo;
 import artronics.senator.services.PacketService;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
@@ -41,6 +46,9 @@ public class PacketBrokerTest
 
     @Autowired
     PacketBroker packetBroker;
+
+    @Autowired
+    PacketRepo packetRepo;
 
     @Autowired
     SenatorConfig config;
@@ -76,15 +84,39 @@ public class PacketBrokerTest
     public void if_srcIp_equals_this_ip_packet_should_be_persisted()
     {
         SdwnBasePacket packet = addPacketToBroker(thisIp);
+
+        List<SdwnBasePacket> persistedPackets = packetRepo.getAllPackets();
+
+        assertThat(persistedPackets.size(), equalTo(1));
+
+        SdwnBasePacket persistedPacket = persistedPackets.get(0);
+        FakePacketFactory.assertPacketEqual(packet, persistedPacket);
     }
 
-    private SdwnBasePacket addPacketToBroker(String srcIp)
+    @Test
+    public void if_srcIp_is_not_thisIp_packet_should_not_be_persisted()
+    {
+        SdwnBasePacket packet = addPacketToBroker(otherIp);
+
+        List<SdwnBasePacket> persistedPackets = packetRepo.getAllPackets();
+
+        assertThat(persistedPackets.size(), equalTo(0));
+    }
+
+    private SdwnBasePacket addPacketToBroker(String srcIp, String dstIp)
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
         packet.setSrcIp(srcIp);
+        packet.setDstIp(dstIp);
+        packet.setSessionId(1L);
 
         packetBroker.addPacket(packet);
 
         return packet;
+    }
+
+    private SdwnBasePacket addPacketToBroker(String srcIp)
+    {
+        return addPacketToBroker(srcIp, srcIp);
     }
 }
