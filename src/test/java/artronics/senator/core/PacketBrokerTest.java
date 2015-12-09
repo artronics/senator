@@ -21,7 +21,8 @@ import java.util.concurrent.BlockingQueue;
 @ContextConfiguration("classpath:senator-beans.xml")
 public class PacketBrokerTest
 {
-    String THIS_IP = "192.1.1.1";
+    String thisIp = "192.168.30.1";
+    String otherIp = "192.168.120.46";
 
     @InjectMocks
     SenatorPacketBroker mockedPacketBroker;
@@ -41,6 +42,9 @@ public class PacketBrokerTest
     @Autowired
     PacketBroker packetBroker;
 
+    @Autowired
+    SenatorConfig config;
+
     FakePacketFactory packetFactory = new FakePacketFactory();
 
     BlockingQueue<Packet> cntTxPackets;
@@ -50,18 +54,18 @@ public class PacketBrokerTest
     {
         MockitoAnnotations.initMocks(this);
 
+        thisIp = config.getControllerIp();
+
         cntTxPackets = sdwnController.getCntTxPacketsQueue();
 
         packetBroker.start();
     }
 
     @Test
-    public void it_should_send_a_packet_to_sdwnController() throws InterruptedException
+    public void it_should_send_a_packet_to_sdwnController_if_srcIp_equals_thisIp() throws
+            InterruptedException
     {
-        SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
-        packet.setSrcIp(THIS_IP);
-
-        packetBroker.addPacket(packet);
+        SdwnBasePacket packet = addPacketToBroker(thisIp);
 
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
@@ -69,8 +73,18 @@ public class PacketBrokerTest
     }
 
     @Test
-    public void i()
+    public void if_srcIp_equals_this_ip_packet_should_be_persisted()
     {
+        SdwnBasePacket packet = addPacketToBroker(thisIp);
+    }
 
+    private SdwnBasePacket addPacketToBroker(String srcIp)
+    {
+        SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
+        packet.setSrcIp(srcIp);
+
+        packetBroker.addPacket(packet);
+
+        return packet;
     }
 }
