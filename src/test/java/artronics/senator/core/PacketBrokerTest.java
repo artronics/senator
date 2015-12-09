@@ -24,19 +24,22 @@ public class PacketBrokerTest
     String THIS_IP = "192.1.1.1";
 
     @InjectMocks
-    SenatorPacketBroker packetBroker;
+    SenatorPacketBroker mockedPacketBroker;
 
     @Mock
-    PacketService packetService;
+    PacketService mockPacketService;
 
     @Mock
     Controller mockSdwnController;
 
     @Mock
-    SenatorConfig config;
+    SenatorConfig mockConfig;
 
     @Autowired
     Controller sdwnController;
+
+    @Autowired
+    PacketBroker packetBroker;
 
     FakePacketFactory packetFactory = new FakePacketFactory();
 
@@ -48,6 +51,8 @@ public class PacketBrokerTest
         MockitoAnnotations.initMocks(this);
 
         cntTxPackets = sdwnController.getCntTxPacketsQueue();
+
+        packetBroker.start();
     }
 
     @Test
@@ -55,6 +60,8 @@ public class PacketBrokerTest
     {
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
         packet.setSrcIp(THIS_IP);
+
+        packetBroker.addPacket(packet);
 
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 

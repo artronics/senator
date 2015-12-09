@@ -24,6 +24,7 @@ public class FakePacketFactory
     {
         assertEquals(exp.getContent(), act.getContent());
         assertEquals(exp.getSrcIp(), act.getSrcIp());
+        assertEquals(exp.getDstIp(), act.getDstIp());
         assertEquals(exp.getSessionId(), act.getSessionId());
     }
 

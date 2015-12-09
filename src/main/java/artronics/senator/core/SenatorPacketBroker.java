@@ -58,6 +58,12 @@ public class SenatorPacketBroker implements PacketBroker
     }
 
     @Override
+    public void addPacket(SdwnBasePacket packet)
+    {
+        receivedPackets.add(packet);
+    }
+
+    @Override
     public void start()
     {
         Thread brokerThr = new Thread(broker, "Pck Broker");
@@ -68,7 +74,7 @@ public class SenatorPacketBroker implements PacketBroker
     @Override
     public void stop()
     {
-
+        receivedPackets.add(POISON_PACKET);
     }
 
     @Override

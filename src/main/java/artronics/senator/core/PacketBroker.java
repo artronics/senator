@@ -9,5 +9,7 @@ public interface PacketBroker
     void start();
     void stop();
 
+    void addPacket(SdwnBasePacket packet);
+
     BlockingQueue<SdwnBasePacket> getReceivedPacketsQueue();
 }
