@@ -1,27 +1,29 @@
 package artronics.senator.repositories;
 
-import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.senator.config.TestRepositoryConfig;
+import artronics.senator.core.config.RepositoryConfig;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:senator-beans.xml")
+@SpringApplicationConfiguration(classes = {TestRepositoryConfig.class})
 public class ControllerConfigRepoTest
 {
     @Autowired
-    Controller controller;
-    @Autowired
     private ControllerConfigRepo repo;
+
     private ControllerConfig controllerConfig;
 
     @Before
@@ -32,67 +34,53 @@ public class ControllerConfigRepoTest
     }
 
     @Test
-    @Transactional
     public void it_should_create_cont()
     {
-        repo.create(controllerConfig);
+        assertNull(controllerConfig.getId());
+        repo.save(controllerConfig);
 
-        ControllerConfig cnt = repo.findByIp(controllerConfig.getIp());
-
-        assertNotNull(cnt);
-        assertThat(cnt.getIp(), equalTo("192.168.10.11"));
+        assertNotNull(controllerConfig.getId());
     }
 
     @Test
-    @Transactional
     public void it_should_create_created_timestamp()
     {
-        repo.create(controllerConfig);
+        controllerConfig.setIp("10.10.11.12");
+        ControllerConfig config = repo.save(controllerConfig);
 
-        ControllerConfig cnt = repo.findByIp(controllerConfig.getIp());
-
-        assertNotNull(cnt.getCreated());
-    }
-
-
-    // TODO detach entity to test update properly
-    //http://stackoverflow.com/questions/19160398/how-can-i-reliably-unit-test-updates-of-a-jpa
-    // -entity-in-a-unit-test
-    @Ignore
-    @Test
-    @Transactional
-    public void it_should_update_entity()
-    {
-        repo.create(controllerConfig);
-
-        ControllerConfig cnt = repo.findByIp(controllerConfig.getIp());
-
-        repo.update(cnt);
-
-        assertThat(controllerConfig.getIp(), equalTo("192.168.2.2"));
+        assertNotNull(config.getCreated());
     }
 
     @Test
-    @Transactional
     public void test_getLatest() throws InterruptedException
     {
-        repo.create(controllerConfig);
-        Thread.sleep(1000);
-        ControllerConfig cnt = new ControllerConfig();
-        cnt.setIp("192.168.2.2");
-        repo.create(cnt);
+        int num =2;
+        List<ControllerConfig>configs= createConfigs(num);
 
-        ControllerConfig actCnt = repo.getLatest();
+        ControllerConfig actCnf = repo.getLatest();
 
-        assertThat(actCnt.getIp(), equalTo("192.168.2.2"));
+        assertThat(actCnf.getIp(),equalTo("192.200.0."+(num-1)));
+        assertThat(actCnf.getDescription(),equalTo("num: "+(num-1)));
+    }
+
+    private List<ControllerConfig> createConfigs(int num) throws InterruptedException
+    {
+        List<ControllerConfig> configs = new ArrayList<>();
+        String baseIp = "192.200.0.";
+        for (int i = 0; i < num; i++) {
+            ControllerConfig config = new ControllerConfig(baseIp+i);
+            config.setDescription("num: "+i);
+            configs.add(repo.save(config));
+            Thread.sleep(1000);
+        }
+
+        return configs;
     }
 
     @Test
-    @Transactional
     public void getLatest_should_return_null_if_there_is_no_record()
     {
-        ControllerConfig cnt = repo.getLatest();
-
-        assertNull(cnt);
+        repo.deleteAll();
+        assertNull(repo.getLatest());
     }
 }

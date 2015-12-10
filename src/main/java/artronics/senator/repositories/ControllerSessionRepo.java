@@ -1,14 +1,10 @@
 package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerSession;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface ControllerSessionRepo
+public interface ControllerSessionRepo extends PagingAndSortingRepository<ControllerSession,Long>
 {
-    ControllerSession create(ControllerSession controllerSession);
-
-    ControllerSession find(Long id);
-
-    List<ControllerSession> pagination(int pageNumber, int pageSize);
 }

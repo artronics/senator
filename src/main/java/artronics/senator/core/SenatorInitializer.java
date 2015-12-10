@@ -83,7 +83,7 @@ public class SenatorInitializer
 
         }catch (EntityNotFoundException e) {
             controllerConfig = new ControllerConfig("192.168.1.1");
-            controllerService.create(controllerConfig);
+            controllerService.save(controllerConfig);
         }
 
         controller.setConfig(controllerConfig);

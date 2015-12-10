@@ -1,16 +1,10 @@
 package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerConfig;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ControllerConfigRepo
+public interface ControllerConfigRepo extends
+                                      CrudRepository<ControllerConfig,Long>,
+                                      ControllerConfigCustomRepo
 {
-    ControllerConfig create(ControllerConfig controller);
-
-    ControllerConfig find(Long id);
-
-    ControllerConfig findByIp(String ip);
-
-    ControllerConfig update(ControllerConfig newConfig);
-
-    ControllerConfig getLatest();
 }

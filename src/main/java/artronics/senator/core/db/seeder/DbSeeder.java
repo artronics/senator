@@ -32,7 +32,7 @@ public class DbSeeder
         this.packetService = packetService;
 
         ControllerConfig cf = new ControllerConfig(controllerIp);
-        configService.create(cf);
+        configService.save(cf);
 
         ControllerSession cs = new ControllerSession();
         sessionService.create(cs);

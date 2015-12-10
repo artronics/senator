@@ -3,11 +3,13 @@ package artronics.senator.repositories;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.gsdwn.packet.SdwnReportPacket;
+import artronics.senator.config.TestRepositoryConfig;
 import artronics.senator.helper.FakePacketFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,7 +24,7 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:senator-beans.xml")
+@SpringApplicationConfiguration(classes = {TestRepositoryConfig.class})
 public class PacketRepoTest
 {
     @Autowired
@@ -33,50 +35,47 @@ public class PacketRepoTest
     private SdwnBasePacket packet;
 
     @Before
-    @Transactional
-    @Rollback(false)
     public void setUp() throws Exception
     {
         packet = (SdwnBasePacket) packetFactory.createDataPacket();
         packet.setSessionId(1L);
         packet.setSrcIp("192.168.1.2");
+        packet.setDstIp("192.20.14.2");
     }
 
     @Test
-    @Transactional
     public void it_should_create_packet()
     {
-        packetRepo.create(packet);
+        packetRepo.save(packet);
 
-        SdwnBasePacket actPacket = packetRepo.find(packet.getId());
+        SdwnBasePacket actPacket = packetRepo.findOne(packet.getId());
 
         assertNotNull(actPacket);
     }
 
     @Test
-    @Transactional
-    public void it_should_create_packet_with_same_session_and_diff_controllerIp()
+    public void it_should_create_packet_with_same_session_and_diff_IPs()
     {
-        packetRepo.create(packet);
+        packetRepo.save(packet);
         SdwnBasePacket packet2 = (SdwnBasePacket) packetFactory.createDataPacket(33, 9);
         packet2.setSessionId(1L);
         packet2.setSrcIp("10.1.1.1");
-        packetRepo.create(packet2);
+        packet2.setDstIp("12.222.12.22");
+        packetRepo.save(packet2);
 
-        SdwnBasePacket actPacket = packetRepo.find(packet.getId());
-        SdwnBasePacket actPacket2 = packetRepo.find(packet2.getId());
+        SdwnBasePacket actPacket = packetRepo.findOne(packet.getId());
+        SdwnBasePacket actPacket2 = packetRepo.findOne(packet2.getId());
 
         assertNotNull(actPacket);
         assertNotNull(actPacket2);
     }
 
     @Test
-    @Transactional
     public void test_all_header_fields()
     {
-        packetRepo.create(packet);
+        packetRepo.save(packet);
 
-        SdwnBasePacket actPacket = packetRepo.find(packet.getId());
+        SdwnBasePacket actPacket = packetRepo.findOne(packet.getId());
 
         //first lets assert packet content. hibernate return CollectionBag
         //we have to convert it array list to compare.
@@ -95,83 +94,37 @@ public class PacketRepoTest
     }
 
     @Test
-    @Transactional
     public void it_should_create_a_data_packet()
     {
         SdwnBasePacket dataPck = (SdwnBasePacket) packetFactory.createDataPacket();
         dataPck.setSrcIp("1.1.1.1");
+        dataPck.setDstIp("1.1.1.1");
         dataPck.setSessionId(2L);
-        packetRepo.create(dataPck);
+        packetRepo.save(dataPck);
 
-        SdwnBasePacket actPacket = packetRepo.find(dataPck.getId());
+        SdwnBasePacket actPacket = packetRepo.findOne(dataPck.getId());
 
         assertThat(actPacket, instanceOf(SdwnDataPacket.class));
     }
 
     @Test
-    @Transactional
     public void it_should_create_a_report_Packet()
     {
         SdwnBasePacket reportPck = (SdwnBasePacket) packetFactory.createReportPacket();
         reportPck.setSrcIp("2.2.2.2");
+        reportPck.setDstIp("2.2.2.2");
         reportPck.setSessionId(3L);
-        packetRepo.create(reportPck);
+        packetRepo.save(reportPck);
 
-        SdwnBasePacket actPacket = packetRepo.find(reportPck.getId());
+        SdwnBasePacket actPacket = packetRepo.findOne(reportPck.getId());
 
         assertThat(actPacket, instanceOf(SdwnReportPacket.class));
     }
 
     @Test
-    @Transactional
-    public void getAllPackets()
-    {
-        createDataPackets(20);
-
-        List<SdwnBasePacket> packets = packetRepo.getAllPackets();
-
-        assertThat(packets.size(), equalTo(20));
-    }
-
-    @Test
-    @Transactional
-    public void test_pagination()
-    {
-        createDataPackets(2);
-
-        List<SdwnBasePacket> packets = packetRepo.pagination(1, 10);
-
-        assertThat(packets.size(), equalTo(2));
-    }
-
-    @Test
-    @Transactional
-    public void test_pagination_it_should_return_max_result()
-    {
-        final int MAX_R = 10;
-        createDataPackets(20);
-
-        List<SdwnBasePacket> packets = packetRepo.pagination(1, MAX_R);
-
-        assertThat(packets.size(), equalTo(MAX_R));
-    }
-
-    @Test
-    @Transactional
-    public void test_pagination_it_should_return_latest()
-    {
-        final int MAX_R = 10;
-        createDataPackets(50);
-
-        List<SdwnBasePacket> packets = packetRepo.pagination(1, MAX_R);
-
-        assertThat(packets.get(0).getDstShortAddress(), equalTo(49));
-    }
-
-    @Test
-    @Transactional
     public void test_getNew()
     {
+        packetRepo.deleteAll();
         //first create 10 packets
         List<SdwnBasePacket> allPackets = createDataPackets(10);
         List<SdwnBasePacket> actPackets = packetRepo.getNew(5L, "3.3.3.3", 10L);
@@ -183,7 +136,6 @@ public class PacketRepoTest
     }
 
     @Test
-    @Transactional
     public void getNew_should_empty_list_if_there_is_no_match()
     {
         List<SdwnBasePacket> packets = packetRepo.getNew(100L, "3.3.3.3", 10L);
@@ -192,9 +144,9 @@ public class PacketRepoTest
     }
 
     @Test
-    @Transactional
     public void getNew_should_return_FROM_specified_id_PLUS_ONE_till_last_one()
     {
+        packetRepo.deleteAll();
         List<SdwnBasePacket> allPck = createDataPackets(10);
 
         List<SdwnBasePacket> actPck = packetRepo.getNew(5L, "3.3.3.3", 10L);
@@ -208,7 +160,6 @@ public class PacketRepoTest
     }
 
     @Test
-    @Transactional
     public void getNow_should_compare_ip_and_sessionId()
     {
         //we create exp packets among other packets with diff ip and sessionId
@@ -232,9 +183,9 @@ public class PacketRepoTest
     }
 
     @Test
-    @Transactional
     public void test_getNew_without_ip_and_sessionId()
     {
+        packetRepo.deleteAll();
         List<SdwnBasePacket> expPck1 = createDataPackets(3);
         List<SdwnBasePacket> expPck2 = createDataPackets(2, "5.5.5.5", 3L);
         List<SdwnBasePacket> expPck3 = createDataPackets(4, "1.1.1.1", 10L);
@@ -244,7 +195,7 @@ public class PacketRepoTest
         expPackets.addAll(expPck3);
         expPackets.addAll(expPck4);
 
-        List<SdwnBasePacket> actPackets = packetRepo.getNew(1L);
+        List<SdwnBasePacket> actPackets = packetRepo.getNew(0L);
 
         assertThat(actPackets.size(), equalTo(10));
         for (int i = 0; i < 9; i++) {
@@ -261,7 +212,7 @@ public class PacketRepoTest
             dataPacket.setSrcIp(ctrlIp);
             dataPacket.setDstIp(ctrlIp);
             dataPacket.setSessionId(sessionId);
-            packets.add(packetRepo.create(dataPacket));
+            packets.add(packetRepo.save(dataPacket));
         }
 
         return packets;

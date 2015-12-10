@@ -109,7 +109,7 @@ public class SenatorInitializerTest
     {
         ControllerConfig cnf = new ControllerConfig("10.11.12.13");
         ControllerSession cs = new ControllerSession();
-        configService.create(cnf);
+        configService.save(cnf);
         sessionService.create(cs);
         String ip = cnf.getIp();
         Long sessionId = cs.getId();

@@ -19,18 +19,18 @@ public class ControllerSessionServiceImpl implements ControllerSessionService
     @Override
     public ControllerSession create(ControllerSession controllerSession)
     {
-        return controllerSessionRepo.create(controllerSession);
+        return controllerSessionRepo.save(controllerSession);
     }
 
     @Override
     public ControllerSession find(Long id)
     {
-        return controllerSessionRepo.find(id);
+        return controllerSessionRepo.findOne(id);
     }
 
     @Override
     public List<ControllerSession> paginate(int pageNumber, int pageSize)
     {
-        return controllerSessionRepo.pagination(pageNumber, pageSize);
+        return null;
     }
 }

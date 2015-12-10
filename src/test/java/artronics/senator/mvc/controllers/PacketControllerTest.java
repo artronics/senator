@@ -2,6 +2,7 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.core.PacketBroker;
+import artronics.senator.core.SenatorConfig;
 import artronics.senator.helper.FakePacketFactory;
 import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
@@ -35,6 +36,9 @@ public class PacketControllerTest
     PacketService packetService;
 
     @Mock
+    SenatorConfig mockConfig;
+
+    @Mock
     PacketBroker packetBroker;
 
     MockMvc mockMvc;
@@ -54,6 +58,7 @@ public class PacketControllerTest
     {
         SdwnBasePacket packet = (SdwnBasePacket) packetFactory.createDataPacket();
         packet.setId(1L);
+        packet.setSessionId(10L);
 
         when(packetService.find(1L)).thenReturn(packet);
 
@@ -149,8 +154,6 @@ public class PacketControllerTest
 
                .andDo(print())
         ;
-
-
     }
 
     private PacketList createPacketList(int num)
@@ -159,6 +162,7 @@ public class PacketControllerTest
         for (int i = num; i > 0; i--) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(i, 0);
             dataPacket.setId(Integer.toUnsignedLong(i));
+            dataPacket.setSessionId(Integer.toUnsignedLong(i));
             dataPck.add(dataPacket);
         }
         PacketList packetList = new PacketList(Integer.toUnsignedLong(num), dataPck);

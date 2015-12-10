@@ -33,9 +33,9 @@ public class ControllerConfigController
         if (cnf != null) {
             ControllerConfigRes configRes = new ControllerConfigResAsm().toResource(cnf);
 
-            return new ResponseEntity<ControllerConfigRes>(configRes, HttpStatus.OK);
+            return new ResponseEntity<>(configRes, HttpStatus.OK);
         }
 
-        return new ResponseEntity<ControllerConfigRes>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

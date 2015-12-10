@@ -7,6 +7,7 @@ import artronics.senator.services.PacketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -20,23 +21,24 @@ public class PacketServiceImpl implements PacketService
     @Override
     public SdwnBasePacket create(SdwnBasePacket packet)
     {
-        return packetRepo.create(packet);
+        return packetRepo.save(packet);
     }
 
     @Override
     public SdwnBasePacket find(Long id)
     {
-        return packetRepo.find(id);
+        return packetRepo.findOne(id);
     }
 
     @Override
     public PacketList getAllPackets()
     {
-        List<SdwnBasePacket> packets = packetRepo.getAllPackets();
-        long lastPacketId = packets.get(packets.size() - 1).getId();
-        PacketList packetList = new PacketList(lastPacketId, packets);
-
-        return packetList;
+//        List<SdwnBasePacket> packets = packetRepo.getAllPackets();
+//        long lastPacketId = packets.get(packets.size() - 1).getId();
+//        PacketList packetList = new PacketList(lastPacketId, packets);
+//
+//        return packetList;
+        throw new NotImplementedException();
     }
 
     @Override
@@ -70,6 +72,7 @@ public class PacketServiceImpl implements PacketService
     @Override
     public List<SdwnBasePacket> pagination(int pageNumber, int pageSize)
     {
-        return packetRepo.pagination(pageNumber, pageSize);
+//        return packetRepo.pagination(pageNumber, pageSize);
+        throw new NotImplementedException();
     }
 }

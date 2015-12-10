@@ -1,20 +1,10 @@
 package artronics.senator.repositories;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface PacketRepo
+public interface PacketRepo extends PagingAndSortingRepository<SdwnBasePacket,Long>,PacketCustomRepo
 {
-    SdwnBasePacket create(SdwnBasePacket packet);
-
-    SdwnBasePacket find(Long id);
-
-    List<SdwnBasePacket> pagination(int pageNumber, int pageSize);
-
-    List<SdwnBasePacket> getNew(Long packetId, String ip, Long sessionId);
-
-    List<SdwnBasePacket> getNew(Long packetId);
-
-    List<SdwnBasePacket> getAllPackets();
 }

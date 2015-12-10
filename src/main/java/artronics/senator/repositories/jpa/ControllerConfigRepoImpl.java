@@ -1,7 +1,9 @@
 package artronics.senator.repositories.jpa;
 
 import artronics.gsdwn.model.ControllerConfig;
-import artronics.senator.repositories.ControllerConfigRepo;
+import artronics.senator.repositories.ControllerConfigCustomRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,41 +15,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 @Repository
-public class JpaControllerConfigRepo implements ControllerConfigRepo
+public class ControllerConfigRepoImpl implements ControllerConfigCustomRepo
 {
     @PersistenceContext
     EntityManager em;
-
-    @Override
-    public ControllerConfig create(ControllerConfig controller)
-    {
-        em.persist(controller);
-
-        return controller;
-    }
-
-    @Override
-    public ControllerConfig find(Long id)
-    {
-        return em.find(ControllerConfig.class, id);
-    }
-
-    @Override
-    public ControllerConfig update(ControllerConfig newConfig)
-    {
-        return em.merge(newConfig);
-    }
-
-    @Override
-    public ControllerConfig findByIp(String ip)
-    {
-        Query q = em.createQuery("from artronics.gsdwn.model.ControllerConfig c where c.ip=?1");
-        q.setParameter(1, ip);
-        q.setMaxResults(1);
-        ControllerConfig cnf = (ControllerConfig) q.getSingleResult();
-
-        return cnf;
-    }
 
     @Override
     public ControllerConfig getLatest()
