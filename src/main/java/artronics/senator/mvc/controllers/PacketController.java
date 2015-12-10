@@ -2,6 +2,7 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.core.PacketBroker;
+import artronics.senator.core.SenatorConfig;
 import artronics.senator.mvc.resources.PacketListRes;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketListResAsm;
@@ -22,20 +23,50 @@ import java.net.URI;
 @RequestMapping(value = "/rest/packets")
 public class PacketController
 {
+    private String ourIp;
+
     private PacketService packetService;
 
     private PacketBroker packetBroker;
 
-    @Autowired
-    public PacketController(PacketService packetService)
-    {
-        this.packetService = packetService;
-    }
+    private SenatorConfig config;
 
     @Autowired
-    public void setPacketBroker(PacketBroker packetBroker)
+    public PacketController(SenatorConfig config,
+                            PacketService packetService,
+                            PacketBroker packetBroker)
     {
+        this.packetService = packetService;
         this.packetBroker = packetBroker;
+        this.config = config;
+
+        this.ourIp = this.config.getControllerIp();
+        this.packetBroker.start();
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<PacketRes> sendPacket(@Valid @RequestBody PacketRes sentPacket)
+    {
+        String dstIp = sentPacket.getDstIp();
+
+        if (dstIp.equals(ourIp)) {
+            SdwnBasePacket packet = packetService.create(sentPacket.toSdwnBasePacket());
+
+            packetBroker.addPacket(packet);
+
+            PacketRes packetRes = new PacketResAsm().toResource(packet);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create(packetRes.getLink("self").getHref()));
+
+            return new ResponseEntity<PacketRes>(packetRes, headers, HttpStatus.CREATED);
+
+        }else {
+
+        }
+
+        return new ResponseEntity<PacketRes>(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/{packetId}", method = RequestMethod.GET)
@@ -45,19 +76,6 @@ public class PacketController
         PacketRes packetRes = new PacketResAsm().toResource(packet);
 
         return new ResponseEntity<PacketRes>(packetRes, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<PacketRes> sendPacket(@Valid @RequestBody PacketRes sentPacket)
-    {
-        SdwnBasePacket packet = packetService.create(sentPacket.toSdwnBasePacket());
-        PacketRes packetRes = new PacketResAsm().toResource(packet);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(packetRes.getLink("self").getHref()));
-
-        return new ResponseEntity<PacketRes>(packetRes, headers, HttpStatus.CREATED);
     }
 
     @CrossOrigin(origins = "http://localhost:9000")

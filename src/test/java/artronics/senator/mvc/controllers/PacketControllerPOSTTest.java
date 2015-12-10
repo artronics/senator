@@ -3,6 +3,7 @@ package artronics.senator.mvc.controllers;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnPacketType;
 import artronics.senator.core.PacketBroker;
+import artronics.senator.core.SenatorConfig;
 import artronics.senator.helper.FakePacketFactory;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketResAsm;
@@ -48,17 +49,17 @@ public class PacketControllerPOSTTest
 {
     @InjectMocks
     PacketController packetController;
-
     @Mock
     PacketService packetService;
-
     @Mock
     PacketBroker packetBroker;
-
+    @Mock
+    SenatorConfig mockConfig;
     MockMvc mockMvc;
-
     FakePacketFactory packetFactory = new FakePacketFactory();
-
+    @Autowired
+    SenatorConfig config;
+    private String ourIp;
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -72,6 +73,8 @@ public class PacketControllerPOSTTest
                                  .defaultRequest(post("/rest")
                                                          .contentType(MediaType.APPLICATION_JSON))
                                  .build();
+
+        this.ourIp = config.getControllerIp();
     }
 
 
@@ -84,6 +87,22 @@ public class PacketControllerPOSTTest
                .andDo(print())
                .andExpect(status().isCreated());
     }
+
+    @Test
+    public void if_dstIp_equals_ourIp_packet_should_be_persisted()
+    {
+
+    }
+
+    @Test
+    public void if_dstIp_is_not_ourIp_packet_should_not_be_persisted()
+    {
+
+    }
+
+    /*
+        VALIDATION
+     */
 
     @Test
     public void if_validation_fails_response_should_contained_original_sent_data() throws Exception
@@ -125,8 +144,8 @@ public class PacketControllerPOSTTest
     private String createJsonPacket()
     {
         SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
-        dataPacket.setSrcIp("192.168.13.12");
-        dataPacket.setDstIp("192.168.13.12");
+        dataPacket.setSrcIp(ourIp);
+        dataPacket.setDstIp(ourIp);
         dataPacket.setSessionId(10L);
         dataPacket.setType(SdwnPacketType.DATA);
         dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));

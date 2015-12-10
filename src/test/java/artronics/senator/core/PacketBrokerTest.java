@@ -17,12 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:senator-beans.xml")
@@ -73,7 +68,7 @@ public class PacketBrokerTest
     }
 
     @Test
-    public void it_should_send_a_packet_to_sdwnController_if_dstIp_equals_ourIp() throws
+    public void it_should_send_a_packet_to_sdwnController() throws
             InterruptedException
     {
         SdwnBasePacket packet = addPacketToBroker(ourIp);
@@ -81,42 +76,6 @@ public class PacketBrokerTest
         SdwnBasePacket actPacket = (SdwnBasePacket) cntTxPackets.take();
 
         FakePacketFactory.assertPacketEqual(packet, actPacket);
-    }
-
-    //This test should be run with fresh context load
-    //I'm not sure if result is true
-    @Test
-    public void it_should_not_send_a_packet_to_sdwnController_if_dstIp_is_not_ourIp() throws
-            InterruptedException
-    {
-        SdwnBasePacket packet = addPacketToBroker(otherIp);
-
-        Thread.sleep(200);
-
-        assertTrue(cntTxPackets.isEmpty());
-    }
-
-    @Test
-    public void if_dstIp_equals_ourIp_packet_should_be_persisted()
-    {
-        SdwnBasePacket packet = addPacketToBroker(ourIp);
-
-        List<SdwnBasePacket> persistedPackets = packetRepo.getAllPackets();
-
-        assertThat(persistedPackets.size(), equalTo(1));
-
-        SdwnBasePacket persistedPacket = persistedPackets.get(0);
-        FakePacketFactory.assertPacketEqual(packet, persistedPacket);
-    }
-
-    @Test
-    public void if_dstIp_is_not_ourIp_packet_should_not_be_persisted()
-    {
-        SdwnBasePacket packet = addPacketToBroker(otherIp);
-
-        List<SdwnBasePacket> persistedPackets = packetRepo.getAllPackets();
-
-        assertThat(persistedPackets.size(), equalTo(0));
     }
 
     private SdwnBasePacket addPacketToBroker(String srcIp, String dstIp)
