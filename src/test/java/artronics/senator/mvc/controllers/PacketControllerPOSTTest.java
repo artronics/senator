@@ -7,6 +7,7 @@ import artronics.senator.core.SenatorConfig;
 import artronics.senator.helper.FakePacketFactory;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketResAsm;
+import artronics.senator.repositories.PacketRepo;
 import artronics.senator.services.PacketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +34,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHan
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,6 +63,8 @@ public class PacketControllerPOSTTest
     FakePacketFactory packetFactory = new FakePacketFactory();
     @Autowired
     SenatorConfig config;
+    @Autowired
+    PacketRepo packetRepo;
     private String ourIp;
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -89,9 +95,19 @@ public class PacketControllerPOSTTest
     }
 
     @Test
-    public void if_dstIp_equals_ourIp_packet_should_be_persisted()
+    public void if_dstIp_equals_ourIp_packet_should_be_persisted() throws Exception
     {
+        SdwnBasePacket expPacket = createPacket();
 
+        mockMvc.perform(post("/rest/packets")
+                                .content(createJsonPacket(expPacket)));
+
+        List<SdwnBasePacket> packets = packetRepo.getAllPackets();
+
+        assertThat(packets.size(), equalTo(1));
+
+        SdwnBasePacket persistedPacket = packets.get(0);
+        FakePacketFactory.assertPacketEqual(expPacket, persistedPacket);
     }
 
     @Test
@@ -141,15 +157,26 @@ public class PacketControllerPOSTTest
                .andExpect(status().isBadRequest());
     }
 
-    private String createJsonPacket()
+    private SdwnBasePacket createPacket(String srcIp, String dstIp)
     {
         SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
-        dataPacket.setSrcIp(ourIp);
-        dataPacket.setDstIp(ourIp);
+        dataPacket.setSrcIp(srcIp);
+        dataPacket.setDstIp(dstIp);
         dataPacket.setSessionId(10L);
         dataPacket.setType(SdwnPacketType.DATA);
         dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));
 
+        return dataPacket;
+    }
+
+    private SdwnBasePacket createPacket()
+    {
+        return createPacket(ourIp, ourIp);
+    }
+
+    private String createJsonPacket()
+    {
+        SdwnBasePacket dataPacket = createPacket();
 
         return createJsonPacket(dataPacket);
     }
@@ -157,7 +184,6 @@ public class PacketControllerPOSTTest
     private String createJsonPacket(SdwnBasePacket packet)
     {
         PacketRes packetRes = new PacketResAsm().toResource(packet);
-//        packetRes.setType(SdwnPacketType.DATA.toString());
 
         ObjectMapper mapper = new ObjectMapper();
         String output = null;
