@@ -21,7 +21,7 @@ public class DatabaseProperties
             @Value("${database.username}") String username,
             @Value("${database.password}") String password,
             @Value("${database.dialect}") String dialect,
-            @Value("${database.dialect}") String hbm2ddl)
+            @Value("${database.hmb2ddl}") String hbm2ddl)
 
     {
         this.url = url;
