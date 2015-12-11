@@ -90,7 +90,7 @@ public class RepositoryConfig
         hibernateProperties.setProperty("hibernate.show_sql", "false");
         hibernateProperties.setProperty("hibernate.use_sql_comments", "false");
         hibernateProperties.setProperty("hibernate.format_sql", "false");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", properties.getHmb2ddl());
 //        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 
         hibernateProperties.setProperty("hibernate.generate_statistics", "false");

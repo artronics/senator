@@ -2,7 +2,6 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnPacketType;
-import artronics.senator.config.TestRepositoryConfig;
 import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.core.config.BeanDefinition;
@@ -22,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -53,8 +53,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @ContextConfiguration(classes = {
         BeanDefinition.class,
-        TestRepositoryConfig.class,
+//        RepositoryConfig.class,
 })
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class PacketControllerPOSTTest
 {
     String otherIp = "192.10.12.13";

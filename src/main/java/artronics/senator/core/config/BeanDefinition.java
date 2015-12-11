@@ -11,6 +11,7 @@ import org.springframework.context.annotation.*;
 @Configuration
 @EnableAutoConfiguration
 
+//@Import(RepositoryConfig.class)
 @ImportResource("classpath:di/sdwn_controller_DI.xml")
 
 @PropertySource({
@@ -20,8 +21,13 @@ import org.springframework.context.annotation.*;
 @PropertySource("classpath:senator_config.properties")
 
 @ComponentScan({
+        "artronics.senator.repositories",
+        "artronics.senator.repositories.jpa",
+        "artronics.gsdwn.packet",
+        "artronics.gsdwn.model",
         "artronics.senator.services.impl",
-        "artronics.senator.core"})
+        "artronics.senator.core",
+        "artronics.senator.core.db.seeder"})
 public class BeanDefinition
 {
     @Autowired

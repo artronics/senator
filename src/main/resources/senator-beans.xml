@@ -1,53 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+       <!--xmlns="http://www.springframework.org/schema/beans"-->
+       <!--xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">-->
 
-    <!--<context:annotation-config/>-->
-    <!--<context:component-scan base-package="artronics.senator.repositories.jpa"/>-->
-    <!--<context:component-scan base-package="artronics.senator.services.impl"/>-->
-    <!--<context:component-scan base-package="artronics.senator.core"/>-->
-    <!--<context:component-scan base-package="artronics.senator.core.db.seeder"/>-->
-    <!--<context:component-scan base-package="artronics.senator.mvc.controllers"/>-->
-    <!--<tx:annotation-driven/>-->
+    <!--&lt;!&ndash;<context:annotation-config/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<context:component-scan base-package="artronics.senator.repositories.jpa"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<context:component-scan base-package="artronics.senator.services.impl"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<context:component-scan base-package="artronics.senator.core"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<context:component-scan base-package="artronics.senator.core.db.seeder"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<context:component-scan base-package="artronics.senator.mvc.controllers"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<tx:annotation-driven/>&ndash;&gt;-->
 
-    <import resource="di/sdwn_controller_DI.xml"/>
+    <!--<import resource="di/sdwn_controller_DI.xml"/>-->
 
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-            <value>classpath:senator-config.properties</value>
-        </property>
-    </bean>
-
-
-    <!--<import resource="db/mysql-config.xml"/>-->
-    <!--<import resource="test/db_h2.xml"/>-->
-    <!--<import resource="db/h2mem-config.xml"/>-->
-    <!--<context:component-scan base-package="artronics.senator.controller"/>-->
-
-    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>-->
-
-    <!--<bean id="entityManagerFactory"-->
-    <!--class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
-    <!--<property name="dataSource" ref="dataSource"/>-->
-    <!--<property name="jpaVendorAdapter">-->
-    <!--<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>-->
-    <!--</property>-->
-    <!--<property name="jpaProperties">-->
-    <!--<map>-->
-    <!--&lt;!&ndash;<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>&ndash;&gt;-->
-    <!--<entry key="hibernate.hbm2ddl.auto" value="update"/>-->
-    <!--<entry key="hibernate.show_sql" value="true"/>-->
-    <!--<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>-->
-    <!--</map>-->
-    <!--</property>-->
-
-    <!--<property name="packagesToScan">-->
-    <!--<array>-->
-    <!--<value>artronics.senator.model</value>-->
-    <!--<value>artronics.gsdwn.model</value>-->
-    <!--</array>-->
-    <!--</property>-->
+    <!--<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+        <!--<property name="location">-->
+            <!--<value>classpath:senator-config.properties</value>-->
+        <!--</property>-->
     <!--</bean>-->
 
-</beans>
+
+    <!--&lt;!&ndash;<import resource="db/mysql-config.xml"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<import resource="test/db_h2.xml"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<import resource="db/h2mem-config.xml"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<context:component-scan base-package="artronics.senator.controller"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<bean id="entityManagerFactory"&ndash;&gt;-->
+    <!--&lt;!&ndash;class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">&ndash;&gt;-->
+    <!--&lt;!&ndash;<property name="dataSource" ref="dataSource"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<property name="jpaVendorAdapter">&ndash;&gt;-->
+    <!--&lt;!&ndash;<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</property>&ndash;&gt;-->
+    <!--&lt;!&ndash;<property name="jpaProperties">&ndash;&gt;-->
+    <!--&lt;!&ndash;<map>&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;<entry key="hibernate.hbm2ddl.auto" value="update"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<entry key="hibernate.show_sql" value="true"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</map>&ndash;&gt;-->
+    <!--&lt;!&ndash;</property>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<property name="packagesToScan">&ndash;&gt;-->
+    <!--&lt;!&ndash;<array>&ndash;&gt;-->
+    <!--&lt;!&ndash;<value>artronics.senator.model</value>&ndash;&gt;-->
+    <!--&lt;!&ndash;<value>artronics.gsdwn.model</value>&ndash;&gt;-->
+    <!--&lt;!&ndash;</array>&ndash;&gt;-->
+    <!--&lt;!&ndash;</property>&ndash;&gt;-->
+    <!--&lt;!&ndash;</bean>&ndash;&gt;-->
+
+<!--</beans>-->
