@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/task"
        xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <context:annotation-config/>
+    <!--<context:annotation-config/>-->
     <!--<context:component-scan base-package="artronics.senator.repositories.jpa"/>-->
-    <context:component-scan base-package="artronics.senator.services.impl"/>
+    <!--<context:component-scan base-package="artronics.senator.services.impl"/>-->
     <!--<context:component-scan base-package="artronics.senator.core"/>-->
     <!--<context:component-scan base-package="artronics.senator.core.db.seeder"/>-->
     <!--<context:component-scan base-package="artronics.senator.mvc.controllers"/>-->
-    <tx:annotation-driven/>
+    <!--<tx:annotation-driven/>-->
 
     <import resource="di/sdwn_controller_DI.xml"/>
 

@@ -1,10 +1,8 @@
 package artronics.senator.config;
 
+import artronics.senator.core.config.BeanDefinition;
 import org.springframework.boot.orm.jpa.EntityScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -21,6 +19,7 @@ import java.util.Properties;
 
 @Configuration
 //@EnableAutoConfiguration
+@Import(BeanDefinition.class)
 @EntityScan(basePackages = {"artronics.gsdwn.model", "artronics.gsdwn.packet"})
 
 @EnableJpaRepositories(basePackages = {
@@ -47,10 +46,8 @@ public class TestRepositoryConfig
 
         emf.setDataSource( hsqlDataSource() );
 
-        emf.setPackagesToScan(new String[] {
-                "artronics.gsdwn.model",
-                "artronics.gsdwn.packet"
-        });
+        emf.setPackagesToScan("artronics.gsdwn.model",
+                              "artronics.gsdwn.packet");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         emf.setJpaVendorAdapter(vendorAdapter);

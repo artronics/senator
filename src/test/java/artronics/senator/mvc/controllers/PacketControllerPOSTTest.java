@@ -2,10 +2,8 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnPacketType;
-import artronics.senator.config.TestBootApp;
 import artronics.senator.config.TestRepositoryConfig;
 import artronics.senator.core.PacketBroker;
-import artronics.senator.core.SenatorBootApplication;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.core.config.BeanDefinition;
 import artronics.senator.helper.FakePacketFactory;
@@ -24,10 +22,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -54,14 +50,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@SpringApplicationConfiguration(classes = {TestRepositoryConfig.class} )
-@ContextConfiguration(classes = {
-        TestRepositoryConfig.class,
-        BeanDefinition.class
-}, loader = AnnotationConfigContextLoader.class)
 @WebAppConfiguration
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//@IntegrationTest("server.port:0")
+@ContextConfiguration(classes = {
+        BeanDefinition.class,
+        TestRepositoryConfig.class,
+})
 public class PacketControllerPOSTTest
 {
     String otherIp = "192.10.12.13";
@@ -75,15 +68,18 @@ public class PacketControllerPOSTTest
     SenatorConfig mockConfig;
 
     MockMvc mockMvc;
+    @Autowired
+    WebApplicationContext wac;
+
     FakePacketFactory packetFactory = new FakePacketFactory();
-    @Autowired
-    SenatorConfig config;
-    @Autowired
-    PacketRepo packetRepo;
-    private String ourIp;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    SenatorConfig config;
+
+    @Autowired
+    PacketRepo packetRepo;
+
+    private String ourIp;
 
     public static <E> Collection<E> makeCollection(Iterable<E> iter)
     {
@@ -99,7 +95,7 @@ public class PacketControllerPOSTTest
     {
         MockitoAnnotations.initMocks(this);
 
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                                  .dispatchOptions(true)
                                  .defaultRequest(post("/rest")
                                                          .contentType(MediaType.APPLICATION_JSON))
