@@ -6,6 +6,7 @@ import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Service
 @Transactional
@@ -27,11 +28,11 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
         return controllerConfigRepo.findOne(id);
     }
 
-//    @Override
-//    public ControllerConfig findByIp(String ip)
-//    {
-//        return null;
-//    }
+    @Override
+    public ControllerConfig findByIp(String ip)
+    {
+        return controllerConfigRepo.findByIp(ip);
+    }
 //
 //    @Override
 //    public ControllerConfig updateControllerConfig(ControllerConfig controllerConfig)
@@ -42,6 +43,6 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     @Override
     public ControllerConfig getLatest()
     {
-        return null;
+        throw new NotImplementedException();
     }
 }

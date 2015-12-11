@@ -5,4 +5,6 @@ import artronics.gsdwn.model.ControllerConfig;
 public interface ControllerConfigCustomRepo
 {
     ControllerConfig getLatest();
+
+    ControllerConfig findByIp(String ip);
 }

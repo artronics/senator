@@ -2,8 +2,6 @@ package artronics.senator.repositories.jpa;
 
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.senator.repositories.ControllerConfigCustomRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -19,6 +17,25 @@ public class ControllerConfigRepoImpl implements ControllerConfigCustomRepo
 {
     @PersistenceContext
     EntityManager em;
+
+    @Override
+    public ControllerConfig findByIp(String ip)
+    {
+        Query q = em.createQuery("from artronics.gsdwn.model.ControllerConfig c where c.ip=?1");
+        q.setParameter(1,ip);
+
+        ControllerConfig singleResult = null;
+
+        //if there is no result return null, instead of exp
+        try {
+            singleResult = (ControllerConfig) q.getSingleResult();
+        }catch (NoResultException e) {
+
+            return singleResult;
+        }
+
+        return singleResult;
+    }
 
     @Override
     public ControllerConfig getLatest()

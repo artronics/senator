@@ -53,6 +53,27 @@ public class ControllerConfigRepoTest
     }
 
     @Test
+    public void test_findByIp(){
+        ControllerConfig config1 = new ControllerConfig("1.1.1.1");
+        ControllerConfig config2 = new ControllerConfig("2.2.2.2");
+        ControllerConfig config3 = new ControllerConfig("3.3.3.3");
+        config3.setDescription("foo");
+
+        repo.save(config1);
+        repo.save(config2);
+        repo.save(config3);
+
+        ControllerConfig actCnt = repo.findByIp("3.3.3.3");
+        assertNotNull(actCnt);
+        assertEquals("foo",actCnt.getDescription());
+    }
+
+    @Test
+    public void findByIp_should_return_null_if_there_is_no_entity(){
+        assertNull(repo.findByIp("50.23.56.123"));
+    }
+
+    @Test
     public void test_getLatest() throws InterruptedException
     {
         int num =2;

@@ -8,7 +8,7 @@ public interface ControllerConfigService
 
     ControllerConfig find(Long id);
 
-//    ControllerConfig findByIp(String ip);
+    ControllerConfig findByIp(String ip);
 //
 //    ControllerConfig updateControllerConfig(ControllerConfig controllerConfig);
 //
