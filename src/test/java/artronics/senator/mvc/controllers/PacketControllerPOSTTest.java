@@ -2,31 +2,30 @@ package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnPacketType;
-import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.core.config.BeanDefinition;
 import artronics.senator.helper.FakePacketFactory;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketResAsm;
 import artronics.senator.repositories.PacketRepo;
-import artronics.senator.services.PacketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
@@ -42,8 +41,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -59,26 +59,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PacketControllerPOSTTest
 {
     String otherIp = "192.10.12.13";
-    @InjectMocks
-    PacketController packetController;
-    @Mock
-    PacketService packetService;
-    @Mock
-    PacketBroker packetBroker;
-    @Mock
-    SenatorConfig mockConfig;
 
     MockMvc mockMvc;
+
+    MockRestServiceServer mockServer;
+
     @Autowired
     WebApplicationContext wac;
 
     FakePacketFactory packetFactory = new FakePacketFactory();
 
     @Autowired
+    PacketController packetController;
+    @Autowired
     SenatorConfig config;
 
     @Autowired
     PacketRepo packetRepo;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     private String ourIp;
 
@@ -95,6 +95,8 @@ public class PacketControllerPOSTTest
     public void setUp() throws Exception
     {
         MockitoAnnotations.initMocks(this);
+
+        mockServer = MockRestServiceServer.createServer(restTemplate);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                                  .dispatchOptions(true)
@@ -119,6 +121,23 @@ public class PacketControllerPOSTTest
 
         SdwnBasePacket persistedPacket = packets.get(0);
         FakePacketFactory.assertPacketEqual(expPacket, persistedPacket);
+    }
+
+    @Test
+    public void test_restTemplate(){
+        PacketRes packetRes= new PacketRes();
+        packetRes.setDstIp("1222");
+        mockServer
+                .expect(requestTo("http://google.com"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(
+                        withSuccess("SUCCESS",
+                                    MediaType.TEXT_PLAIN));
+
+        packetController.sendPacket(packetRes);
+
+        mockServer.verify();
+
     }
 
     @Test
@@ -159,7 +178,7 @@ public class PacketControllerPOSTTest
         //Validation will fail because there there are null values(like srcIp)
         String jsonPacket = createJsonPacket(packet);
 
-        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
+//        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
         mockMvc.perform(post("/rest/packets")
                                 .content(jsonPacket))
@@ -179,7 +198,7 @@ public class PacketControllerPOSTTest
         //we don't add srcIp
         String jsonPacket = createJsonPacket(packet);
 
-        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
+//        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
         mockMvc.perform(post("/rest/packets")
                                 .content(jsonPacket))

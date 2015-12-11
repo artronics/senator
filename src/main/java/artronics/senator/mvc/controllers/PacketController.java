@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -30,14 +31,19 @@ public class PacketController
 
     private SenatorConfig config;
 
+    private RestTemplate restTemplate;
+
     @Autowired
     public PacketController(SenatorConfig config,
                             PacketService packetService,
-                            PacketBroker packetBroker)
+                            PacketBroker packetBroker,
+                            RestTemplate restTemplate
+                            )
     {
         this.packetService = packetService;
         this.packetBroker = packetBroker;
         this.config = config;
+        this.restTemplate = restTemplate;
 
         this.ourIp = this.config.getControllerIp();
         this.packetBroker.start();
@@ -62,7 +68,8 @@ public class PacketController
             return new ResponseEntity<PacketRes>(packetRes, headers, HttpStatus.CREATED);
 
         }else {
-
+            restTemplate.getForObject("www.google.com",String.class);
+//            restTemplate.
         }
 
         return new ResponseEntity<PacketRes>(HttpStatus.BAD_REQUEST);
