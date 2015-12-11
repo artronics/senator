@@ -31,12 +31,19 @@ public class DbSeeder
         this.sessionService = sessionService;
         this.packetService = packetService;
 
+    }
+
+    public void createControllerAndSession(){
         ControllerConfig cf = new ControllerConfig(controllerIp);
-        configService.save(cf);
+
+        if (configService.findByIp(controllerIp)==null){
+            configService.save(cf);
+        }
 
         ControllerSession cs = new ControllerSession();
         sessionService.create(cs);
         sessionId = cs.getId();
+
     }
 
     public void createPackets(int numOfPackets)
