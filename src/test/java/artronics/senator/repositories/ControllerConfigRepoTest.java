@@ -1,14 +1,14 @@
 package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerConfig;
-import artronics.senator.config.TestRepositoryConfig;
-import artronics.senator.core.config.RepositoryConfig;
+import artronics.senator.core.config.BeanDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -18,7 +18,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {TestRepositoryConfig.class})
+@WebAppConfiguration
+@SpringApplicationConfiguration(classes = {BeanDefinition.class})
 public class ControllerConfigRepoTest
 {
     @Autowired

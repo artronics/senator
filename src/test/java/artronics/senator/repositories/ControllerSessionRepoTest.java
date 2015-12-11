@@ -1,25 +1,22 @@
 package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerSession;
-import artronics.senator.config.TestRepositoryConfig;
+import artronics.senator.core.config.BeanDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {TestRepositoryConfig.class})
+@SpringApplicationConfiguration(classes = {BeanDefinition.class})
+@WebAppConfiguration
 public class ControllerSessionRepoTest
 {
     @Autowired
