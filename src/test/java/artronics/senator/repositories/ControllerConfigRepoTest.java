@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {BeanDefinition.class})
-//@SpringApplicationConfiguration(classes = {BeanDefinition.class})
 public class ControllerConfigRepoTest
 {
     @Autowired
