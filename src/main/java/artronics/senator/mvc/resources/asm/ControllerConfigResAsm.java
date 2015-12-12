@@ -24,6 +24,14 @@ public class ControllerConfigResAsm extends
         res.setIp(controllerConfig.getIp());
         res.setDesc(controllerConfig.getDescription());
 
+        res.setConnectionConfig(controllerConfig.getConnectionConfig());
+
+        res.setStatus(controllerConfig.getStatus());
+        res.setErrorMsg(controllerConfig.getErrorMsg());
+
+        res.setCreated(controllerConfig.getCreated());
+        res.setUpdated(controllerConfig.getUpdated());
+
         res.add(linkTo(ControllerConfigController.class).slash(controllerConfig.getId())
                                                         .withSelfRel());
 
