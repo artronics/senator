@@ -33,7 +33,8 @@ import java.util.Properties;
         "artronics.gsdwn.packet",
         "artronics.senator.repositories"
 })
-@PropertySource("classpath:application-prod.properties")
+//@PropertySource("classpath:application-prod.properties")
+@PropertySource("classpath:application-dev.properties")
 //@Profile("prod")
 @EnableTransactionManagement
 public class RepositoryConfig

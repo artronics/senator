@@ -1,6 +1,7 @@
 package artronics.senator.services.impl;
 
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.gsdwn.model.ControllerStatus;
 import artronics.senator.helpers.CollectionHelper;
 import artronics.senator.repositories.ControllerConfigRepo;
 import artronics.senator.services.ControllerConfigList;
@@ -53,7 +54,16 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     {
         return controllerConfigRepo.findByIp(ip);
     }
-//
+
+    @Override
+    public ControllerConfigList findByStatus(ControllerStatus status)
+    {
+        List<ControllerConfig> configs = controllerConfigRepo.findByStatus(status);
+
+        return new ControllerConfigList(configs);
+    }
+
+    //
 //    @Override
 //    public ControllerConfig updateControllerConfig(ControllerConfig controllerConfig)
 //    {

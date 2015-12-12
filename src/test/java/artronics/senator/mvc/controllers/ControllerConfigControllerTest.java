@@ -97,18 +97,28 @@ public class ControllerConfigControllerTest
                 ;
     }
 
-    private ControllerConfigList createConfigs(int num){
+    @Test
+    public void get_all_controller_with_specific_status(){
+
+    }
+    private ControllerConfigList createConfigs(int num,ControllerStatus status)
+    {
         List<ControllerConfig> configs = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             ControllerConfig config = new ControllerConfig("198.187.12.23");
             config.setId(Integer.toUnsignedLong(i));
             config.setSinkAddress(0);
-            config.setStatus(ControllerStatus.CONNECTED);
-            config.setDescription("foo: "+i);
-            config.setConnectionConfig(new DeviceConnectionConfig("con string " +i));
+            config.setStatus(status);
+            config.setDescription("foo: " + i);
+            config.setConnectionConfig(new DeviceConnectionConfig("con string " + i));
             configs.add(config);
         }
 
         return new ControllerConfigList(configs);
+    }
+
+    private ControllerConfigList createConfigs(int num)
+    {
+        return createConfigs(num,ControllerStatus.CONNECTED);
     }
 }
