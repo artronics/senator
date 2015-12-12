@@ -18,7 +18,7 @@ public class PacketForwarderServiceImpl implements PacketForwarderService
     {
         String url = "http://" + packet.getDstIp() + "/rest/packets";
         ResponseEntity<PacketRes> res =
-                restTemplate.postForEntity(url,PacketRes.class,PacketRes.class);
+                restTemplate.postForEntity(url,packet,PacketRes.class);
 
         return res;
     }
