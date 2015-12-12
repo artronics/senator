@@ -11,10 +11,16 @@
     </bean>
     <bean id="DeviceConnection" class="artronics.chaparMini.Chapar">
         <constructor-arg name="connection" ref="Connection"/>
+        <constructor-arg name="connectionConfig" ref="connectionConfig"/>
+        <constructor-arg name="packetLogger" ref="packetLogger"/>
     </bean>
     <bean id="Connection"
           class="artronics.chaparMini.connection.serialPort.SerialPortConnection"/>
 
+    <bean id="packetLogger" class="artronics.gsdwn.log.SdwnPacketLogger"/>
+    <bean id="connectionConfig" class="artronics.chaparMini.DeviceConnectionConfig">
+
+    </bean>
     <bean id="NetworkMap" class="artronics.gsdwn.networkMap.SdwnNetworkMap"/>
 
     <bean id="NetworkMapUpdater" class="artronics.gsdwn.networkMap.NetworkMapUpdater">

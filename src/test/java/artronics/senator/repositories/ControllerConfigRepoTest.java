@@ -1,5 +1,6 @@
 package artronics.senator.repositories;
 
+import artronics.chaparMini.DeviceConnectionConfig;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.senator.core.config.BeanDefinition;
 import org.junit.Before;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +28,11 @@ public class ControllerConfigRepoTest
     private ControllerConfig controllerConfig;
 
     @Before
-    @Transactional
     public void setUp() throws Exception
     {
         controllerConfig = new ControllerConfig("192.168.10.11");
+        controllerConfig.setConnectionConfig(new DeviceConnectionConfig("connection string"));
+        controllerConfig.setSinkAddress(0);
     }
 
     @Test
@@ -41,6 +42,14 @@ public class ControllerConfigRepoTest
         repo.save(controllerConfig);
 
         assertNotNull(controllerConfig.getId());
+    }
+
+    @Test
+    public void config_should_consist_of_deviceConnectionConfig_which_is_embeddable(){
+        repo.save(controllerConfig);
+
+        assertNotNull(controllerConfig.getConnectionConfig());
+        assertEquals("connection string",controllerConfig.getConnectionConfig().getConnectionString());
     }
 
     @Test
@@ -54,9 +63,9 @@ public class ControllerConfigRepoTest
 
     @Test
     public void test_findByIp(){
-        ControllerConfig config1 = new ControllerConfig("1.1.1.1");
-        ControllerConfig config2 = new ControllerConfig("2.2.2.2");
-        ControllerConfig config3 = new ControllerConfig("3.3.3.3");
+        ControllerConfig config1 = createConfig("1.1.1.1");
+        ControllerConfig config2 = createConfig("2.2.2.2");
+        ControllerConfig config3 = createConfig("3.3.3.3");
         config3.setDescription("foo");
 
         repo.save(config1);
@@ -66,6 +75,12 @@ public class ControllerConfigRepoTest
         ControllerConfig actCnt = repo.findByIp("3.3.3.3");
         assertNotNull(actCnt);
         assertEquals("foo",actCnt.getDescription());
+    }
+    private ControllerConfig createConfig(String ip){
+        ControllerConfig config = new ControllerConfig(ip);
+        config.setSinkAddress(0);
+        config.setConnectionConfig(new DeviceConnectionConfig("connection string"));
+        return config;
     }
 
     @Test
@@ -90,7 +105,7 @@ public class ControllerConfigRepoTest
         List<ControllerConfig> configs = new ArrayList<>();
         String baseIp = "192.200.0.";
         for (int i = 0; i < num; i++) {
-            ControllerConfig config = new ControllerConfig(baseIp+i);
+            ControllerConfig config = createConfig(baseIp+i);
             config.setDescription("num: "+i);
             configs.add(repo.save(config));
             Thread.sleep(1000);
