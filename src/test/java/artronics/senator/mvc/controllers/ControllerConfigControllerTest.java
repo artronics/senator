@@ -98,7 +98,16 @@ public class ControllerConfigControllerTest
     }
 
     @Test
-    public void get_all_controller_with_specific_status(){
+    public void get_all_controller_with_specific_status() throws Exception
+    {
+        ControllerConfigList configList = createConfigs(7,ControllerStatus.CONNECTED);
+
+        when(configService.findByStatus(ControllerStatus.CONNECTED)).thenReturn(configList);
+
+        mockMvc.perform(get("/rest/controllers?status=CONNECTED"))
+                .andDo(print())
+               .andExpect(jsonPath("$.controllers[*]",hasSize(7)))
+                .andExpect(status().isOk());
 
     }
     private ControllerConfigList createConfigs(int num,ControllerStatus status)

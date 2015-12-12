@@ -1,6 +1,7 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.gsdwn.model.ControllerStatus;
 import artronics.senator.mvc.resources.ControllerConfigListRes;
 import artronics.senator.mvc.resources.ControllerConfigRes;
 import artronics.senator.mvc.resources.asm.ControllerConfigListResAsm;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/rest/controllers")
@@ -47,6 +45,18 @@ public class ControllerConfigController
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<ControllerConfigListRes> getControllers(){
         ControllerConfigList configList = controllerConfigService.findAll();
+        ControllerConfigListRes configListRes =
+                new ControllerConfigListResAsm().toResource(configList);
+
+        return new ResponseEntity<>(configListRes, HttpStatus.OK);
+    }
+    @CrossOrigin(origins = "http://localhost:9000")
+    @RequestMapping(method = RequestMethod.GET,params = {"status"})
+    public ResponseEntity<ControllerConfigListRes> getControllers(@RequestParam String status){
+        ControllerStatus statusEn=ControllerStatus.valueOf(status.toUpperCase());
+
+        ControllerConfigList configList = controllerConfigService.findByStatus(statusEn);
+
         ControllerConfigListRes configListRes =
                 new ControllerConfigListResAsm().toResource(configList);
 
