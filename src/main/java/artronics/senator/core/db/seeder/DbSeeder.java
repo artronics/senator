@@ -51,6 +51,7 @@ public class DbSeeder
         for (int i = 0; i < numOfPackets; i++) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(i, 0);
             dataPacket.setSrcIp(controllerIp);
+            dataPacket.setDstIp(controllerIp);
             dataPacket.setSessionId(sessionId);
 
             packetService.create(dataPacket);

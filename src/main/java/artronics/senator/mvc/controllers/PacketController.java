@@ -7,6 +7,7 @@ import artronics.senator.mvc.resources.PacketListRes;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketListResAsm;
 import artronics.senator.mvc.resources.asm.PacketResAsm;
+import artronics.senator.services.PacketForwarderService;
 import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -31,19 +31,19 @@ public class PacketController
 
     private SenatorConfig config;
 
-    private RestTemplate restTemplate;
+    private PacketForwarderService packetForwarder;
 
     @Autowired
     public PacketController(SenatorConfig config,
                             PacketService packetService,
                             PacketBroker packetBroker,
-                            RestTemplate restTemplate
+                            PacketForwarderService packetForwarder
                             )
     {
         this.packetService = packetService;
         this.packetBroker = packetBroker;
         this.config = config;
-        this.restTemplate = restTemplate;
+        this.packetForwarder = packetForwarder;
 
         this.ourIp = this.config.getControllerIp();
         this.packetBroker.start();
@@ -68,11 +68,10 @@ public class PacketController
             return new ResponseEntity<PacketRes>(packetRes, headers, HttpStatus.CREATED);
 
         }else {
-            restTemplate.getForObject("www.google.com",String.class);
-//            restTemplate.
-        }
+            ResponseEntity<PacketRes> receivedRes= packetForwarder.forwardPacket(sentPacket);
 
-        return new ResponseEntity<PacketRes>(HttpStatus.BAD_REQUEST);
+            return receivedRes;
+        }
     }
 
     @RequestMapping(value = "/{packetId}", method = RequestMethod.GET)

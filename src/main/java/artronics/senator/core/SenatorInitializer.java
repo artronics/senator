@@ -25,12 +25,15 @@ public class SenatorInitializer
     private final BlockingQueue<Packet> cntRxQueue;
     private ControllerConfig controllerConfig;
 
+
     private String controllerIp;
     private Long sessionId;
 
     //At runtime we need a session. default constructor makes a default session.
     //set your desire session and set it before calling start method.
     private ControllerSession controllerSession;
+
+    private SenatorConfig senatorConfig;
 
     @Autowired
     private ControllerConfigService controllerService;
@@ -67,11 +70,15 @@ public class SenatorInitializer
     };
 
     @Autowired
-    public SenatorInitializer(Controller controller)
+    public SenatorInitializer(Controller controller,
+                              SenatorConfig senatorConfig)
     {
         this.controller = controller;
+        this.senatorConfig = senatorConfig;
 
         this.cntRxQueue = controller.getCntRxPacketsQueue();
+
+        this.controllerIp = senatorConfig.getControllerIp();
     }
 
     public void init()

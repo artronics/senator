@@ -3,6 +3,7 @@ package artronics.senator.services.impl;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.services.PacketForwarderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,8 +14,12 @@ public class PacketForwarderServiceImpl implements PacketForwarderService
     RestTemplate restTemplate;
 
     @Override
-    public PacketRes forwardPacket(String url)
+    public ResponseEntity<PacketRes> forwardPacket(PacketRes packet)
     {
-        return null;
+        String url = "http://" + packet.getDstIp() + "/rest/packets";
+        ResponseEntity<PacketRes> res =
+                restTemplate.postForEntity(url,PacketRes.class,PacketRes.class);
+
+        return res;
     }
 }

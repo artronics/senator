@@ -1,8 +1,9 @@
 package artronics.senator.services;
 
 import artronics.senator.mvc.resources.PacketRes;
+import org.springframework.http.ResponseEntity;
 
 public interface PacketForwarderService
 {
-    PacketRes forwardPacket(String url);
+    ResponseEntity<PacketRes> forwardPacket(PacketRes packet);
 }

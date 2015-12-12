@@ -33,6 +33,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExc
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +45,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.response.MockRestResponseCreators
+        .withCreatedEntity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,7 +61,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class PacketControllerPOSTTest
 {
-    String otherIp = "192.10.12.13";
+    String otherIp = "127.0.0.1:9000";
+    String urlToOtherIp = "http://"+otherIp+"/rest/packets";
 
     MockMvc mockMvc;
 
@@ -124,20 +128,20 @@ public class PacketControllerPOSTTest
     }
 
     @Test
-    public void test_restTemplate(){
+    public void should_forward_packet_to_its_destination() throws URISyntaxException
+    {
         PacketRes packetRes= new PacketRes();
-        packetRes.setDstIp("1222");
+        packetRes.setDstIp(otherIp);
         mockServer
-                .expect(requestTo("http://google.com"))
-                .andExpect(method(HttpMethod.GET))
+                .expect(requestTo(urlToOtherIp))
+                .andExpect(method(HttpMethod.POST))
                 .andRespond(
-                        withSuccess("SUCCESS",
-                                    MediaType.TEXT_PLAIN));
+                        withCreatedEntity(new URI("127.0.0.1")))
+        ;
 
         packetController.sendPacket(packetRes);
 
         mockServer.verify();
-
     }
 
     @Test

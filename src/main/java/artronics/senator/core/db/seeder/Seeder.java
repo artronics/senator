@@ -1,16 +1,22 @@
 package artronics.senator.core.db.seeder;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Seeder
 {
-    public static void seed()
+    DbSeeder dbSeeder;
+
+    @Autowired
+    public Seeder(DbSeeder dbSeeder)
     {
-        ClassPathXmlApplicationContext cnt =
-                new ClassPathXmlApplicationContext("senator-beans.xml");
+        this.dbSeeder = dbSeeder;
+    }
 
-        DbSeeder seeder = cnt.getBean(DbSeeder.class);
-
-        seeder.createPackets(10);
+    public void seed()
+    {
+        dbSeeder.createControllerAndSession();
+        dbSeeder.createPackets(10);
     }
 }
