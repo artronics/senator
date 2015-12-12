@@ -3,12 +3,12 @@ package artronics.senator.repositories;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.gsdwn.packet.SdwnReportPacket;
-import artronics.senator.core.config.BeanDefinition;
 import artronics.senator.helper.FakePacketFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,7 +24,8 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {BeanDefinition.class})
+@ContextConfiguration(classes = {RepositoryConfig.class})
+@Profile("dev")
 public class PacketRepoTest
 {
     @Autowired

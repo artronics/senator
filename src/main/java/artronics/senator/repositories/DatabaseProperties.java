@@ -1,4 +1,4 @@
-package artronics.senator.core.config;
+package artronics.senator.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,7 @@ public class DatabaseProperties
     private String username;
     private String password;
     private String dialect;
-    private String hmb2ddl;
+    private String hbm2ddl;
 
     @Autowired
     public DatabaseProperties(
@@ -21,7 +21,7 @@ public class DatabaseProperties
             @Value("${database.username}") String username,
             @Value("${database.password}") String password,
             @Value("${database.dialect}") String dialect,
-            @Value("${database.hmb2ddl}") String hbm2ddl)
+            @Value("${database.hbm2ddl}") String hbm2ddl)
 
     {
         this.url = url;
@@ -29,7 +29,7 @@ public class DatabaseProperties
         this.username = username;
         this.password = password;
         this.dialect = dialect;
-        this.hmb2ddl = hbm2ddl;
+        this.hbm2ddl = hbm2ddl;
     }
 
     public String getUrl()
@@ -57,8 +57,8 @@ public class DatabaseProperties
         return dialect;
     }
 
-    public String getHmb2ddl()
+    public String getHbm2ddl()
     {
-        return hmb2ddl;
+        return hbm2ddl;
     }
 }

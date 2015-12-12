@@ -3,11 +3,12 @@ package artronics.senator.repositories;
 import artronics.chaparMini.DeviceConnectionConfig;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerStatus;
-import artronics.senator.core.config.BeanDefinition;
+import artronics.senator.helpers.CollectionHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -20,7 +21,8 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {BeanDefinition.class})
+@ContextConfiguration(classes = {RepositoryConfig.class})
+@Profile("dev")
 public class ControllerConfigRepoTest
 {
     @Autowired
@@ -87,8 +89,10 @@ public class ControllerConfigRepoTest
         return config;
     }
     @Test
-    public void f(){
-        repo.findAll();
+    public void findAll_should_return_size_0_in_case_no_entity(){
+        List<ControllerConfig> configs=(List<ControllerConfig>)
+                CollectionHelper.makeCollection(repo.findAll());
+        assertThat(configs.size(),equalTo(0));
     }
 
     @Test

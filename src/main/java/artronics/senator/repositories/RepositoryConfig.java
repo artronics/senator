@@ -1,10 +1,12 @@
-package artronics.senator.core.config;
+package artronics.senator.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -19,6 +21,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@EnableAutoConfiguration
 @EntityScan(basePackages = {"artronics.gsdwn.model", "artronics.gsdwn.packet"})
 
 @EnableJpaRepositories(basePackages = {
@@ -27,9 +30,11 @@ import java.util.Properties;
 
 @ComponentScan(basePackages = {
         "artronics.gsdwn.model",
-        "artronics.gsdwn.packet"
+        "artronics.gsdwn.packet",
+        "artronics.senator.repositories"
 })
-
+@PropertySource("classpath:application-prod.properties")
+//@Profile("prod")
 @EnableTransactionManagement
 public class RepositoryConfig
 {
@@ -90,7 +95,7 @@ public class RepositoryConfig
         hibernateProperties.setProperty("hibernate.show_sql", "false");
         hibernateProperties.setProperty("hibernate.use_sql_comments", "false");
         hibernateProperties.setProperty("hibernate.format_sql", "false");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", properties.getHmb2ddl());
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", properties.getHbm2ddl());
 //        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 
         hibernateProperties.setProperty("hibernate.generate_statistics", "false");
