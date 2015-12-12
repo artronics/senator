@@ -29,6 +29,12 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     }
 
     @Override
+    public void delete(Long id)
+    {
+        controllerConfigRepo.delete(id);
+    }
+
+    @Override
     public ControllerConfig findByIp(String ip)
     {
         return controllerConfigRepo.findByIp(ip);
