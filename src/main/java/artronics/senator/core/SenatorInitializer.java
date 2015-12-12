@@ -2,23 +2,29 @@ package artronics.senator.core;
 
 import artronics.chaparMini.exceptions.ChaparConnectionException;
 import artronics.gsdwn.controller.Controller;
+import artronics.gsdwn.controller.SdwnController;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
+import artronics.gsdwn.model.ControllerStatus;
 import artronics.gsdwn.packet.Packet;
 import artronics.gsdwn.packet.PoisonPacket;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.senator.services.ControllerConfigService;
 import artronics.senator.services.ControllerSessionService;
 import artronics.senator.services.PacketService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.concurrent.BlockingQueue;
 
 @Component
-public class SenatorInitializer
+public class SenatorInitializer implements ApplicationListener<ContextRefreshedEvent>
 {
+    private final static Logger log = Logger.getLogger(SenatorInitializer.class);
+
     private final static SdwnBasePacket POISON_PILL = (SdwnBasePacket) new PoisonPacket();
 
     private final Controller controller;
@@ -65,16 +71,16 @@ public class SenatorInitializer
             }catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
     };
 
     @Autowired
-    public SenatorInitializer(Controller controller,
-                              SenatorConfig senatorConfig)
+    public SenatorInitializer(SenatorConfig senatorConfig)
     {
-        this.controller = controller;
+
         this.senatorConfig = senatorConfig;
+
+        this.controller = new SdwnController(senatorConfig.getControllerConfig());
 
         this.cntRxQueue = controller.getCntRxPacketsQueue();
 
@@ -83,27 +89,43 @@ public class SenatorInitializer
 
     public void init()
     {
+        //with each run we need a new session
+        log.debug("create new session.");
         controllerSession = new ControllerSession();
-        //get latest config. if there is no config yet create one
-        try {
-            controllerConfig = controllerService.getLatest();
 
-        }catch (EntityNotFoundException e) {
-            controllerConfig = new ControllerConfig("192.168.1.1");
+        //look if there is any controller for this ip
+        controllerConfig = controllerService.findByIp(controllerIp);
+
+        if (controllerConfig == null) {
+            log.debug("No Controller configuration found with ip:" + controllerIp);
+            controllerConfig = new ControllerConfig("localhost:8080");
+            controllerConfig.setSinkAddress(0);
+            controllerConfig.setStatus(ControllerStatus.NOT_CONNECTED);
             controllerService.save(controllerConfig);
-        }
 
-        controller.setConfig(controllerConfig);
+            log.debug("New Controller Configuration has created with default data.");
+        }
 
         sessionService.create(controllerSession);
 
         sessionId = controllerSession.getId();
-        controllerIp = controllerConfig.getIp();
     }
 
-    public void start() throws ChaparConnectionException
+    public void start()
     {
-        controller.start();
+        try {
+            controller.start();
+
+        }catch (ChaparConnectionException e) {
+            log.error("SDWN-Controller failed");
+            log.error(e.getMessage());
+            e.printStackTrace();
+
+            controllerConfig.setStatus(ControllerStatus.ERROR);
+            controllerConfig.setErrorMsg(e.getMessage());
+
+            controllerService.save(controllerConfig);
+        }
         Thread persistenceThr = new Thread(persistence, "Persist");
         persistenceThr.start();
     }
@@ -111,5 +133,14 @@ public class SenatorInitializer
     public void stop()
     {
         cntRxQueue.add(POISON_PILL);
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent)
+    {
+        log.debug("Senator is Initializing.");
+        init();
+        log.debug("Starting controller...");
+        start();
     }
 }

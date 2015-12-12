@@ -24,8 +24,6 @@ public class SenatorBootApplication
     public static void main(String[] args) throws Exception
     {
         log.info("Starting web application.");
-
-        log.info("Start Device Connection");
         SpringApplication.run(SenatorBootApplication.class,args);
     }
 }
