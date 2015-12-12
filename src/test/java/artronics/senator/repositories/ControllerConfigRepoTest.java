@@ -2,6 +2,7 @@ package artronics.senator.repositories;
 
 import artronics.chaparMini.DeviceConnectionConfig;
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.gsdwn.model.ControllerStatus;
 import artronics.senator.core.config.BeanDefinition;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,7 @@ public class ControllerConfigRepoTest
         controllerConfig = new ControllerConfig("192.168.10.11");
         controllerConfig.setConnectionConfig(new DeviceConnectionConfig("connection string"));
         controllerConfig.setSinkAddress(0);
+        controllerConfig.setStatus(ControllerStatus.NOT_CONNECTED);
     }
 
     @Test
@@ -80,7 +82,23 @@ public class ControllerConfigRepoTest
         ControllerConfig config = new ControllerConfig(ip);
         config.setSinkAddress(0);
         config.setConnectionConfig(new DeviceConnectionConfig("connection string"));
+        config.setStatus(ControllerStatus.NOT_CONNECTED);
         return config;
+    }
+
+    @Test
+    public void it_should_update_entity(){
+        ControllerConfig config = createConfig("30.30.30.30");
+        config.setDescription("foo");
+        repo.save(config);
+
+        ControllerConfig updatedConfig = repo.findOne(config.getId());
+        updatedConfig.setDescription("bar");
+        repo.save(updatedConfig);
+
+        ControllerConfig fetchedConfig = repo.findOne(updatedConfig.getId());
+
+        assertThat(fetchedConfig.getDescription(),equalTo("bar"));
     }
 
     @Test
