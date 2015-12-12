@@ -5,6 +5,7 @@ import artronics.gsdwn.packet.SdwnPacketType;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.core.config.BeanDefinition;
 import artronics.senator.helper.FakePacketFactory;
+import artronics.senator.helpers.CollectionHelper;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketResAsm;
 import artronics.senator.repositories.PacketRepo;
@@ -36,8 +37,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -86,15 +85,6 @@ public class PacketControllerPOSTTest
 
     private String ourIp;
 
-    public static <E> Collection<E> makeCollection(Iterable<E> iter)
-    {
-        Collection<E> list = new ArrayList<E>();
-        for (E item : iter) {
-            list.add(item);
-        }
-        return list;
-    }
-
     @Before
     public void setUp() throws Exception
     {
@@ -119,7 +109,7 @@ public class PacketControllerPOSTTest
         mockMvc.perform(post("/rest/packets")
                                 .content(createJsonPacket(expPacket)));
 
-        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) makeCollection(packetRepo.findAll());
+        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) CollectionHelper.makeCollection(packetRepo.findAll());
 
         assertThat(packets.size(), equalTo(1));
 
@@ -152,7 +142,7 @@ public class PacketControllerPOSTTest
         mockMvc.perform(post("/rest/packets")
                                 .content(createJsonPacket(packet)));
 
-        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) makeCollection(packetRepo.findAll());
+        List<SdwnBasePacket> packets = (List<SdwnBasePacket>) CollectionHelper.makeCollection(packetRepo.findAll());
 
         assertThat(packets.size(), equalTo(0));
     }

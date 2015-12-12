@@ -1,12 +1,16 @@
 package artronics.senator.services.impl;
 
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.senator.helpers.CollectionHelper;
 import artronics.senator.repositories.ControllerConfigRepo;
+import artronics.senator.services.ControllerConfigList;
 import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -26,6 +30,16 @@ public class ControllerConfigServiceImpl implements ControllerConfigService
     public ControllerConfig find(Long id)
     {
         return controllerConfigRepo.findOne(id);
+    }
+
+
+    @Override
+    public ControllerConfigList findAll()
+    {
+        List<ControllerConfig> configList = (List<ControllerConfig>)
+                CollectionHelper.makeCollection(controllerConfigRepo.findAll());
+
+        return new ControllerConfigList(configList);
     }
 
     @Override

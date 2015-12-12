@@ -46,6 +46,7 @@ public class ControllerConfigRepoTest
         assertNotNull(controllerConfig.getId());
     }
 
+
     @Test
     public void config_should_consist_of_deviceConnectionConfig_which_is_embeddable(){
         repo.save(controllerConfig);
@@ -84,6 +85,10 @@ public class ControllerConfigRepoTest
         config.setConnectionConfig(new DeviceConnectionConfig("connection string"));
         config.setStatus(ControllerStatus.NOT_CONNECTED);
         return config;
+    }
+    @Test
+    public void f(){
+        repo.findAll();
     }
 
     @Test

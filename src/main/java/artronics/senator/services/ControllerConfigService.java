@@ -8,6 +8,8 @@ public interface ControllerConfigService
 
     ControllerConfig find(Long id);
 
+    ControllerConfigList findAll();
+
     void delete(Long id);
 
     ControllerConfig findByIp(String ip);

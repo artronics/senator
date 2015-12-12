@@ -1,8 +1,11 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.model.ControllerConfig;
+import artronics.senator.mvc.resources.ControllerConfigListRes;
 import artronics.senator.mvc.resources.ControllerConfigRes;
+import artronics.senator.mvc.resources.asm.ControllerConfigListResAsm;
 import artronics.senator.mvc.resources.asm.ControllerConfigResAsm;
+import artronics.senator.services.ControllerConfigList;
 import artronics.senator.services.ControllerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,5 +40,14 @@ public class ControllerConfigController
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<ControllerConfigListRes> getControllers(){
+        ControllerConfigList configList = controllerConfigService.findAll();
+        ControllerConfigListRes configListRes =
+                new ControllerConfigListResAsm().toResource(configList);
+
+        return new ResponseEntity<>(configListRes, HttpStatus.OK);
     }
 }
