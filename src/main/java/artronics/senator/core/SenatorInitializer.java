@@ -1,8 +1,8 @@
 package artronics.senator.core;
 
-import artronics.chaparMini.exceptions.ChaparConnectionException;
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.controller.SdwnController;
+import artronics.gsdwn.exceptions.ControllerConnectionException;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.model.ControllerStatus;
@@ -64,6 +64,11 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
 
                     //add current session to packet and controllerIp
                     packet.setSrcIp(controllerIp);
+                    //if there is no dstIp then source and destination are the same
+                    //i.e packet is a local packet
+                    if (packet.getDstIp() == null) {
+                        packet.setDstIp(controllerIp);
+                    }
                     packet.setSessionId(sessionId);
                     packetService.create(packet);
                 }
@@ -80,7 +85,9 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
 
         this.senatorConfig = senatorConfig;
 
-        this.controller = new SdwnController(senatorConfig.getControllerConfig());
+        this.controllerConfig = senatorConfig.getControllerConfig();
+
+        this.controller = new SdwnController(controllerConfig);
 
         this.cntRxQueue = controller.getCntRxPacketsQueue();
 
@@ -94,16 +101,17 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
         controllerSession = new ControllerSession();
 
         //look if there is any controller for this ip
-        controllerConfig = controllerService.findByIp(controllerIp);
+        ControllerConfig preConfig = controllerService.findByIp(controllerIp);
 
-        if (controllerConfig == null) {
-            log.debug("No Controller configuration found with ip:" + controllerIp);
-            controllerConfig = new ControllerConfig("localhost:8080");
-            controllerConfig.setSinkAddress(0);
-            controllerConfig.setStatus(ControllerStatus.NOT_CONNECTED);
+        if (preConfig == null) {
+            log.debug("No Controller configuration found in DB with ip:" + controllerIp);
             controllerService.save(controllerConfig);
-
             log.debug("New Controller Configuration has created with default data.");
+        }
+        else {
+            //delete the old one and create a new one
+            controllerService.delete(preConfig.getId());
+            controllerService.save(controllerConfig);
         }
 
         sessionService.create(controllerSession);
@@ -116,7 +124,7 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
         try {
             controller.start();
 
-        }catch (ChaparConnectionException e) {
+        }catch (ControllerConnectionException e) {
             log.error("SDWN-Controller failed");
             log.error(e.getMessage());
             e.printStackTrace();
@@ -126,6 +134,10 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
 
             controllerService.save(controllerConfig);
         }
+        log.debug("Controller is connected to device.");
+        controllerConfig.setStatus(ControllerStatus.CONNECTED);
+        controllerService.save(controllerConfig);
+
         Thread persistenceThr = new Thread(persistence, "Persist");
         persistenceThr.start();
     }

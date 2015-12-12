@@ -34,6 +34,10 @@
         <appender-ref ref="console"></appender-ref>
     </logger>
 
+    <logger name="artronics.chaparMini">
+        <level value="warn"/>
+        <appender-ref ref="console"></appender-ref>
+    </logger>
     <logger name="file">
         <level value="debug"/>
         <appender-ref ref="file"></appender-ref>
