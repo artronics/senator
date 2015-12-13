@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/rest/packets")
 public class PacketController
 {
-    private String ourIp;
-
     private PacketService packetService;
 
     private PacketBroker packetBroker;
@@ -45,17 +45,23 @@ public class PacketController
         this.config = config;
         this.packetForwarder = packetForwarder;
 
-        this.ourIp = this.config.getControllerIp();
         this.packetBroker.start();
     }
 
+    @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<PacketRes> sendPacket(@Valid @RequestBody PacketRes sentPacket)
     {
+        String ourIp = config.getControllerIp();
         String dstIp = sentPacket.getDstIp();
 
         if (dstIp.equals(ourIp)) {
+            //ReceivedAt will be set as soon as packet hit the first server
+            if (sentPacket.getReceivedAt() == null) {
+                sentPacket.setReceivedAt(new Timestamp(new Date().getTime()));
+            }
+
             SdwnBasePacket packet = packetService.create(sentPacket.toSdwnBasePacket());
 
             packetBroker.addPacket(packet);
@@ -74,6 +80,7 @@ public class PacketController
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping(value = "/{packetId}", method = RequestMethod.GET)
     public ResponseEntity<PacketRes> getPacket(@PathVariable long packetId)
     {
