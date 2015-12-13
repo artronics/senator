@@ -1,6 +1,7 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.gsdwn.packet.SdwnPacketType;
 import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
@@ -70,54 +71,6 @@ public class PacketControllerPOSTTest
     @Mock
     private PacketForwarderService packetForwarder;
 
-    private static String createJsonPacket(PacketRes packetRes)
-    {
-        ObjectMapper mapper = new ObjectMapper();
-        String output = null;
-
-        try {
-            output = mapper.writeValueAsString(packetRes);
-            System.out.println(output);
-
-        }catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return output;
-    }
-
-    private static String createJsonPacket(SdwnBasePacket packet)
-    {
-        return createJsonPacket(createPacketRes(packet));
-    }
-
-    private static PacketRes createPacketRes(SdwnBasePacket packet){
-        PacketRes packetRes = new PacketRes();
-
-        packetRes.setRid(packet.getId());
-
-        packetRes.setSrcIp(packet.getSrcIp());
-        packetRes.setDstIp(packet.getDstIp());
-
-        packetRes.setSessionId(packet.getSessionId());
-        packetRes.setReceivedAt(packet.getReceivedAt());
-
-        packetRes.setSrcIp(packet.getSrcIp());
-        packetRes.setDstIp(packet.getDstIp());
-
-        packetRes.setNetId(packet.getNetId());
-        packetRes.setType(packet.getType().toString());
-
-        packetRes.setSrcShortAdd(packet.getSrcShortAddress());
-        packetRes.setDstShortAdd(packet.getDstShortAddress());
-
-        packetRes.setTtl(packet.getTtl());
-        packetRes.setNextHop(packet.getNextHop());
-        packetRes.setContent(packet.getContent());
-
-        return packetRes;
-    }
-
     @Before
     public void setUp() throws Exception
     {
@@ -127,9 +80,9 @@ public class PacketControllerPOSTTest
 
         mockMvc = MockMvcBuilders.standaloneSetup(packetController)
                                  .dispatchOptions(true)
-                                 .setHandlerExceptionResolvers(createExceptionResolver())
+//                                 .setHandlerExceptionResolvers(createExceptionResolver())
                                  .defaultRequest(post("/rest")
-                                                          .contentType(MediaType.APPLICATION_JSON))
+                                                         .contentType(MediaType.APPLICATION_JSON))
                                  .build();
 
         when(config.getControllerIp()).thenReturn(ourIp);
@@ -144,14 +97,14 @@ public class PacketControllerPOSTTest
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
         mockMvc.perform(post("/rest/packets")
-                                 .content(createJsonPacket(packet)))
+                                .content(createJsonPacket(packet)))
 
                .andDo(print())
-               .andExpect(jsonPath("$.links[*].rel",hasItem(is("self"))))
-               .andExpect(jsonPath("$.links[*].href",hasItem(endsWith("/packets/1"))))
+               .andExpect(jsonPath("$.links[*].rel", hasItem(is("self"))))
+               .andExpect(jsonPath("$.links[*].href", hasItem(endsWith("/packets/1"))))
                .andExpect(status().isCreated());
 
-        verify(packetService,times(1)).create(any(SdwnBasePacket.class));
+        verify(packetService, times(1)).create(any(SdwnBasePacket.class));
     }
 
     @Test
@@ -163,10 +116,10 @@ public class PacketControllerPOSTTest
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(persistedPacket);
 
         mockMvc.perform(post("/rest/packets")
-                                 .content(createJsonPacket(persistedPacket)))
+                                .content(createJsonPacket(persistedPacket)))
                .andExpect(status().isCreated());
 
-        verify(packetService,times(1)).create(any(SdwnBasePacket.class));
+        verify(packetService, times(1)).create(any(SdwnBasePacket.class));
     }
 
     @Test
@@ -175,26 +128,44 @@ public class PacketControllerPOSTTest
         SdwnBasePacket packet = createPacket(ourIp, otherIp);
 
         mockMvc.perform(post("/rest/packets")
-                                 .content(createJsonPacket(packet)));
+                                .content(createJsonPacket(packet)));
 
-        verify(packetService,times(0)).create(any(SdwnBasePacket.class));
+        verify(packetService, times(0)).create(any(SdwnBasePacket.class));
     }
 
-
-    //TODO fix validation tests
     /*
-        VALIDATION
+        We should persist packet and add it to PacketBroker.
+        SdwnBasePacket is not appropriate, but we should create
+        correct packet base on SdwnBasePacket type.
+        For each packet's type there should be a test, however I'm
+        gonna add them on demand.
      */
-
     @Test
-    public void it_should_cast_packet_based_on_its_type()
+    public void it_should_create_data_packet() throws Exception
     {
+        //DataPacket
+        SdwnBasePacket persistedPacket = createPacket();
+        persistedPacket.setType(SdwnPacketType.DATA);
+        persistedPacket.setId(1L);
+
+        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(persistedPacket);
+
+        mockMvc.perform(post("/rest/packets")
+                                .content(createJsonPacket(persistedPacket)));
+
+        verify(packetService, times(1)).create(isA(SdwnDataPacket.class));
+        verify(packetBroker,times(1)).addPacket(isA(SdwnDataPacket.class));
+    }
+
+    //This is a temp solution until we create validation layer
+    @Test
+    public void if_packet_is_not_match_sdwn_types_it_should_create_malformed_packet(){
 
     }
 
     /*
         In a real web app we should create a packet and send it with minimal
-        fields. Remember this test is valid until it hits service.
+        fields. Remember generated packet from req is valid until it hits service.
      */
     @Test
     public void send_minimal_packet() throws Exception
@@ -209,7 +180,10 @@ public class PacketControllerPOSTTest
         packet.setTtl(20);
         packet.setNextHop(0);
 
-        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(createPacket());
+
+        SdwnBasePacket persistedPacket = createPacket();
+        persistedPacket.setId(1L);
+        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(persistedPacket);
 
         mockMvc.perform(post("/rest/packets")
                                 .content(createJsonPacket(packet)))
@@ -218,6 +192,12 @@ public class PacketControllerPOSTTest
                .andExpect(status().isCreated())
         ;
     }
+
+
+    //TODO fix validation tests
+    /*
+        VALIDATION
+     */
 
     //TODO move this test to PacketForwarder test
     @Ignore
@@ -280,16 +260,23 @@ public class PacketControllerPOSTTest
                .andExpect(status().isBadRequest());
     }
 
-    private SdwnBasePacket createPacket(String srcIp, String dstIp)
+    private SdwnBasePacket createPacket(String srcIp, String dstIp,
+                                        SdwnPacketType type)
     {
         SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
         dataPacket.setSrcIp(srcIp);
         dataPacket.setDstIp(dstIp);
         dataPacket.setSessionId(10L);
-        dataPacket.setType(SdwnPacketType.DATA);
+        dataPacket.setType(type);
         dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));
 
         return dataPacket;
+
+    }
+
+    private SdwnBasePacket createPacket(String srcIp, String dstIp)
+    {
+        return createPacket(srcIp,dstIp,SdwnPacketType.DATA);
     }
 
     private SdwnBasePacket createPacket()
@@ -304,15 +291,71 @@ public class PacketControllerPOSTTest
         return createJsonPacket(dataPacket);
     }
 
-    private ExceptionHandlerExceptionResolver createExceptionResolver() {
-        ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
-            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
-                Method method = new ExceptionHandlerMethodResolver(RestErrorHandler.class).resolveMethod(exception);
+    private ExceptionHandlerExceptionResolver createExceptionResolver()
+    {
+        ExceptionHandlerExceptionResolver exceptionResolver = new
+                ExceptionHandlerExceptionResolver()
+        {
+            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(
+                    HandlerMethod handlerMethod, Exception exception)
+            {
+                Method method = new ExceptionHandlerMethodResolver(RestErrorHandler.class)
+                        .resolveMethod(
+                        exception);
                 return new ServletInvocableHandlerMethod(new RestErrorHandler(), method);
             }
         };
         exceptionResolver.afterPropertiesSet();
         return exceptionResolver;
+    }
+
+    private static String createJsonPacket(PacketRes packetRes)
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        String output = null;
+
+        try {
+            output = mapper.writeValueAsString(packetRes);
+            System.out.println(output);
+
+        }catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return output;
+    }
+
+    private static String createJsonPacket(SdwnBasePacket packet)
+    {
+        return createJsonPacket(createPacketRes(packet));
+    }
+
+    private static PacketRes createPacketRes(SdwnBasePacket packet)
+    {
+        PacketRes packetRes = new PacketRes();
+
+        packetRes.setRid(packet.getId());
+
+        packetRes.setSrcIp(packet.getSrcIp());
+        packetRes.setDstIp(packet.getDstIp());
+
+        packetRes.setSessionId(packet.getSessionId());
+        packetRes.setReceivedAt(packet.getReceivedAt());
+
+        packetRes.setSrcIp(packet.getSrcIp());
+        packetRes.setDstIp(packet.getDstIp());
+
+        packetRes.setNetId(packet.getNetId());
+        packetRes.setType(packet.getType().toString());
+
+        packetRes.setSrcShortAdd(packet.getSrcShortAddress());
+        packetRes.setDstShortAdd(packet.getDstShortAddress());
+
+        packetRes.setTtl(packet.getTtl());
+        packetRes.setNextHop(packet.getNextHop());
+        packetRes.setContent(packet.getContent());
+
+        return packetRes;
     }
 }
 

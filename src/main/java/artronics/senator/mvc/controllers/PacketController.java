@@ -1,6 +1,7 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.mvc.resources.PacketListRes;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/rest/packets")
@@ -62,9 +64,12 @@ public class PacketController
                 sentPacket.setReceivedAt(new Timestamp(new Date().getTime()));
             }
 
-            SdwnBasePacket packet = packetService.create(sentPacket.toSdwnBasePacket());
+            SdwnBasePacket packet = sentPacket.toSdwnBasePacket();
 
-            packetBroker.addPacket(packet);
+            //it cast SdwnBasePacket to its data type persist it and
+            //add it to broker. Then return persisted packet which contains
+            //id and etc.
+            packet =persistAndAddToBroker(packet);
 
             PacketRes packetRes = new PacketResAsm().toResource(packet);
 
@@ -78,6 +83,26 @@ public class PacketController
 
             return receivedRes;
         }
+    }
+
+    private SdwnBasePacket persistAndAddToBroker(SdwnBasePacket packet)
+    {
+        SdwnBasePacket persistedPacket = null;
+        List<Integer> content = packet.getContent();
+
+        switch (packet.getType())
+        {
+            case DATA:
+                SdwnDataPacket dataPacket=SdwnDataPacket.create(content) ;
+                 persistedPacket= packetService.create(dataPacket);
+                packetBroker.addPacket(dataPacket);
+                break;
+
+            default:
+
+        }
+
+        return persistedPacket;
     }
 
     @CrossOrigin(origins = "http://localhost:9000")
