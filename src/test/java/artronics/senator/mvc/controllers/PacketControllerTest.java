@@ -1,6 +1,7 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
+import artronics.gsdwn.packet.SdwnPacketType;
 import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.helper.FakePacketFactory;
@@ -58,6 +59,7 @@ public class PacketControllerTest
     {
         SdwnBasePacket packet = (SdwnBasePacket) packetFactory.createDataPacket();
         packet.setId(1L);
+        packet.setType(SdwnPacketType.DATA);
         packet.setSessionId(10L);
 
         when(packetService.find(1L)).thenReturn(packet);
@@ -162,6 +164,7 @@ public class PacketControllerTest
         for (int i = num; i > 0; i--) {
             SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket(i, 0);
             dataPacket.setId(Integer.toUnsignedLong(i));
+            dataPacket.setType(SdwnPacketType.DATA);
             dataPacket.setSessionId(Integer.toUnsignedLong(i));
             dataPck.add(dataPacket);
         }
