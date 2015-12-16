@@ -1,16 +1,12 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.model.ControllerSession;
-import artronics.senator.config.TestRepositoryConfig;
 import artronics.senator.services.ControllerSessionService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 

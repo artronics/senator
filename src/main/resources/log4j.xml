@@ -22,7 +22,7 @@
     </appender>
 
     <logger name="org.springframework">
-        <level value="warn"/>
+        <level value="debug"/>
     </logger>
 
     <logger name="org.hibernate">
@@ -30,7 +30,7 @@
     </logger>
 
     <logger name="senator">
-        <level value="debug"/>
+        <level value="warn"/>
         <appender-ref ref="console"></appender-ref>
     </logger>
 

@@ -1,6 +1,6 @@
-package artronics.senator.config;
+package artronics.senator.repositories;
 
-import artronics.senator.core.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -18,8 +18,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-//@EnableAutoConfiguration
-@Import(BeanDefinition.class)
+@EnableAutoConfiguration
 @EntityScan(basePackages = {"artronics.gsdwn.model", "artronics.gsdwn.packet"})
 
 @EnableJpaRepositories(basePackages = {
@@ -29,9 +28,10 @@ import java.util.Properties;
 @ComponentScan(basePackages = {
         "artronics.gsdwn.model",
         "artronics.gsdwn.packet",
+        "artronics.senator.repositories"
 })
-
 @EnableTransactionManagement
+@Profile("dev")
 public class TestRepositoryConfig
 {
     @Bean

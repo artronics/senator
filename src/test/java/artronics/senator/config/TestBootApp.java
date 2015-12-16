@@ -1,12 +1,9 @@
 package artronics.senator.config;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication
 @Configuration
 //@EnableAutoConfiguration
 @ComponentScan(basePackages = {
@@ -14,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         "artronics.senator.core.db.seeder",
         "artronics.senator.mvc.controllers",
 })
+@ImportResource("classpath:senator-beans-test.xml")
 public class TestBootApp
 {
 }

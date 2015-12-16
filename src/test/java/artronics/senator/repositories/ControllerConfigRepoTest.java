@@ -8,10 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration(classes = {RepositoryConfig.class})
+@SpringApplicationConfiguration(classes = {TestRepositoryConfig.class})
 @Profile("dev")
 public class ControllerConfigRepoTest
 {
@@ -29,45 +27,6 @@ public class ControllerConfigRepoTest
     private ControllerConfigRepo repo;
 
     private ControllerConfig controllerConfig;
-
-    private static List<ControllerConfig> createConfigs(int num, ControllerStatus status)
-    {
-        List<ControllerConfig> configs = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
-            ControllerConfig config = createConfig(randomIp(), status);
-            configs.add(config);
-        }
-
-        return configs;
-    }
-
-    private static ControllerConfig createConfig(String ip)
-    {
-        return createConfig(ip, ControllerStatus.CONNECTED);
-    }
-
-    private static ControllerConfig createConfig(String ip, ControllerStatus status)
-    {
-        ControllerConfig config = new ControllerConfig(ip);
-        config.setSinkAddress(0);
-        config.setConnectionConfig(new DeviceConnectionConfig("connection string"));
-        config.setStatus(status);
-        return config;
-    }
-
-    public static String randomIp()
-    {
-        int Min = 0;
-        int Max = 255;
-        String ip = "";
-        for (int i = 0; i < 4; i++) {
-            int octet = Min + (int) (Math.random() * ((Max - Min) + 1));
-            ip += Integer.toString(octet);
-            if (i != 3)
-                ip += ".";
-        }
-        return ip;
-    }
 
     @Before
     public void setUp() throws Exception
@@ -200,5 +159,44 @@ public class ControllerConfigRepoTest
         }
 
         return configs;
+    }
+
+    private static List<ControllerConfig> createConfigs(int num, ControllerStatus status)
+    {
+        List<ControllerConfig> configs = new ArrayList<>();
+        for (int i = 0; i < num; i++) {
+            ControllerConfig config = createConfig(randomIp(), status);
+            configs.add(config);
+        }
+
+        return configs;
+    }
+
+    private static ControllerConfig createConfig(String ip)
+    {
+        return createConfig(ip, ControllerStatus.CONNECTED);
+    }
+
+    private static ControllerConfig createConfig(String ip, ControllerStatus status)
+    {
+        ControllerConfig config = new ControllerConfig(ip);
+        config.setSinkAddress(0);
+        config.setConnectionConfig(new DeviceConnectionConfig("connection string"));
+        config.setStatus(status);
+        return config;
+    }
+
+    public static String randomIp()
+    {
+        int Min = 0;
+        int Max = 255;
+        String ip = "";
+        for (int i = 0; i < 4; i++) {
+            int octet = Min + (int) (Math.random() * ((Max - Min) + 1));
+            ip += Integer.toString(octet);
+            if (i != 3)
+                ip += ".";
+        }
+        return ip;
     }
 }

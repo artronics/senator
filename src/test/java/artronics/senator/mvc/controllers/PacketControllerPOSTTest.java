@@ -6,11 +6,10 @@ import artronics.gsdwn.packet.SdwnPacketType;
 import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.helper.FakePacketFactory;
+import artronics.senator.helper.FakeRequest;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.services.PacketForwarderService;
 import artronics.senator.services.PacketService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -55,6 +54,7 @@ public class PacketControllerPOSTTest
     String otherIp = "127.0.0.1:9000";
     String urlToOtherIp = "http://" + otherIp + "/rest/packets";
 
+    FakeRequest fakeRequest=new FakeRequest();
     MockRestServiceServer mockServer;
 
     MockMvc mockMvc;
@@ -91,13 +91,13 @@ public class PacketControllerPOSTTest
     @Test
     public void response_should_be_CREATED() throws Exception
     {
-        SdwnBasePacket packet = createPacket();//packet with ourIp
+        SdwnBasePacket packet = fakeRequest.createPacket();//packet with ourIp
         packet.setId(1L);
 
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
         mockMvc.perform(post("/rest/packets")
-                                .content(createJsonPacket(packet)))
+                                .content(FakeRequest.createJsonPacket(packet)))
 
                .andDo(print())
                .andExpect(jsonPath("$.links[*].rel", hasItem(is("self"))))
@@ -110,13 +110,13 @@ public class PacketControllerPOSTTest
     @Test
     public void if_dstIp_equals_ourIp_packet_should_be_persisted() throws Exception
     {
-        SdwnBasePacket persistedPacket = createPacket();
+        SdwnBasePacket persistedPacket = fakeRequest.createPacket();
         persistedPacket.setId(1L);
 
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(persistedPacket);
 
         mockMvc.perform(post("/rest/packets")
-                                .content(createJsonPacket(persistedPacket)))
+                                .content(FakeRequest.createJsonPacket(persistedPacket)))
                .andExpect(status().isCreated());
 
         verify(packetService, times(1)).create(any(SdwnBasePacket.class));
@@ -125,10 +125,10 @@ public class PacketControllerPOSTTest
     @Test
     public void if_dstIp_is_not_ourIp_packet_should_not_be_persisted() throws Exception
     {
-        SdwnBasePacket packet = createPacket(ourIp, otherIp);
+        SdwnBasePacket packet = fakeRequest.createPacket(ourIp, otherIp);
 
         mockMvc.perform(post("/rest/packets")
-                                .content(createJsonPacket(packet)));
+                                .content(FakeRequest.createJsonPacket(packet)));
 
         verify(packetService, times(0)).create(any(SdwnBasePacket.class));
     }
@@ -144,14 +144,14 @@ public class PacketControllerPOSTTest
     public void it_should_create_data_packet() throws Exception
     {
         //DataPacket
-        SdwnBasePacket persistedPacket = createPacket();
+        SdwnBasePacket persistedPacket = fakeRequest.createPacket();
         persistedPacket.setType(SdwnPacketType.DATA);
         persistedPacket.setId(1L);
 
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(persistedPacket);
 
         mockMvc.perform(post("/rest/packets")
-                                .content(createJsonPacket(persistedPacket)));
+                                .content(FakeRequest.createJsonPacket(persistedPacket)));
 
         verify(packetService, times(1)).create(isA(SdwnDataPacket.class));
         verify(packetBroker,times(1)).addPacket(isA(SdwnDataPacket.class));
@@ -182,12 +182,12 @@ public class PacketControllerPOSTTest
         packet.setCreatedAt(new Timestamp(new Date().getTime()));
 
 
-        SdwnBasePacket persistedPacket = createPacket();
+        SdwnBasePacket persistedPacket = fakeRequest.createPacket();
         persistedPacket.setId(1L);
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(persistedPacket);
 
         mockMvc.perform(post("/rest/packets")
-                                .content(createJsonPacket(packet)))
+                                .content(FakeRequest.createJsonPacket(packet)))
 
                .andDo(print())
                .andExpect(status().isCreated())
@@ -227,7 +227,7 @@ public class PacketControllerPOSTTest
         SdwnBasePacket packet = new SdwnBasePacket(packetFactory.createRawDataPacket());
         packet.setSessionId(10L);
         //Validation will fail because there are null values(like srcIp)
-        String jsonPacket = createJsonPacket(packet);
+        String jsonPacket = FakeRequest.createJsonPacket(packet);
 
         when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
@@ -248,7 +248,7 @@ public class PacketControllerPOSTTest
         packet.setId(1L);
         packet.setSessionId(10L);
         //we don't add srcIp
-        String jsonPacket = createJsonPacket(packet);
+        String jsonPacket = FakeRequest.createJsonPacket(packet);
 
 //        when(packetService.create(any(SdwnBasePacket.class))).thenReturn(packet);
 
@@ -259,38 +259,6 @@ public class PacketControllerPOSTTest
 
                .andExpect(jsonPath("$.data.srcIp").value(IsNull.nullValue()))
                .andExpect(status().isBadRequest());
-    }
-
-    private SdwnBasePacket createPacket(String srcIp, String dstIp,
-                                        SdwnPacketType type)
-    {
-        SdwnBasePacket dataPacket = (SdwnBasePacket) packetFactory.createDataPacket();
-        dataPacket.setSrcIp(srcIp);
-        dataPacket.setDstIp(dstIp);
-        dataPacket.setSessionId(10L);
-        dataPacket.setType(type);
-        dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));
-        dataPacket.setCreatedAt(new Timestamp(new Date().getTime()));
-
-        return dataPacket;
-
-    }
-
-    private SdwnBasePacket createPacket(String srcIp, String dstIp)
-    {
-        return createPacket(srcIp,dstIp,SdwnPacketType.DATA);
-    }
-
-    private SdwnBasePacket createPacket()
-    {
-        return createPacket(ourIp, ourIp);
-    }
-
-    private String createJsonPacket()
-    {
-        SdwnBasePacket dataPacket = createPacket();
-
-        return createJsonPacket(dataPacket);
     }
 
     private ExceptionHandlerExceptionResolver createExceptionResolver()
@@ -311,54 +279,5 @@ public class PacketControllerPOSTTest
         return exceptionResolver;
     }
 
-    private static String createJsonPacket(PacketRes packetRes)
-    {
-        ObjectMapper mapper = new ObjectMapper();
-        String output = null;
-
-        try {
-            output = mapper.writeValueAsString(packetRes);
-            System.out.println(output);
-
-        }catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return output;
-    }
-
-    private static String createJsonPacket(SdwnBasePacket packet)
-    {
-        return createJsonPacket(createPacketRes(packet));
-    }
-
-    private static PacketRes createPacketRes(SdwnBasePacket packet)
-    {
-        PacketRes packetRes = new PacketRes();
-
-        packetRes.setRid(packet.getId());
-
-        packetRes.setSrcIp(packet.getSrcIp());
-        packetRes.setDstIp(packet.getDstIp());
-
-        packetRes.setSessionId(packet.getSessionId());
-        packetRes.setReceivedAt(packet.getReceivedAt());
-        packetRes.setCreatedAt(packet.getCreatedAt());
-
-        packetRes.setSrcIp(packet.getSrcIp());
-        packetRes.setDstIp(packet.getDstIp());
-
-        packetRes.setNetId(packet.getNetId());
-        packetRes.setType(packet.getType().toString());
-
-        packetRes.setSrcShortAdd(packet.getSrcShortAddress());
-        packetRes.setDstShortAdd(packet.getDstShortAddress());
-
-        packetRes.setTtl(packet.getTtl());
-        packetRes.setNextHop(packet.getNextHop());
-        packetRes.setContent(packet.getContent());
-
-        return packetRes;
-    }
 }
 

@@ -6,7 +6,7 @@ import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -33,39 +33,12 @@ import java.util.Properties;
         "artronics.gsdwn.packet",
         "artronics.senator.repositories"
 })
-//@PropertySource("classpath:application-prod.properties")
-@PropertySource("classpath:application-dev.properties")
-//@Profile("prod")
 @EnableTransactionManagement
+@Profile("prod")
 public class RepositoryConfig
 {
     @Autowired
     DatabaseProperties properties;
-
-    @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf)
-    {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-        return transactionManager;
-    }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory()
-    {
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-
-        emf.setDataSource(dataSource());
-
-        emf.setPackagesToScan("artronics.gsdwn.model",
-                              "artronics.gsdwn.packet");
-
-        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        emf.setJpaVendorAdapter(vendorAdapter);
-        emf.setJpaProperties(buildHibernateProperties());
-
-        return emf;
-    }
 
     @Bean
     public DataSource dataSource()
@@ -102,5 +75,30 @@ public class RepositoryConfig
         hibernateProperties.setProperty("hibernate.generate_statistics", "false");
 
         return hibernateProperties;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf)
+    {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
+        return transactionManager;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory()
+    {
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+
+        emf.setDataSource(dataSource());
+
+        emf.setPackagesToScan("artronics.gsdwn.model",
+                              "artronics.gsdwn.packet");
+
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        emf.setJpaVendorAdapter(vendorAdapter);
+        emf.setJpaProperties(buildHibernateProperties());
+
+        return emf;
     }
 }
