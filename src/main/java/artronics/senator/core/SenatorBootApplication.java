@@ -16,7 +16,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @EnableAutoConfiguration
 @ImportResource("classpath:senator-beans.xml")
-@Import(RepositoryConfig.class)
+@Import({RepositoryConfig.class,
+//        ServletConfig.class
+})
 public class SenatorBootApplication
 {
     private static final Logger log = LoggerFactory.getLogger(SenatorBootApplication.class);

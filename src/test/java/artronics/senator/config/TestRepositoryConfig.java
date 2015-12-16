@@ -44,7 +44,7 @@ public class TestRepositoryConfig
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
-        emf.setDataSource( hsqlDataSource() );
+        emf.setDataSource(dataSource() );
 
         emf.setPackagesToScan("artronics.gsdwn.model",
                               "artronics.gsdwn.packet");
@@ -57,7 +57,7 @@ public class TestRepositoryConfig
     }
     @Bean
     @Primary
-    public DataSource hsqlDataSource()
+    public DataSource dataSource()
     {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)

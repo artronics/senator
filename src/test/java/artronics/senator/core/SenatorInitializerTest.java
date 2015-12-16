@@ -1,185 +1,75 @@
 package artronics.senator.core;
 
-import artronics.chaparMini.exceptions.ChaparConnectionException;
-import artronics.gsdwn.controller.Controller;
-import artronics.gsdwn.model.ControllerConfig;
+import artronics.chaparMini.exceptions.DeviceConnectionException;
 import artronics.gsdwn.model.ControllerSession;
-import artronics.gsdwn.packet.Packet;
-import artronics.gsdwn.packet.SdwnBasePacket;
-import artronics.senator.helper.FakePacketFactory;
-import artronics.senator.repositories.ControllerSessionRepo;
 import artronics.senator.services.ControllerConfigService;
 import artronics.senator.services.ControllerSessionService;
 import artronics.senator.services.PacketService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import static org.mockito.Mockito.*;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:senator-beans.xml")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration("classpath:senator-beans.xml")
+////@WebAppConfiguration
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class SenatorInitializerTest
 {
-    @Autowired
+    private  final static String ourIp="localhost:8080";
+    @InjectMocks
     SenatorInitializer initializer;
 
-    @Autowired
+    @Mock
     ControllerConfigService configService;
-
-    @Autowired
-    Controller controller;
-
-    @Autowired
+    @Mock
     PacketService packetService;
-
-    @Autowired
-    ControllerSessionRepo sessionRepo;
-
-    @Autowired
+    @Mock
     ControllerSessionService sessionService;
-
-    ControllerConfig cnf;
-    ControllerSession cs;
-
-    BlockingQueue<Packet> cntRxQueue;
-    BlockingQueue<Packet> cntTxQueue;
-
-    List<SdwnBasePacket> actPackets;
-
-    FakePacketFactory packetFactory = new FakePacketFactory();
+//    @Mock
+    SenatorConfig config;
 
     @Before
-    @Transactional
     public void setUp() throws Exception
     {
-//        cntRxQueue = controller.getCntRxPacketsQueue();
-        cntTxQueue = controller.getCntTxPacketsQueue();
+        config = new SenatorConfig(ourIp,0,"str connection");
+        initializer = new SenatorInitializer(config);
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    @Transactional
-    public void test_init_it_should_create_default_config_if_there_is_no_config()
-    {
+    public void if_there_is_no_controller_config_for_this_ip_it_should_crate_one(){
+        when(configService.findByIp(ourIp)).thenReturn(null);
         initializer.init();
 
-        cnf = configService.getLatest();
-
-        assertNotNull(cnf);
-        assertThat(cnf.getIp(), equalTo("192.168.1.1"));
+        verify(configService).findByIp(ourIp);
+        verify(configService,times(1)).save(config.getControllerConfig());
+        verifyNoMoreInteractions(configService);
     }
-
     @Test
-    @Transactional
-    public void it_should_create_a_new_session_in_init()
-    {
+    public void if_there_is_controller_config_for_this_ip_it_should_delete_and_create_new_one(){
+        when(configService.findByIp(ourIp)).thenReturn(config.getControllerConfig());
         initializer.init();
 
-        List<ControllerSession> sessions = sessionService.paginate(1, 10);
-        assertThat(sessions.size(), equalTo(1));
+        verify(configService).findByIp(ourIp);
+        verify(configService,times(1)).save(config.getControllerConfig());
+        verify(configService,times(1)).delete(any(Long.class));
+        verifyNoMoreInteractions(configService);
     }
-
     @Test
-    @Transactional
-    public void it_should_create_a_new_session_for_each_call_to_init()
-    {
-        sessionService.create(new ControllerSession());
+    public void in_every_init_we_should_create_a_new_session(){
+        when(configService.findByIp(ourIp)).thenReturn(config.getControllerConfig());
         initializer.init();
 
-        List<ControllerSession> sessions = sessionService.paginate(1, 10);
-        assertThat(sessions.size(), equalTo(2));
+        verify(sessionService,times(1)).create(any(ControllerSession.class));
+        verifyNoMoreInteractions(sessionService);
     }
-
-    @Test
-    @Transactional
-    public void test_calling_packetService_in_a_thread() throws InterruptedException
-    {
-        ControllerConfig cnf = new ControllerConfig("10.11.12.13");
-        ControllerSession cs = new ControllerSession();
-        configService.save(cnf);
-        sessionService.create(cs);
-        String ip = cnf.getIp();
-        Long sessionId = cs.getId();
-
-        BlockingQueue<Packet> queue = new LinkedBlockingQueue<>();
-        queue.add(packetFactory.createDataPacket());
-
-        Thread thr = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try {
-                    final SdwnBasePacket packet = (SdwnBasePacket) queue.take();
-                    packet.setSrcIp(ip);
-                    packet.setSessionId(sessionId);
-                    packetService.create(packet);
-                }catch (InterruptedException e) {
-                }
-            }
-        });
-        thr.start();
-        Thread.sleep(200);
-
-        List<SdwnBasePacket> packets = packetService.pagination(1, 10);
-        assertThat(packets.size(), equalTo(1));
-    }
-
-    @Ignore
-    @Test
-    @Transactional
-//    @Rollback(value = false)
-    public void persistence_thread_should_persist_received_packets() throws InterruptedException,
-            ChaparConnectionException
-    {
+    @Test(expected = DeviceConnectionException.class)
+    public void throw_exp_if_sdwnController_cannot_connect(){
         initializer.init();
-        initializer.start();
-        cntRxQueue = controller.getCntRxPacketsQueue();
-        cntRxQueue.add(packetFactory.createDataPacket());
-        Thread.sleep(1000);
-
-//        SdwnBasePacket packet = packetService.find(1L);
-//        assertNotNull(packet);
-
-        List<SdwnBasePacket> actPackets = packetService.pagination(1, 10);
-
-        assertFalse(actPackets.isEmpty());
-//        assertThat(actPackets.get(0).getDstShortAddress(), equalTo(0));
-//        assertThat(actPackets.get(0).getSrcShortAddress(), equalTo(30));
-    }
-
-    @Ignore
-    @Test
-    @Transactional
-    @Rollback(value = false)
-    public void test_persistence_for_multiple_persistence_in_queue() throws InterruptedException,
-            ChaparConnectionException
-
-    {
-        initializer.init();
-        initializer.start();
-        cntRxQueue = controller.getCntRxPacketsQueue();
-        final int num = 30;
-        for (int i = 0; i < num; i++) {
-            cntRxQueue.add(packetFactory.createDataPacket(0, i));
-        }
-
-        Thread.sleep(500);
-        actPackets = packetService.pagination(1, 100);
-
-        assertThat(actPackets.size(), equalTo(num));
+        initializer.startSdwnController();
     }
 }

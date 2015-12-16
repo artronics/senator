@@ -1,8 +1,8 @@
 package artronics.senator.core;
 
+import artronics.chaparMini.exceptions.DeviceConnectionException;
 import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.controller.SdwnController;
-import artronics.gsdwn.exceptions.ControllerConnectionException;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.model.ControllerStatus;
@@ -92,6 +92,10 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
         this.cntRxQueue = controller.getCntRxPacketsQueue();
 
         this.controllerIp = senatorConfig.getControllerIp();
+
+        //Start threads related to persist packets
+        Thread persistenceThr = new Thread(persistence, "Persist");
+        persistenceThr.start();
     }
 
     public void init()
@@ -119,12 +123,12 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
         sessionId = controllerSession.getId();
     }
 
-    public void start()
+    public void startSdwnController()
     {
         try {
             controller.start();
 
-        }catch (ControllerConnectionException e) {
+        }catch (DeviceConnectionException e) {
             log.error("SDWN-Controller failed");
             log.error(e.getMessage());
             e.printStackTrace();
@@ -133,13 +137,12 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
             controllerConfig.setErrorMsg(e.getMessage());
 
             controllerService.save(controllerConfig);
+            return;
         }
         log.debug("Controller is connected to device.");
         controllerConfig.setStatus(ControllerStatus.CONNECTED);
         controllerService.save(controllerConfig);
 
-        Thread persistenceThr = new Thread(persistence, "Persist");
-        persistenceThr.start();
     }
 
     public void stop()
@@ -153,6 +156,6 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
         log.debug("Senator is Initializing.");
         init();
         log.debug("Starting controller...");
-        start();
+        startSdwnController();
     }
 }
