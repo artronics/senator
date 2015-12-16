@@ -1,6 +1,6 @@
 package artronics.senator.core;
 
-import artronics.chaparMini.exceptions.DeviceConnectionException;
+import artronics.gsdwn.controller.Controller;
 import artronics.gsdwn.model.ControllerSession;
 import artronics.senator.services.ControllerConfigService;
 import artronics.senator.services.ControllerSessionService;
@@ -20,9 +20,12 @@ import static org.mockito.Mockito.*;
 public class SenatorInitializerTest
 {
     private  final static String ourIp="localhost:8080";
+
     @InjectMocks
     SenatorInitializer initializer;
 
+    @Mock
+    Controller sdwnController;
     @Mock
     ControllerConfigService configService;
     @Mock
@@ -36,7 +39,7 @@ public class SenatorInitializerTest
     public void setUp() throws Exception
     {
         config = new SenatorConfig(ourIp,0,"str connection");
-        initializer = new SenatorInitializer(config);
+        initializer = new SenatorInitializer(config,sdwnController);
         MockitoAnnotations.initMocks(this);
     }
 
@@ -67,9 +70,5 @@ public class SenatorInitializerTest
         verify(sessionService,times(1)).create(any(ControllerSession.class));
         verifyNoMoreInteractions(sessionService);
     }
-    @Test(expected = DeviceConnectionException.class)
-    public void throw_exp_if_sdwnController_cannot_connect(){
-        initializer.init();
-        initializer.startSdwnController();
-    }
+
 }

@@ -2,7 +2,6 @@ package artronics.senator.core;
 
 import artronics.chaparMini.exceptions.DeviceConnectionException;
 import artronics.gsdwn.controller.Controller;
-import artronics.gsdwn.controller.SdwnController;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerSession;
 import artronics.gsdwn.model.ControllerStatus;
@@ -27,7 +26,7 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
 
     private final static SdwnBasePacket POISON_PILL = (SdwnBasePacket) new PoisonPacket();
 
-    private final Controller controller;
+//    private final Controller controller;
     private final BlockingQueue<Packet> cntRxQueue;
     private ControllerConfig controllerConfig;
 
@@ -40,6 +39,8 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
     private ControllerSession controllerSession;
 
     private SenatorConfig senatorConfig;
+
+    private Controller controller;
 
     @Autowired
     private ControllerConfigService controllerService;
@@ -80,14 +81,16 @@ public class SenatorInitializer implements ApplicationListener<ContextRefreshedE
     };
 
     @Autowired
-    public SenatorInitializer(SenatorConfig senatorConfig)
+    public SenatorInitializer(SenatorConfig senatorConfig,
+    Controller controller)
     {
 
         this.senatorConfig = senatorConfig;
 
         this.controllerConfig = senatorConfig.getControllerConfig();
 
-        this.controller = new SdwnController(controllerConfig);
+        this.controller = controller;
+        this.controller.setConfig(controllerConfig);
 
         this.cntRxQueue = controller.getCntRxPacketsQueue();
 
