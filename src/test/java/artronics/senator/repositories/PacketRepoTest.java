@@ -3,6 +3,7 @@ package artronics.senator.repositories;
 import artronics.gsdwn.packet.SdwnBasePacket;
 import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.gsdwn.packet.SdwnReportPacket;
+import artronics.senator.config.TestRepositoryConfig;
 import artronics.senator.helper.FakePacketFactory;
 import org.junit.Before;
 import org.junit.Test;

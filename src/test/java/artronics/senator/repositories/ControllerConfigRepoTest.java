@@ -3,6 +3,7 @@ package artronics.senator.repositories;
 import artronics.chaparMini.DeviceConnectionConfig;
 import artronics.gsdwn.model.ControllerConfig;
 import artronics.gsdwn.model.ControllerStatus;
+import artronics.senator.config.TestRepositoryConfig;
 import artronics.senator.helpers.CollectionHelper;
 import org.junit.Before;
 import org.junit.Test;

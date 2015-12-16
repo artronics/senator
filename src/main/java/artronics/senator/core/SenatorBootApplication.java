@@ -1,7 +1,6 @@
 package artronics.senator.core;
 
 import artronics.senator.repositories.RepositoryConfig;
-import artronics.senator.repositories.TestRepositoryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -19,10 +18,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableAutoConfiguration
 @ImportResource("classpath:senator-beans.xml")
 @Import({RepositoryConfig.class,
-        TestRepositoryConfig.class,
+//        TestRepositoryConfig.class,
 //        BeanDefinition.class
 })
-@Profile({"prod","dev"})
+@Profile({"prod"})
 public class SenatorBootApplication
 {
     private static final Logger log = LoggerFactory.getLogger(SenatorBootApplication.class);

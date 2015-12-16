@@ -1,6 +1,7 @@
 package artronics.senator.repositories;
 
 import artronics.gsdwn.model.ControllerSession;
+import artronics.senator.config.TestRepositoryConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
