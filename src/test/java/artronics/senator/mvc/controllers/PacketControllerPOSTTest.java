@@ -22,12 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
@@ -80,7 +75,7 @@ public class PacketControllerPOSTTest
 
         mockMvc = MockMvcBuilders.standaloneSetup(packetController)
                                  .dispatchOptions(true)
-//                                 .setHandlerExceptionResolvers(createExceptionResolver())
+                                 .setHandlerExceptionResolvers(FakeRequest.createExceptionResolver())
                                  .defaultRequest(post("/rest")
                                                          .contentType(MediaType.APPLICATION_JSON))
                                  .build();
@@ -260,24 +255,5 @@ public class PacketControllerPOSTTest
                .andExpect(jsonPath("$.data.srcIp").value(IsNull.nullValue()))
                .andExpect(status().isBadRequest());
     }
-
-    private ExceptionHandlerExceptionResolver createExceptionResolver()
-    {
-        ExceptionHandlerExceptionResolver exceptionResolver = new
-                ExceptionHandlerExceptionResolver()
-        {
-            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(
-                    HandlerMethod handlerMethod, Exception exception)
-            {
-                Method method = new ExceptionHandlerMethodResolver(RestErrorHandler.class)
-                        .resolveMethod(
-                        exception);
-                return new ServletInvocableHandlerMethod(new RestErrorHandler(), method);
-            }
-        };
-        exceptionResolver.afterPropertiesSet();
-        return exceptionResolver;
-    }
-
 }
 

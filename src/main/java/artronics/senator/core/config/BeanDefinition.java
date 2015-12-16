@@ -1,14 +1,12 @@
 package artronics.senator.core.config;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 @EnableAutoConfiguration
-@ImportResource({"classpath:senator-beans.xml"})
-@ComponentScan({"artronics.senator.services"})
+@Profile("prod")
 public class BeanDefinition
 {
 }
