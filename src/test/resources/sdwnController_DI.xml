@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="location">
+                <value>classpath:senator_config.properties</value>
+        </property>
+    </bean>
+    <bean class="artronics.gsdwn.controller.SdwnController" id="controller">
+        <constructor-arg name="sinkAddress" value="${controller.sinkAddress}"/>
+        <constructor-arg name="controllerIp" value="${controller.ip}"/>
+        <constructor-arg name="connectionString" value="${deviceConnection.connectionString}"/>
+
+        <constructor-arg name="deviceConnection" ref="DeviceConnection"/>
+        <constructor-arg name="mapUpdater" ref="NetworkMapUpdater"/>
+        <constructor-arg name="networkMap" ref="NetworkMap"/>
+    </bean>
+    <bean id="DeviceConnection" class="artronics.senator.mocks.ChaparMock">
+        <constructor-arg name="connection" ref="Connection"/>
+        <constructor-arg name="connectionConfig" ref="connectionConfig"/>
+        <constructor-arg name="packetLogger" ref="packetLogger"/>
+    </bean>
+    <bean id="Connection"
+          class="artronics.senator.mocks.SerialPortMock"/>
+
+    <bean id="packetLogger" class="artronics.gsdwn.log.SdwnPacketLogger"/>
+
+    <bean id="connectionConfig" class="artronics.chaparMini.DeviceConnectionConfig">
+        <constructor-arg name="connectionString" value="${deviceConnection.connectionString}"/>
+    </bean>
+
+    <bean id="NetworkMap" class="artronics.gsdwn.networkMap.SdwnNetworkMap"/>
+
+    <bean id="NetworkMapUpdater" class="artronics.gsdwn.networkMap.NetworkMapUpdater">
+        <constructor-arg name="networkMap" ref="NetworkMap"/>
+        <constructor-arg name="weightCalculator" ref="WeightCalculator"/>
+    </bean>
+    <bean id="WeightCalculator" class="artronics.gsdwn.networkMap.RssiSimpleWeightCalculator"/>
+</beans>
