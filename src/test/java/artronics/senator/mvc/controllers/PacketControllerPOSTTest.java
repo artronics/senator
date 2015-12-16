@@ -179,6 +179,7 @@ public class PacketControllerPOSTTest
         packet.setContent(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
         packet.setTtl(20);
         packet.setNextHop(0);
+        packet.setCreatedAt(new Timestamp(new Date().getTime()));
 
 
         SdwnBasePacket persistedPacket = createPacket();
@@ -269,6 +270,7 @@ public class PacketControllerPOSTTest
         dataPacket.setSessionId(10L);
         dataPacket.setType(type);
         dataPacket.setReceivedAt(new Timestamp(new Date().getTime()));
+        dataPacket.setCreatedAt(new Timestamp(new Date().getTime()));
 
         return dataPacket;
 
@@ -341,6 +343,7 @@ public class PacketControllerPOSTTest
 
         packetRes.setSessionId(packet.getSessionId());
         packetRes.setReceivedAt(packet.getReceivedAt());
+        packetRes.setCreatedAt(packet.getCreatedAt());
 
         packetRes.setSrcIp(packet.getSrcIp());
         packetRes.setDstIp(packet.getDstIp());

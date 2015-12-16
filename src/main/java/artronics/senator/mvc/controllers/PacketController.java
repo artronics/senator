@@ -1,13 +1,13 @@
 package artronics.senator.mvc.controllers;
 
 import artronics.gsdwn.packet.SdwnBasePacket;
-import artronics.gsdwn.packet.SdwnDataPacket;
 import artronics.senator.core.PacketBroker;
 import artronics.senator.core.SenatorConfig;
 import artronics.senator.mvc.resources.PacketListRes;
 import artronics.senator.mvc.resources.PacketRes;
 import artronics.senator.mvc.resources.asm.PacketListResAsm;
 import artronics.senator.mvc.resources.asm.PacketResAsm;
+import artronics.senator.services.ControllerSessionService;
 import artronics.senator.services.PacketForwarderService;
 import artronics.senator.services.PacketList;
 import artronics.senator.services.PacketService;
@@ -27,7 +27,11 @@ import java.util.List;
 @RequestMapping(value = "/rest/packets")
 public class PacketController
 {
+    private Long sessionId;
+
     private PacketService packetService;
+
+    private ControllerSessionService sessionService;
 
     private PacketBroker packetBroker;
 
@@ -39,13 +43,15 @@ public class PacketController
     public PacketController(SenatorConfig config,
                             PacketService packetService,
                             PacketBroker packetBroker,
-                            PacketForwarderService packetForwarder
+                            PacketForwarderService packetForwarder,
+                            ControllerSessionService sessionService
                             )
     {
         this.packetService = packetService;
         this.packetBroker = packetBroker;
         this.config = config;
         this.packetForwarder = packetForwarder;
+        this.sessionService = sessionService;
 
         this.packetBroker.start();
     }
@@ -62,6 +68,11 @@ public class PacketController
             //ReceivedAt will be set as soon as packet hit the first server
             if (sentPacket.getReceivedAt() == null) {
                 sentPacket.setReceivedAt(new Timestamp(new Date().getTime()));
+            }
+            //TODO change so it get sesseionId from service
+            Long sessionId = sentPacket.getSessionId();
+            if (sessionId==null){
+                sentPacket.setSessionId(110L);
             }
 
             SdwnBasePacket packet = sentPacket.toSdwnBasePacket();
@@ -93,13 +104,14 @@ public class PacketController
         switch (packet.getType())
         {
             case DATA:
-                SdwnDataPacket dataPacket=SdwnDataPacket.create(content) ;
+//                SdwnDataPacket dataPacket=SdwnDataPacket.create(content) ;
+//                SdwnDataPacket dataPacket = (SdwnDataPacket) packet ;
+                SdwnBasePacket dataPacket = packet;
                  persistedPacket= packetService.create(dataPacket);
                 packetBroker.addPacket(dataPacket);
                 break;
 
             default:
-
         }
 
         return persistedPacket;

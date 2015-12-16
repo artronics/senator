@@ -14,7 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -42,6 +44,7 @@ public class PacketRepoTest
         packet.setSessionId(1L);
         packet.setSrcIp("192.168.1.2");
         packet.setDstIp("192.20.14.2");
+        packet.setCreatedAt(new Timestamp(new Date().getTime()));
     }
 
     @Test
@@ -63,6 +66,7 @@ public class PacketRepoTest
         packet2.setSessionId(1L);
         packet2.setSrcIp("10.1.1.1");
         packet2.setDstIp("12.222.12.22");
+        packet2.setCreatedAt(new Timestamp(new Date().getTime()));
         packetRepo.save(packet2);
 
         SdwnBasePacket actPacket = packetRepo.findOne(packet.getId());
@@ -102,6 +106,7 @@ public class PacketRepoTest
         dataPck.setSrcIp("1.1.1.1");
         dataPck.setDstIp("1.1.1.1");
         dataPck.setSessionId(2L);
+        dataPck.setCreatedAt(new Timestamp(new Date().getTime()));
         packetRepo.save(dataPck);
 
         SdwnBasePacket actPacket = packetRepo.findOne(dataPck.getId());
@@ -116,6 +121,7 @@ public class PacketRepoTest
         reportPck.setSrcIp("2.2.2.2");
         reportPck.setDstIp("2.2.2.2");
         reportPck.setSessionId(3L);
+        reportPck.setCreatedAt(new Timestamp(new Date().getTime()));
         packetRepo.save(reportPck);
 
         SdwnBasePacket actPacket = packetRepo.findOne(reportPck.getId());
@@ -214,6 +220,7 @@ public class PacketRepoTest
             dataPacket.setSrcIp(ctrlIp);
             dataPacket.setDstIp(ctrlIp);
             dataPacket.setSessionId(sessionId);
+            dataPacket.setCreatedAt(new Timestamp(new Date().getTime()));
             packets.add(packetRepo.save(dataPacket));
         }
 

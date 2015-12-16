@@ -19,6 +19,9 @@ public class PacketRes extends ResourceSupport
     @NotNull
     private String dstIp;
 
+    @NotNull
+    private Timestamp createdAt;
+
     private long sessionId;
 
     //Controller level
@@ -47,6 +50,7 @@ public class PacketRes extends ResourceSupport
         packet.setDstIp(dstIp);
         packet.setSessionId(sessionId);
 
+        packet.setCreatedAt(createdAt);
         packet.setReceivedAt(receivedAt);
 
         packet.setNetId(netId);
@@ -88,6 +92,16 @@ public class PacketRes extends ResourceSupport
     public void setDstIp(String dstIp)
     {
         this.dstIp = dstIp;
+    }
+
+    public Timestamp getCreatedAt()
+    {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt)
+    {
+        this.createdAt = createdAt;
     }
 
     public long getSessionId()
